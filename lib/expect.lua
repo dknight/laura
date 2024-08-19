@@ -19,7 +19,7 @@ local function expect(a)
 	setmetatable(t, {
 		__call = function()
 			if not t.ok then
-				error(t.err, config.errorLevel)
+				error(t.err)
 			end
 		end,
 	})
