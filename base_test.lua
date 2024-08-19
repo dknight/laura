@@ -2,7 +2,7 @@ local it = require("lib.it")
 local expect = require("lib.expect")
 local describe = require("lib.describe")
 
-describe("foo", "bar")
+-- describe("foo", "bar")
 describe("basic tests", function()
 	it("hello", "world")
 	it("numbers should be equal", function()

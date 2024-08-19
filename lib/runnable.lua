@@ -46,6 +46,7 @@ function Runnable:run()
 		table.insert(ctx.aura.errors, err)
 		return
 	end
+
 	if self.skipped then
 		ctx.aura.skipped = ctx.aura.skipped + 1
 		printer.printSkipped(self.description)

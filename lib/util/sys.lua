@@ -1,3 +1,5 @@
+local config = require("config")
+
 ---Checks that OS is Microsoft Windows.
 ---@return boolean
 local function isWindows()
@@ -9,6 +11,9 @@ end
 ---Checks that termianl supports colors.
 ---@return boolean
 local function isColorSupported()
+	if not config.color then
+		return false
+	end
 	if isWindows() then
 		return not not os.getenv("ANSICON")
 	end

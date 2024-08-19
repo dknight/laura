@@ -93,7 +93,7 @@ return {
 	-- 7 - Reverse
 	-- 8 - Invisible
 	printCustom = function(msg, ...)
-		if sys.isColorSupported then
+		if sys.isColorSupported() then
 			local sts = table.concat({ ... }, ";")
 			io.write("\27[" .. sts .. "m" .. msg .. "\27[0m\n")
 		else

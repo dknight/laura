@@ -14,14 +14,16 @@ describe.run = function(self)
 	io.write(helpers.tab(ctx.aura.level))
 	printer.printCustom(self.description, 1)
 	if type(self.fn) ~= "function" then
-		local err = {
-			message = "Runnable.describe: callback is not a function",
-			expected = "function",
-			actual = type(self.fn),
-			debuginfo = debug.getinfo(1),
-		}
-		table.insert(ctx.aura.errors, err)
-		return
+		-- TODO descide what to do here
+		-- local err = {
+		-- message = "Runnable.describe: callback is not a function",
+		-- expected = "function",
+		-- actual = type(self.fn),
+		-- debuginfo = debug.getinfo(1),
+		-- }
+		-- table.insert(ctx.aura.errors, err)
+		ctx.aura.failed = ctx.aura.failed + 1
+		error("Runnable.describe: callback is not a function", 3)
 	end
 
 	ctx.aura.level = ctx.aura.level + 1
