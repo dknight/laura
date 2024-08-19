@@ -3,7 +3,6 @@
 local context = require("lib.context")
 local tablex = require("lib.tablex")
 local errorx = require("lib.errorx")
-local config = require("config")
 local labels = require("lib.labels")
 
 local ctx = context.global()

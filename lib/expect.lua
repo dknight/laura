@@ -1,6 +1,5 @@
 local bind = require("lib.bind")
 local matchers = require("lib.matchers")
-local config = require("config")
 
 ---Expects value to be tested with matcher.
 ---@param a any
