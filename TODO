@@ -1,0 +1,3 @@
+- scandir() is not well tested on Windows;
+- Better check for isColorSupported for unix;
+- describe.skip;

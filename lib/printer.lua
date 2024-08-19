@@ -1,0 +1,107 @@
+---@alias Printer fun(msg: string, suffix?: string): nil
+
+local config = require("config")
+local context = require("lib.context")
+local sys = require("lib.util.sys")
+
+local ctx = context.global()
+
+---@enum statuses
+local statuses = {
+	expected = "OK",
+	actual = "FAILED",
+	skipped = "SKIPPED",
+	common = "CMN",
+	unchanged = "UNCHNGD",
+}
+
+---@enum colors
+local colors = {
+	[statuses.expected] = "32",
+	[statuses.actual] = "31",
+	[statuses.skipped] = "0;36",
+	[statuses.common] = "1;1",
+	[statuses.unchanged] = "90",
+}
+
+---@return string
+local resetColor = function()
+	if sys.isColorSupported() then
+		return "\27[0m"
+	end
+	return ""
+end
+
+---@param status statuses
+---@return string
+local function setColor(status)
+	if sys.isColorSupported() then
+		return string.format("\27[%sm", colors[status])
+	end
+	return ""
+end
+
+---@param message string
+---@param status statuses
+---@param suffix? string | nil
+local printResult = function(message, status, suffix)
+	suffix = suffix or ""
+	local tpl = string.rep(config.tab, ctx.aura.level)
+	if status ~= statuses.common then
+		tpl = tpl .. "[%s] %s%s\n"
+	else
+		tpl = tpl .. "%s%s\n"
+	end
+	local str = string.format(
+		tpl,
+		setColor(status) .. status .. resetColor(),
+		message,
+		suffix
+	)
+	io.write(str)
+end
+
+---@type table{
+---printExpected: Printer,
+---printActual: Printer,
+---printSkipped: Printer,
+---printCustomStatus: Printer TODO Change signature
+---setColor: fun(msg: string, status: statuses): string
+---resetColor: fun(): string
+---statuses: statuses
+---}
+return {
+	printExpected = function(msg, suffix)
+		printResult(msg, statuses.expected, suffix)
+	end,
+
+	printActual = function(msg, suffix)
+		printResult(msg, statuses.actual, suffix)
+	end,
+
+	printSkipped = function(msg, suffix)
+		printResult(msg, statuses.skipped, suffix)
+	end,
+
+	--- TODO docs
+	-- 0 - Normal Style
+	-- 1 - Bold
+	-- 2 - Dim
+	-- 3 - Italic
+	-- 4 - Underlined
+	-- 5 - Blinking
+	-- 7 - Reverse
+	-- 8 - Invisible
+	printCustom = function(msg, ...)
+		if sys.isColorSupported then
+			local sts = table.concat({ ... }, ";")
+			io.write("\27[" .. sts .. "m" .. msg .. "\27[0m\n")
+		else
+			io.write(msg .. "\n")
+		end
+	end,
+
+	resetColor = resetColor,
+	setColor = setColor,
+	statuses = statuses,
+}
