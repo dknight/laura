@@ -1,7 +1,7 @@
 ---@alias MatchResult {a: any, err: Error, ok: boolean}
 
 local context = require("lib.context")
-local tablex = require("lib.util.tablex")
+local tablex = require("lib.tablex")
 local errorx = require("lib.errorx")
 local config = require("config")
 local labels = require("lib.labels")
