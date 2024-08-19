@@ -33,8 +33,18 @@ end
 ---Running the test.
 function Runnable:run()
 	local startTime = os.clock()
+	ctx.aura.total = ctx.aura.total + 1
+
 	if type(self.fn) ~= "function" then
-		error("callback is not a function") -- FIXME crash???
+		ctx.aura.failed = ctx.aura.failed + 1
+		local err = {
+			message = "Runnable.it: callback is not a function",
+			expected = "function",
+			actual = type(self.fn),
+			debuginfo = debug.getinfo(1),
+		}
+		table.insert(ctx.aura.errors, err)
+		return
 	end
 	if self.skipped then
 		ctx.aura.skipped = ctx.aura.skipped + 1
@@ -43,11 +53,7 @@ function Runnable:run()
 	end
 
 	local ok, err = pcall(self.fn)
-	ctx.aura.total = ctx.aura.total + 1
 	if not ok then
-		for k, v in pairs(debug.getinfo(self.fn)) do
-			print(k, v)
-		end
 		ctx.aura.failed = ctx.aura.failed + 1
 		err.description = self.description
 		err.debuginfo = debug.getinfo(self.fn)

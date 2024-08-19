@@ -124,7 +124,7 @@ local function printValue(val, key, sign, status, i)
 		for k, v in pairs(val) do
 			out = out
 				.. string.format(
-					"%s%s%s[%q] = %s,\n",
+					"%s%s%s[%q] = %q,\n",
 					tab(i - 1),
 					sign,
 					tab(1),
