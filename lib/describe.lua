@@ -10,9 +10,9 @@ local ctx = contex.global()
 local describe = Runnable.new(Runnable)
 
 ---@diagnostic disable-next-line: duplicate-set-field
-describe.run = function(self)
+function describe:run()
 	io.write(helpers.tab(ctx.aura.level))
-	printer.printCustom(self.description, 1)
+	printer.printStyle(self.description, printer.termStyles.bold)
 	if type(self.fn) ~= "function" then
 		-- TODO descide what to do here
 		-- local err = {

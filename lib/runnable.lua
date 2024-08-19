@@ -24,8 +24,8 @@ function Runnable:new(description, fn, skipped)
 	return setmetatable(t, {
 		__index = self,
 		__call = function(klass, d, f)
-			local r = klass:new(d, f)
-			r:run()
+			local instance = klass:new(d, f)
+			instance:run()
 		end,
 	})
 end
@@ -42,12 +42,21 @@ function Runnable:run()
 			expected = "function",
 			actual = type(self.fn),
 			debuginfo = debug.getinfo(1),
+			traceback = debug.traceback(),
 		}
 		table.insert(ctx.aura.errors, err)
+		printer.printActual(self.description)
 		return
 	end
 
-	if self.skipped then
+	-- if self.skipped then
+	--
+	-- end
+	-- TODO TEST BETTER
+	local itInfo = debug.getinfo(2)
+	local describeInfo = debug.getinfo(5)
+
+	if itInfo.name == "skip" or describeInfo.name == "skip" then
 		ctx.aura.skipped = ctx.aura.skipped + 1
 		printer.printSkipped(self.description)
 		return
@@ -58,6 +67,7 @@ function Runnable:run()
 		ctx.aura.failed = ctx.aura.failed + 1
 		err.description = self.description
 		err.debuginfo = debug.getinfo(self.fn)
+		err.traceback = debug.traceback()
 		table.insert(ctx.aura.errors, err)
 		printer.printActual(self.description)
 	else

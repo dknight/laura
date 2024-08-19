@@ -1,9 +1,10 @@
----@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table}
+---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local printer = require("lib.printer")
 local context = require("lib.context")
+local config = require("config")
 
 local ctx = context.global()
 
@@ -50,6 +51,9 @@ local function tostring(err)
 				err.debuginfo.source,
 				err.debuginfo.linedefined
 			)
+	end
+	if config.traceback then
+		retval = retval .. err.traceback .. "\n"
 	end
 	return retval
 end

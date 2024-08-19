@@ -1,4 +1,16 @@
----@alias Printer fun(msg: string, suffix?: string): nil
+---@alias Printer fun(msg: string, ...?: string | termStyles): nil
+
+---@enum termStyles
+local termStyles = {
+	normalStyle = 0,
+	bold = 1,
+	dim = 2,
+	italic = 3,
+	underlined = 4,
+	blinking = 5,
+	reverse = 7,
+	invisible = 8,
+}
 
 local config = require("config")
 local context = require("lib.context")
@@ -65,10 +77,11 @@ end
 ---printExpected: Printer,
 ---printActual: Printer,
 ---printSkipped: Printer,
----printCustomStatus: Printer TODO Change signature
+---printStyle: Printer
 ---setColor: fun(msg: string, status: statuses): string
 ---resetColor: fun(): string
 ---statuses: statuses
+---termStyles: termStyles
 ---}
 return {
 	printExpected = function(msg, suffix)
@@ -83,16 +96,10 @@ return {
 		printResult(msg, statuses.skipped, suffix)
 	end,
 
-	--- TODO docs
-	-- 0 - Normal Style
-	-- 1 - Bold
-	-- 2 - Dim
-	-- 3 - Italic
-	-- 4 - Underlined
-	-- 5 - Blinking
-	-- 7 - Reverse
-	-- 8 - Invisible
-	printCustom = function(msg, ...)
+	--Prints out different styles in the terminal.
+	---@param msg string
+	---@param ... termStyles
+	printStyle = function(msg, ...)
 		if sys.isColorSupported() then
 			local sts = table.concat({ ... }, ";")
 			io.write("\27[" .. sts .. "m" .. msg .. "\27[0m\n")
@@ -104,4 +111,5 @@ return {
 	resetColor = resetColor,
 	setColor = setColor,
 	statuses = statuses,
+	termStyles = termStyles,
 }

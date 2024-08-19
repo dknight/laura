@@ -64,17 +64,28 @@ end
 
 if #ctx.aura.errors > 0 then
 	io.write("\n")
-	printer.printCustom(labels.failedTests, 1, 4)
+	printer.printStyle(
+		labels.failedTests,
+		printer.termStyles.bold,
+		printer.termStyles.underlined
+	)
 	for i = 1, #ctx.aura.errors do
 		io.write(string.format("%d. ", i))
 		errorx.print(ctx.aura.errors[i])
 	end
 end
 
-printer.printCustom(labels.summary, 1, 4)
+printer.printStyle(
+	labels.summary,
+	printer.termStyles.bold,
+	printer.termStyles.underlined
+)
 
-local successMsg =
-	string.format("%d of %d passing\n", ctx.aura.passed, ctx.aura.total)
+local successMsg = string.format(
+	"%d of %d passing\n",
+	ctx.aura.passed,
+	ctx.aura.total - ctx.aura.skipped
+)
 io.write(successMsg)
 
 local failedMessage =

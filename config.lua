@@ -4,6 +4,7 @@ local config = {
 	exitPass = 0,
 	exitFailed = 1,
 	color = true,
+	traceback = false,
 }
 
 return config
