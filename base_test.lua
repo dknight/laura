@@ -1,6 +1,6 @@
 local it = require("lib.it")
-local expect = require("lib.expect")
 local describe = require("lib.describe")
+local expect = require("lib.expect")
 
 -- describe("foo", "bar")
 describe.skip(describe, "skipped tests", function()

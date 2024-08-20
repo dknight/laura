@@ -32,13 +32,13 @@ local function tostring(err)
 	-- TODO refactor to readable code
 	local retval = string.format(
 		"%s%s\n\n%s%s%q%s\n%s%s%s%q%s%s\n",
-		helpers.tab(ctx.aura.level),
+		helpers.tab(ctx.level),
 		err.message .. (err.description or ""),
 		"\t" .. labels.removed,
 		labels.errorExpected .. printer.setColor(printer.statuses.expected),
 		err.expected,
 		printer.resetColor(),
-		helpers.tab(ctx.aura.level),
+		helpers.tab(ctx.level),
 		"\t" .. labels.added,
 		labels.errorActual .. printer.setColor(printer.statuses.actual),
 		err.actual,

@@ -11,7 +11,7 @@ local describe = Runnable.new(Runnable)
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function describe:run()
-	io.write(helpers.tab(ctx.aura.level))
+	io.write(helpers.tab(ctx.level))
 	printer.printStyle(self.description, printer.termStyles.bold)
 	if type(self.fn) ~= "function" then
 		-- TODO descide what to do here
@@ -21,14 +21,14 @@ function describe:run()
 		-- actual = type(self.fn),
 		-- debuginfo = debug.getinfo(1),
 		-- }
-		-- table.insert(ctx.aura.errors, err)
-		ctx.aura.failed = ctx.aura.failed + 1
+		-- table.insert(ctx.errors, err)
+		ctx.failed = ctx.failed + 1
 		error("Runnable.describe: callback is not a function", 3)
 	end
 
-	ctx.aura.level = ctx.aura.level + 1
+	ctx.level = ctx.level + 1
 	self.fn()
-	ctx.aura.level = ctx.aura.level - 1
+	ctx.level = ctx.level - 1
 end
 
 return describe

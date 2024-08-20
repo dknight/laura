@@ -1,4 +1,5 @@
 ---@type table{
+---appKey: string,
 ---color: boolean,
 ---exitFailed: number,
 ---exitPass: number,
@@ -7,6 +8,7 @@
 ---}
 
 return {
+	appKey = "aura",
 	color = true,
 	exitFailed = 1,
 	exitPass = 0,

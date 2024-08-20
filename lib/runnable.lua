@@ -33,10 +33,10 @@ end
 ---Running the test.
 function Runnable:run()
 	local startTime = os.clock()
-	ctx.aura.total = ctx.aura.total + 1
+	ctx.total = ctx.total + 1
 
 	if type(self.fn) ~= "function" then
-		ctx.aura.failed = ctx.aura.failed + 1
+		ctx.failed = ctx.failed + 1
 		local err = {
 			message = "Runnable.it: callback is not a function",
 			expected = "function",
@@ -44,7 +44,7 @@ function Runnable:run()
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
-		table.insert(ctx.aura.errors, err)
+		table.insert(ctx.errors, err)
 		printer.printActual(self.description)
 		return
 	end
@@ -57,21 +57,21 @@ function Runnable:run()
 	local describeInfo = debug.getinfo(5)
 
 	if itInfo.name == "skip" or describeInfo.name == "skip" then
-		ctx.aura.skipped = ctx.aura.skipped + 1
+		ctx.skipped = ctx.skipped + 1
 		printer.printSkipped(self.description)
 		return
 	end
 
 	local ok, err = pcall(self.fn)
 	if not ok then
-		ctx.aura.failed = ctx.aura.failed + 1
+		ctx.failed = ctx.failed + 1
 		err.description = self.description
 		err.debuginfo = debug.getinfo(self.fn)
 		err.traceback = debug.traceback()
-		table.insert(ctx.aura.errors, err)
+		table.insert(ctx.errors, err)
 		printer.printActual(self.description)
 	else
-		ctx.aura.passed = ctx.aura.passed + 1
+		ctx.passed = ctx.passed + 1
 		local formatedTime =
 			string.format(" (%s)", time.format(os.clock() - startTime))
 		printer.printExpected(self.description, formatedTime)

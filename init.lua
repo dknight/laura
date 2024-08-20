@@ -2,39 +2,12 @@ local startTime = os.clock()
 local printer = require("lib.printer")
 local context = require("lib.context")
 local time = require("lib.util.time")
-local sys = require("lib.util.sys")
 local labels = require("lib.labels")
 local errorx = require("lib.errorx")
+local scandir = require("lib.fs.scandir")
 local config = require("config")
 
 local ctx = context.global()
-ctx.aura = {
-	failed = 0,
-	passed = 0,
-	total = 0,
-	skipped = 0,
-	level = 0,
-	errors = {},
-}
-
-local function scandir(directory)
-	local cmd
-	if sys.isWindows() then
-		cmd = "DIR /S/B/O:n *_test.lua"
-	else
-		cmd = "find '%s' -type f -name '*_test.lua' -print0 | sort"
-	end
-	local i, t = 0, {}
-	local fd = assert(io.popen((cmd):format(directory), "r"))
-	local list = fd:read("*a")
-	fd:close()
-
-	for filename in list:gmatch("[^\0]+") do
-		i = i + 1
-		t[i] = filename
-	end
-	return t
-end
 
 local pattern = arg[1] or "."
 local dirs = {}
@@ -53,7 +26,7 @@ end
 table.sort(files)
 
 for _, filename in pairs(files) do
-	local chunk = loadfile(filename, "bt", ctx)
+	local chunk = loadfile(filename, "bt", _G)
 	if chunk ~= nil then
 		local ok, err = pcall(chunk)
 		if not ok then
@@ -62,16 +35,16 @@ for _, filename in pairs(files) do
 	end
 end
 
-if #ctx.aura.errors > 0 then
+if #ctx.errors > 0 then
 	io.write("\n")
 	printer.printStyle(
 		labels.failedTests,
 		printer.termStyles.bold,
 		printer.termStyles.underlined
 	)
-	for i = 1, #ctx.aura.errors do
+	for i = 1, #ctx.errors do
 		io.write(string.format("%d. ", i))
-		errorx.print(ctx.aura.errors[i])
+		errorx.print(ctx.errors[i])
 	end
 end
 
@@ -81,25 +54,21 @@ printer.printStyle(
 	printer.termStyles.underlined
 )
 
-local successMsg = string.format(
-	"%d of %d passing\n",
-	ctx.aura.passed,
-	ctx.aura.total - ctx.aura.skipped
-)
+local successMsg =
+	string.format("%d of %d passing\n", ctx.passed, ctx.total - ctx.skipped)
 io.write(successMsg)
 
-local failedMessage =
-	string.format("%d failing\n", ctx.aura.failed, ctx.aura.total)
+local failedMessage = string.format("%d failing\n", ctx.failed, ctx.total)
 io.write(failedMessage)
 
-local skippedMessage = string.format("%d skipping\n", ctx.aura.skipped)
+local skippedMessage = string.format("%d skipping\n", ctx.skipped)
 io.write(skippedMessage)
 
 local formatedTime = time.format(os.clock() - startTime)
 local str = string.format(labels.timeSummary, formatedTime, os.date())
 io.write(str)
 
-if ctx.aura.failed > 0 then
+if ctx.failed > 0 then
 	print(labels.failed)
 	os.exit(config.exitFailed)
 else

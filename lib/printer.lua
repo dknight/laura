@@ -58,7 +58,7 @@ end
 ---@param suffix? string | nil
 local printResult = function(message, status, suffix)
 	suffix = suffix or ""
-	local tpl = string.rep(config.tab, ctx.aura.level)
+	local tpl = string.rep(config.tab, ctx.level)
 	if status ~= statuses.common then
 		tpl = tpl .. "[%s] %s%s\n"
 	else
