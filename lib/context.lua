@@ -1,17 +1,11 @@
----@alias Context table{
----passed: number,
----failed: number,
----total: number,
----skipped: number,
----level: number,
----errors: Error[]
----}
+---@alias Context{aura: {passed: number, failed: number, total: number, skipped: number, level: number, errors: Error[]}}
 
----@alias Results {aura: Context}
----@type table {global: fun(): Results}
+---@return Context
+local function global()
+	-- TODO return _G['aura'] ?
+	return _G
+end
+
 return {
-	---@return Results
-	global = function()
-		return _G
-	end,
+	global = global,
 }

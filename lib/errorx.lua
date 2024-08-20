@@ -8,6 +8,7 @@ local config = require("config")
 
 local ctx = context.global()
 
+---Creates a new error object.
 ---@param message string Extra messgef for the error.
 ---@param actual any Actual value.
 ---@param expected any Expected value.
@@ -58,7 +59,6 @@ local function tostring(err)
 	return retval
 end
 
----Prints the error
 ---@param err Error
 local function printError(err)
 	io.write(tostring(err))

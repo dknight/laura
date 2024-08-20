@@ -1,11 +1,9 @@
 ---@alias MatchResult {a: any, err: Error, ok: boolean}
 
-local context = require("lib.context")
 local tablex = require("lib.tablex")
 local errorx = require("lib.errorx")
 local labels = require("lib.labels")
 
-local ctx = context.global()
 local matchers = {}
 
 ---Checks the equality of a and b. This don't use deep comparison for tables.

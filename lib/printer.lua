@@ -1,5 +1,3 @@
----@alias Printer fun(msg: string, ...?: string | termStyles): nil
-
 ---@enum termStyles
 local termStyles = {
 	normalStyle = 0,
@@ -11,6 +9,8 @@ local termStyles = {
 	reverse = 7,
 	invisible = 8,
 }
+
+---@alias Printer fun(msg: string, ...?: (string|nil)): nil
 
 local config = require("config")
 local context = require("lib.context")
@@ -73,16 +73,7 @@ local printResult = function(message, status, suffix)
 	io.write(str)
 end
 
----@type table{
----printExpected: Printer,
----printActual: Printer,
----printSkipped: Printer,
----printStyle: Printer
----setColor: fun(msg: string, status: statuses): string
----resetColor: fun(): string
----statuses: statuses
----termStyles: termStyles
----}
+---@type {printExpected: Printer, printActual: Printer, printSkipped: Printer, printStyle: fun(msg: string, ...?: termStyles), setColor: fun(status: statuses): string, resetColor: fun(): string, statuses: statuses, termStyles: termStyles}
 return {
 	printExpected = function(msg, suffix)
 		printResult(msg, statuses.expected, suffix)

@@ -1,6 +1,6 @@
 local config = require("config")
 
----Sort table's keys in alphabetical order.
+---Sort table by keys in alphabetical order.
 ---@param t table
 ---@param sortFn? fun(t:table, a: any, b: any): boolean
 ---@retrn fun(): string | number, any
