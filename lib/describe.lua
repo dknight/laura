@@ -14,7 +14,7 @@ function describe:run()
 	io.write(helpers.tab(ctx.level))
 	printer.printStyle(self.description, printer.termStyles.bold)
 	if type(self.fn) ~= "function" then
-		-- TODO descide what to do here
+		-- TODO descide what to do here, exit or failed +
 		-- local err = {
 		-- message = "Runnable.describe: callback is not a function",
 		-- expected = "function",

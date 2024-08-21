@@ -53,8 +53,8 @@ function Runnable:run()
 	--
 	-- end
 	-- TODO TEST BETTER
-	local itInfo = debug.getinfo(2)
-	local describeInfo = debug.getinfo(5)
+	local itInfo = debug.getinfo(2, "n")
+	local describeInfo = debug.getinfo(5, "n")
 
 	if itInfo.name == "skip" or describeInfo.name == "skip" then
 		ctx.skipped = ctx.skipped + 1
@@ -66,7 +66,7 @@ function Runnable:run()
 	if not ok then
 		ctx.failed = ctx.failed + 1
 		err.description = self.description
-		err.debuginfo = debug.getinfo(self.fn)
+		err.debuginfo = debug.getinfo(self.fn, "S")
 		err.traceback = debug.traceback()
 		table.insert(ctx.errors, err)
 		printer.printActual(self.description)

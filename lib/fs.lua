@@ -1,6 +1,5 @@
 local sys = require("lib.util.sys")
 local config = require("config")
-local helpers = require("lib.util.helpers")
 
 -- TDOO checks for read failed
 ---@param directory string
