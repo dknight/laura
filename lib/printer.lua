@@ -1,3 +1,11 @@
+---@alias Printer fun(msg: string, ...?: (string|nil)): nil
+
+local config = require("config")
+local context = require("lib.context")
+local sys = require("lib.util.sys")
+
+local ctx = context.global()
+
 ---@enum termStyles
 local termStyles = {
 	normalStyle = 0,
@@ -10,21 +18,13 @@ local termStyles = {
 	invisible = 8,
 }
 
----@alias Printer fun(msg: string, ...?: (string|nil)): nil
-
-local config = require("config")
-local context = require("lib.context")
-local sys = require("lib.util.sys")
-
-local ctx = context.global()
-
 ---@enum statuses
 local statuses = {
 	expected = "OK",
 	actual = "FAILED",
 	skipped = "SKIPPED",
-	common = "CMN",
-	unchanged = "UNCHNGD",
+	common = "COMMON",
+	unchanged = "UNCHANGED",
 }
 
 ---@enum colors

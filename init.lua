@@ -11,7 +11,6 @@ local helpers = require("lib.util.helpers")
 local ctx = context.global()
 
 local files, fcount = fs.getFiles(arg[1] or config.dir)
-
 if fcount == 0 then
 	print(labels.noTests)
 	os.exit(config.exitFailed)
@@ -19,18 +18,16 @@ end
 
 -- Sorting files in alphabetical order to keep consistency.
 for fname in helpers.spairs(files) do
-	local chunk = loadfile(fname, "bt", _G)
+	local chunk, loadErr = loadfile(fname, "t", _G)
 	if chunk ~= nil then
-		local ok, err = pcall(chunk)
-		if not ok then
-			printer.printActual(err)
-		end
+		chunk()
 	else
-		printer.printActual(fname .. " " .. " syntax error")
+		printer.printActual(loadErr or labels.errorSyntax)
+		os.exit(config.exitFailed)
 	end
 end
 
-os.exit(1)
+-- os.exit(1)
 
 if #ctx.errors > 0 then
 	io.write("\n")

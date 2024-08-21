@@ -1,5 +1,7 @@
----Time related heloers.
+---Time related helpers.
 
+---TODO FIXME formatting is wrong minutes show instead of nanosecs
+---
 ---Formats C's clock function to the human readable format.
 ---Time is very relative, depending one OS processes and other factors.
 ---Output of this function is very approximate.

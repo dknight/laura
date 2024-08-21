@@ -1,15 +1,16 @@
 ---@type table{[string]: string}
 return {
 	added = "+",
-	removed = "-",
-	unchanged = "",
+	errorActual = "Actual: ",
 	errorAssertion = "Assertion error: ",
 	errorExpected = "Exptected: ",
-	errorActual = "Actual: ",
-	summary = "SUMMARY",
-	failedTests = "FAILED TESTS",
+	errorSyntax = "Syntax error",
 	failed = "FAILED",
-	pass = "PASS",
-	timeSummary = "\nApproximate execution time is %s @ %s\n",
+	failedTests = "FAILED TESTS",
 	noTests = "No tests found",
+	pass = "PASS",
+	removed = "-",
+	summary = "SUMMARY",
+	timeSummary = "\nApproximate execution time is %s @ %s\n",
+	unchanged = "",
 }

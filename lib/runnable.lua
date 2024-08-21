@@ -31,7 +31,7 @@ end
 
 ---Running the test.
 function Runnable:run()
-	local startTime = os.clock()
+	local tstart = os.clock()
 	ctx.total = ctx.total + 1
 
 	if type(self.fn) ~= "function" and not self.skipped then
@@ -48,33 +48,30 @@ function Runnable:run()
 		return
 	end
 
-	-- if self.skipped then
-	--
-	-- end
-	-- TODO TEST BETTER	print("OK")
+	-- Exec
+	local ok, err = pcall(self.fn)
 
-	local itInfo = debug.getinfo(2, "n")
+	-- not very elegant
 	local describeInfo = debug.getinfo(5, "n")
 
-	if itInfo.name == "skip" or describeInfo.name == "skip" then
+	if self.skipped or describeInfo.name == "skip" then
+		-- if itInfo.name == "skip" or describeInfo.name == "skip" then
 		ctx.skipped = ctx.skipped + 1
 		printer.printSkipped(self.description)
 		return
 	end
 
-	local ok, err = pcall(self.fn)
+	local tdiff = string.format(" (%s)", time.format(os.clock() - tstart))
 	if not ok then
 		ctx.failed = ctx.failed + 1
 		err.description = self.description
 		err.debuginfo = debug.getinfo(self.fn, "S")
 		err.traceback = debug.traceback()
 		table.insert(ctx.errors, err)
-		printer.printActual(self.description)
+		printer.printActual(self.description, tdiff)
 	else
 		ctx.passed = ctx.passed + 1
-		local formatedTime =
-			string.format(" (%s)", time.format(os.clock() - startTime))
-		printer.printExpected(self.description, formatedTime)
+		printer.printExpected(self.description, tdiff)
 	end
 end
 
@@ -92,8 +89,7 @@ end
 ---@param description string
 ---@param fn function
 function Runnable:only(description, fn)
-	--print("ONLY", description)
-	-- IMPLEMENT
+	--
 end
 
 return Runnable
