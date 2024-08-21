@@ -13,11 +13,10 @@ local Runnable = {}
 ---New runnable instance.
 ---@param description? string
 ---@param fn? function
----@param skipped? boolean
 ---@return Runnable
-function Runnable:new(description, fn, skipped)
+function Runnable:new(description, fn)
 	local t = {
-		skipped = skipped or false,
+		skipped = false,
 		description = description,
 		fn = fn,
 	}
@@ -35,7 +34,7 @@ function Runnable:run()
 	local startTime = os.clock()
 	ctx.total = ctx.total + 1
 
-	if type(self.fn) ~= "function" then
+	if type(self.fn) ~= "function" and not self.skipped then
 		ctx.failed = ctx.failed + 1
 		local err = {
 			message = "Runnable.it: callback is not a function",
@@ -52,7 +51,8 @@ function Runnable:run()
 	-- if self.skipped then
 	--
 	-- end
-	-- TODO TEST BETTER
+	-- TODO TEST BETTER	print("OK")
+
 	local itInfo = debug.getinfo(2, "n")
 	local describeInfo = debug.getinfo(5, "n")
 
@@ -79,11 +79,21 @@ function Runnable:run()
 end
 
 ---Skipping the task.
----@param class Runnable
 ---@param description string
 ---@param fn function
-function Runnable.skip(class, description, fn)
-	class:new(description, fn, true):run()
+function Runnable:skip(description, fn)
+	self.skipped = true
+	self.description = description
+	self.fn = fn
+	self:run()
+end
+
+---Running only marked tasks.
+---@param description string
+---@param fn function
+function Runnable:only(description, fn)
+	--print("ONLY", description)
+	-- IMPLEMENT
 end
 
 return Runnable

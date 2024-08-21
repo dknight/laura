@@ -18,15 +18,19 @@ if fcount == 0 then
 end
 
 -- Sorting files in alphabetical order to keep consistency.
-for filename in helpers.spairs(files) do
-	local chunk = loadfile(filename, "bt", _G)
+for fname in helpers.spairs(files) do
+	local chunk = loadfile(fname, "bt", _G)
 	if chunk ~= nil then
 		local ok, err = pcall(chunk)
 		if not ok then
 			printer.printActual(err)
 		end
+	else
+		printer.printActual(fname .. " " .. " syntax error")
 	end
 end
+
+os.exit(1)
 
 if #ctx.errors > 0 then
 	io.write("\n")

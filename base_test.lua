@@ -3,7 +3,7 @@ local describe = require("lib.describe")
 local expect = require("lib.expect")
 
 -- describe("foo", "bar")
-describe.skip(describe, "skipped tests", function()
+describe:skip("skipped tests", function()
 	it("should be true", function()
 		expect(1 == 1).toBeTruthy()
 	end)
@@ -13,12 +13,12 @@ describe.skip(describe, "skipped tests", function()
 end)
 
 describe("basic tests", function()
-	it("hello", "world")
+	it:skip("hello", "world")
 	it("numbers should be equal", function()
 		expect(1).toEqual(2)
 	end)
 
-	it("strings should be equal", function()
+	it:only("strings should be equal", function()
 		expect("foo").toEqual("foo")
 	end)
 
