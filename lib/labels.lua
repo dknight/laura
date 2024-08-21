@@ -11,4 +11,5 @@ return {
 	failed = "FAILED",
 	pass = "PASS",
 	timeSummary = "\nApproximate execution time is %s @ %s\n",
+	noTests = "No tests found",
 }

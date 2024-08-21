@@ -4,28 +4,21 @@ local context = require("lib.context")
 local time = require("lib.util.time")
 local labels = require("lib.labels")
 local errorx = require("lib.errorx")
-local scandir = require("lib.fs.scandir")
+local fs = require("lib.fs")
 local config = require("config")
+local helpers = require("lib.util.helpers")
 
 local ctx = context.global()
 
-local pattern = arg[1] or "."
-local dirs = {}
-for str in string.gmatch(pattern, "([^:]+)") do
-	dirs[#dirs + 1] = str
-end
+local files, fcount = fs.getFiles(arg[1] or config.dir)
 
-local files = {}
-for _, dir in pairs(dirs) do
-	for _, filename in pairs(scandir(dir)) do
-		files[#files + 1] = filename
-	end
+if fcount == 0 then
+	print(labels.noTests)
+	os.exit(config.exitFailed)
 end
 
 -- Sorting files in alphabetical order to keep consistency.
-table.sort(files)
-
-for _, filename in pairs(files) do
+for filename in helpers.spairs(files) do
 	local chunk = loadfile(filename, "bt", _G)
 	if chunk ~= nil then
 		local ok, err = pcall(chunk)
