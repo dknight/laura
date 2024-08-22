@@ -3,11 +3,11 @@
 ---Formats C's clock function to the human readable format.
 ---Time is very relative, depending one OS processes and other factors.
 ---Output of this function is very approximate.
----@param seconds number
+---@param secs number
 ---@return string
-local function format(seconds)
+local function format(secs)
 	local unit = "μs"
-	local micros = seconds * 1000000
+	local micros = secs * 1000000
 	local n = micros
 	local digits = 0
 	if micros >= 1000 then
