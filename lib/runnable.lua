@@ -102,12 +102,12 @@ function Runnable:run()
 		err.debuginfo = debug.getinfo(self.fn, "S")
 		err.traceback = debug.traceback()
 
-		self.execTime = tdiff
 		self.err = err
 		self.status = Status.actual
 	else
 		self.status = Status.expected
 	end
+	self.execTime = tdiff
 end
 
 ---Skipping the task.
