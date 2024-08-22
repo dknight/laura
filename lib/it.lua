@@ -1,4 +1,6 @@
 local Runnable = require("lib.runnable")
 
----@type Runnable
-return Runnable.new(Runnable)
+---@class It : Runnable
+local It = Runnable
+
+return It.new(It)

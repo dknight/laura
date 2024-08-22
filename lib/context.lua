@@ -1,4 +1,4 @@
----@alias Context {errors: Error[], failed: number, level: number, passed: number, skipped: number, total: number}
+---@alias Context {level: number,tests: Runnable[]}
 
 local config = require("config")
 
@@ -6,12 +6,8 @@ local config = require("config")
 ---@return Context
 local function new()
 	return {
-		errors = {},
-		failed = 0,
 		level = 0,
-		passed = 0,
-		skipped = 0,
-		total = 0,
+		tests = {},
 	}
 end
 

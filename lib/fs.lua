@@ -6,7 +6,7 @@ local config = require("config")
 ---@return table{[number]: string}
 local scandir = function(directory)
 	local cmd
-	--- TODO better test on windowsboolean
+	--- TODO better test on windows
 	if sys.isWindows() then
 		cmd = "DIR /S/B/O:n %s\\%s"
 	else

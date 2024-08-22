@@ -1,14 +1,48 @@
-local printer = require("lib.printer")
+---@alias SearchFilter {status: Status, isSuite: boolean}
+
 local context = require("lib.context")
-local time = require("lib.util.time")
+local Status = require("lib.status")
 
 local ctx = context.global()
 
 ---@class Runnable
----@field public skipped boolean
 ---@field public description string
 ---@field public fn function
-local Runnable = {}
+---@field public status Status|nil
+---@field public err Error|nil
+---@field protected execTime number
+---@field protected isSuite boolean
+local Runnable = {
+	---@return Runnable[]
+	getAll = function()
+		local t = {}
+		for i = 1, #ctx.tests do
+			for j = 1, #ctx.tests[i] do
+				t[#t + 1] = ctx.tests[i][j]
+			end
+		end
+		return t
+	end,
+
+	---@param collection Runnable[]
+	---@param filter SearchFilter
+	filter = function(collection, filter)
+		local t = {}
+		for i = 1, #collection do
+			local meet = true
+			for k in pairs(filter) do
+				if filter[k] ~= collection[i][k] then
+					meet = false
+					break
+				end
+			end
+			if meet then
+				t[#t + 1] = collection[i]
+			end
+		end
+		return t
+	end,
+}
 
 ---New runnable instance.
 ---@param description? string
@@ -16,15 +50,17 @@ local Runnable = {}
 ---@return Runnable
 function Runnable:new(description, fn)
 	local t = {
-		skipped = false,
+		execTime = 0,
+		isSuite = false,
 		description = description,
+		err = nil,
 		fn = fn,
+		status = nil,
 	}
 	return setmetatable(t, {
 		__index = self,
-		__call = function(klass, d, f)
-			local instance = klass:new(d, f)
-			instance:run()
+		__call = function(class, d, f)
+			class:new(d, f):run()
 		end,
 	})
 end
@@ -32,10 +68,9 @@ end
 ---Running the test.
 function Runnable:run()
 	local tstart = os.clock()
-	ctx.total = ctx.total + 1
+	self:appendToContext()
 
-	if type(self.fn) ~= "function" and not self.skipped then
-		ctx.failed = ctx.failed + 1
+	if type(self.fn) ~= "function" and self.status ~= Status.skipped then
 		local err = {
 			message = "Runnable.it: callback is not a function",
 			expected = "function",
@@ -43,8 +78,8 @@ function Runnable:run()
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
-		table.insert(ctx.errors, err)
-		printer.printActual(self.description)
+		self.err = err
+		self.status = Status.actual
 		return
 	end
 
@@ -54,24 +89,24 @@ function Runnable:run()
 	-- not very elegant
 	local describeInfo = debug.getinfo(5, "n")
 
-	if self.skipped or describeInfo.name == "skip" then
+	if self.status == Status.skipped or describeInfo.name == "skip" then
 		-- if itInfo.name == "skip" or describeInfo.name == "skip" then
-		ctx.skipped = ctx.skipped + 1
-		printer.printSkipped(self.description)
+		self.status = Status.skipped
 		return
 	end
 
-	local tdiff = string.format(" (%s)", time.format(os.clock() - tstart))
+	-- local tdiff = string.format(" (%s)", time.format(os.clock() - tstart))
+	local tdiff = os.clock() - tstart
 	if not ok then
-		ctx.failed = ctx.failed + 1
 		err.description = self.description
 		err.debuginfo = debug.getinfo(self.fn, "S")
 		err.traceback = debug.traceback()
-		table.insert(ctx.errors, err)
-		printer.printActual(self.description, tdiff)
+
+		self.execTime = tdiff
+		self.err = err
+		self.status = Status.actual
 	else
-		ctx.passed = ctx.passed + 1
-		printer.printExpected(self.description, tdiff)
+		self.status = Status.expected
 	end
 end
 
@@ -79,17 +114,23 @@ end
 ---@param description string
 ---@param fn function
 function Runnable:skip(description, fn)
-	self.skipped = true
-	self.description = description
-	self.fn = fn
-	self:run()
+	local r = self:new(description, fn)
+	r.status = Status.skipped
+	r:run()
 end
 
 ---Running only marked tasks.
 ---@param description string
 ---@param fn function
 function Runnable:only(description, fn)
-	--
+	-- TODO implement
+end
+
+---Appends current runnable to context.
+---@protected
+function Runnable:appendToContext()
+	ctx.tests[ctx.level] = ctx.tests[ctx.level] or {}
+	table.insert(ctx.tests[ctx.level], self)
 end
 
 return Runnable

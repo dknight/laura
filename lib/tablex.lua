@@ -4,6 +4,7 @@
 local labels = require("lib.labels")
 local helpers = require("lib.util.helpers")
 local printer = require("lib.printer")
+local Status = require("lib.status")
 
 local spairs = helpers.spairs
 local tab = helpers.tab
@@ -112,7 +113,7 @@ end
 ---@param val any Value to be printed.
 ---@param key string | number Key to be printerd.
 ---@param sign string Added, removed or unchanged sign.
----@param status statuses Status of the difference.
+---@param status Status Status of the difference.
 ---@param i number Indentation level
 local function printValue(val, key, sign, status, i)
 	i = i or 0
@@ -159,31 +160,17 @@ local function printDiff(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out = out
-				.. printValue(t[k], k, labels.added, printer.statuses.actual, i)
+			out = out .. printValue(t[k], k, labels.added, Status.actual, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out = out
-				.. printValue(
-					d.mod[k],
-					k,
-					labels.removed,
-					printer.statuses.expected,
-					i
-				)
+				.. printValue(d.mod[k], k, labels.removed, Status.expected, i)
 
 			if t[k] ~= nil then
-				out = out
-					.. printValue(
-						t[k],
-						k,
-						labels.added,
-						printer.statuses.actual,
-						i
-					)
+				out = out .. printValue(t[k], k, labels.added, Status.actual, i)
 			end
 			isKeyChanged = true
 		end
@@ -198,13 +185,7 @@ local function printDiff(t, d, i)
 		-- Not changed
 		if not isKeyChanged then
 			out = out
-				.. printValue(
-					t[k],
-					k,
-					labels.unchanged,
-					printer.statuses.unchanged,
-					i
-				)
+				.. printValue(t[k], k, labels.unchanged, Status.unchanged, i)
 		end
 	end
 	i = i - 1

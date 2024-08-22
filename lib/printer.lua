@@ -3,6 +3,8 @@
 local config = require("config")
 local context = require("lib.context")
 local sys = require("lib.util.sys")
+local Status = require("lib.status")
+local helpers = require("lib.util.helpers")
 
 local ctx = context.global()
 
@@ -17,23 +19,13 @@ local termStyles = {
 	reverse = 7,
 	invisible = 8,
 }
-
----@enum statuses
-local statuses = {
-	expected = "OK",
-	actual = "FAILED",
-	skipped = "SKIPPED",
-	common = "COMMON",
-	unchanged = "UNCHANGED",
-}
-
 ---@enum colors
 local colors = {
-	[statuses.expected] = "32",
-	[statuses.actual] = "31",
-	[statuses.skipped] = "0;36",
-	[statuses.common] = "1;1",
-	[statuses.unchanged] = "90",
+	[Status.expected] = "32",
+	[Status.actual] = "31",
+	[Status.skipped] = "0;36",
+	[Status.common] = "1;1",
+	[Status.unchanged] = "90",
 }
 
 ---@return string
@@ -44,7 +36,7 @@ local resetColor = function()
 	return ""
 end
 
----@param status statuses
+---@param status Status
 ---@return string
 local function setColor(status)
 	if sys.isColorSupported() then
@@ -54,18 +46,21 @@ local function setColor(status)
 end
 
 ---@param message string
----@param status statuses
+---@param status Status
 ---@param suffix? string | nil
-local printResult = function(message, status, suffix)
+---@param level? number
+local printResult = function(message, status, suffix, level)
+	level = level or 0
 	suffix = suffix or ""
 	local tpl = string.rep(config.tab, ctx.level)
-	if status ~= statuses.common then
-		tpl = tpl .. "[%s] %s%s\n"
+	if status ~= Status.common then
+		tpl = tpl .. "%s[%s] %s%s\n"
 	else
-		tpl = tpl .. "%s%s\n"
+		tpl = tpl .. "%s%s%s\n"
 	end
 	local str = string.format(
 		tpl,
+		helpers.tab(level),
 		setColor(status) .. status .. resetColor(),
 		message,
 		suffix
@@ -73,18 +68,18 @@ local printResult = function(message, status, suffix)
 	io.write(str)
 end
 
----@type {printExpected: Printer, printActual: Printer, printSkipped: Printer, printStyle: fun(msg: string, ...?: termStyles), setColor: fun(status: statuses): string, resetColor: fun(): string, statuses: statuses, termStyles: termStyles}
+---@type {printExpected: Printer, printActual: Printer, printSkipped: Printer, printStyle: fun(msg: string, ...?: termStyles), setColor: fun(status: Status): string, resetColor: fun(): string, statuses: Status, termStyles: termStyles}
 return {
-	printExpected = function(msg, suffix)
-		printResult(msg, statuses.expected, suffix)
+	printExpected = function(msg, suffix, level)
+		printResult(msg, Status.expected, suffix, level)
 	end,
 
-	printActual = function(msg, suffix)
-		printResult(msg, statuses.actual, suffix)
+	printActual = function(msg, suffix, level)
+		printResult(msg, Status.actual, suffix, level)
 	end,
 
-	printSkipped = function(msg, suffix)
-		printResult(msg, statuses.skipped, suffix)
+	printSkipped = function(msg, suffix, level)
+		printResult(msg, Status.skipped, suffix, level)
 	end,
 
 	--Prints out different styles in the terminal.
@@ -101,6 +96,5 @@ return {
 
 	resetColor = resetColor,
 	setColor = setColor,
-	statuses = statuses,
 	termStyles = termStyles,
 }

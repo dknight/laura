@@ -7,6 +7,8 @@ local errorx = require("lib.errorx")
 local fs = require("lib.fs")
 local config = require("config")
 local helpers = require("lib.util.helpers")
+local Status = require("lib.status")
+local Runnable = require("lib.runnable")
 
 local ctx = context.global()
 
@@ -20,25 +22,62 @@ end
 for fname in helpers.spairs(files) do
 	local chunk, loadErr = loadfile(fname, "t", _G)
 	if chunk ~= nil then
-		chunk()
+		chunk() -- pcall? check descibe
 	else
 		printer.printActual(loadErr or labels.errorSyntax)
 		os.exit(config.exitFailed)
 	end
 end
 
--- os.exit(1)
+local function printTests(collection)
+	for level = 1, #collection do
+		for i = 1, #collection[level] do
+			local test = collection[level][i]
+			if collection[level][i].isSuite then
+				printer.printStyle(
+					helpers.tab(level - 1) .. test.description,
+					1
+				)
+			else
+				local tdiffstr =
+					string.format(" (%s)", time.format(test.execTime))
+				if test.status == Status.skipped then
+					printer.printSkipped(test.description, nil, level)
+				elseif test.status == Status.actual then
+					printer.printActual(test.description, tdiffstr, level)
+				elseif test.status == Status.expected then
+					printer.printExpected(test.description, tdiffstr, level)
+				end
+			end
+		end
+	end
+end
 
-if #ctx.errors > 0 then
+printTests(ctx.tests)
+
+local all = Runnable.getAll()
+local passed =
+	Runnable.filter(all, { status = Status.expected, isSuite = false })
+local failed = Runnable.filter(all, { status = Status.actual, isSuite = false })
+local skipped =
+	Runnable.filter(all, { status = Status.skipped, isSuite = false })
+
+-- Cache totals
+local total = #all
+local passedTotal = #passed
+local failedTotal = #failed
+local skippedTotal = #skipped
+
+if failedTotal > 0 then
 	io.write("\n")
 	printer.printStyle(
 		labels.failedTests,
 		printer.termStyles.bold,
 		printer.termStyles.underlined
 	)
-	for i = 1, #ctx.errors do
+	for i = 1, #failed do
 		io.write(string.format("%d. ", i))
-		errorx.print(ctx.errors[i])
+		errorx.print(failed[i].err)
 	end
 end
 
@@ -49,20 +88,20 @@ printer.printStyle(
 )
 
 local successMsg =
-	string.format("%d of %d passing\n", ctx.passed, ctx.total - ctx.skipped)
+	string.format("%d of %d passing\n", passedTotal, total - skippedTotal)
 io.write(successMsg)
 
-local failedMessage = string.format("%d failing\n", ctx.failed, ctx.total)
+local failedMessage = string.format("%d failing\n", failedTotal, total)
 io.write(failedMessage)
 
-local skippedMessage = string.format("%d skipping\n", ctx.skipped)
+local skippedMessage = string.format("%d skipping\n", skippedTotal)
 io.write(skippedMessage)
 
 local formatedTime = time.format(os.clock() - startTime)
 local str = string.format(labels.timeSummary, formatedTime, os.date())
 io.write(str)
 
-if ctx.failed > 0 then
+if failedTotal > 0 then
 	print(labels.failed)
 	os.exit(config.exitFailed)
 else

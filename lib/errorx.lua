@@ -5,6 +5,7 @@ local labels = require("lib.labels")
 local printer = require("lib.printer")
 local context = require("lib.context")
 local config = require("config")
+local Status = require("lib.status")
 
 local ctx = context.global()
 
@@ -35,12 +36,12 @@ local function tostring(err)
 		helpers.tab(ctx.level),
 		err.message .. (err.description or ""),
 		"\t" .. labels.removed,
-		labels.errorExpected .. printer.setColor(printer.statuses.expected),
+		labels.errorExpected .. printer.setColor(Status.expected),
 		err.expected,
 		printer.resetColor(),
 		helpers.tab(ctx.level),
 		"\t" .. labels.added,
-		labels.errorActual .. printer.setColor(printer.statuses.actual),
+		labels.errorActual .. printer.setColor(Status.actual),
 		err.actual,
 		printer.resetColor(),
 		"\n" .. (err.diffString or "")
