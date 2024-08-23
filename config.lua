@@ -1,15 +1,7 @@
----@type table{
----appKey: string,
----color: boolean,
----dir: string,
----exitFailed: number,
----exitPass: number,
----filePattern: string,
----tab: string,
----traceback: boolean
----}
+---@alias Config{appKey: string, color: boolean, dir: string, exitFailed: number, exitPass: number, filePattern: string, tab: string, traceback: boolean }
 
-return {
+---@type Config
+local config = {
 	appKey = "aura",
 	color = true,
 	dir = ".",
@@ -19,3 +11,5 @@ return {
 	tab = "\t",
 	traceback = false,
 }
+
+return config

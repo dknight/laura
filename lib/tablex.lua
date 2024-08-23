@@ -160,17 +160,17 @@ local function printDiff(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out = out .. printValue(t[k], k, labels.added, Status.actual, i)
+			out = out .. printValue(t[k], k, labels.added, Status.failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out = out
-				.. printValue(d.mod[k], k, labels.removed, Status.expected, i)
+				.. printValue(d.mod[k], k, labels.removed, Status.passed, i)
 
 			if t[k] ~= nil then
-				out = out .. printValue(t[k], k, labels.added, Status.actual, i)
+				out = out .. printValue(t[k], k, labels.added, Status.failed, i)
 			end
 			isKeyChanged = true
 		end
@@ -192,8 +192,22 @@ local function printDiff(t, d, i)
 	return out .. tab(i) .. "}\n"
 end
 
+---@param t table
+---@oaram function(v: any): boolean
+---@return table
+local function filter(t, predicate)
+	local newt = {}
+	for _, v in pairs(t) do
+		if predicate(v) then
+			newt[#newt + 1] = v
+		end
+	end
+	return newt
+end
+
 return {
 	diff = diff,
 	equal = equal,
+	filter = filter,
 	print = printDiff,
 }

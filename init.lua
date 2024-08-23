@@ -29,44 +29,59 @@ for fname in helpers.spairs(files) do
 	end
 end
 
-local function printTests(collection)
-	for level = 1, #collection do
-		for i = 1, #collection[level] do
-			local test = collection[level][i]
-			if collection[level][i].isSuite then
+local function runTests(tests)
+	for i = 1, #tests do
+		for j = 1, #tests[i] do
+			tests[i][j]:run()
+		end
+	end
+end
+
+local function printTests2(tests)
+	for i = 1, #tests do
+		for j = 1, #tests[i] do
+			local test = tests[i][j]
+			if test.isSuite then
 				printer.printStyle(
-					helpers.tab(level - 1) .. test.description,
+					helpers.tab(test.level - 1) .. test.description,
 					1
 				)
 			else
 				local tdiffstr =
 					string.format(" (%s)", time.format(test.execTime))
 				if test.status == Status.skipped then
-					printer.printSkipped(test.description, nil, level)
-				elseif test.status == Status.actual then
-					printer.printActual(test.description, tdiffstr, level)
-				elseif test.status == Status.expected then
-					printer.printExpected(test.description, tdiffstr, level)
+					printer.printSkipped(test.description, nil, test.level)
+				elseif test.status == Status.failed then
+					printer.printActual(test.description, tdiffstr, test.level)
+				elseif test.status == Status.passed then
+					printer.printExpected(
+						test.description,
+						tdiffstr,
+						test.level
+					)
 				end
 			end
 		end
 	end
 end
 
-printTests(ctx.tests)
+local all, allTotal = Runnable.filter(ctx.tests, {})
+local onlyTests, onlyTotal = Runnable.getOnly(ctx.tests)
+if #onlyTests > 0 then
+	all = onlyTests
+	allTotal = onlyTotal
+end
 
-local all = Runnable.getAll()
-local passed =
-	Runnable.filter(all, { status = Status.expected, isSuite = false })
-local failed = Runnable.filter(all, { status = Status.actual, isSuite = false })
-local skipped =
+runTests(all)
+
+local failed, failedTotal =
+	Runnable.filter(all, { status = Status.failed, isSuite = false })
+local passed, passedTotal =
+	Runnable.filter(all, { status = Status.passed, isSuite = false })
+local skipped, skippedTotal =
 	Runnable.filter(all, { status = Status.skipped, isSuite = false })
 
--- Cache totals
-local total = #all
-local passedTotal = #passed
-local failedTotal = #failed
-local skippedTotal = #skipped
+printTests2(all)
 
 if failedTotal > 0 then
 	io.write("\n")
@@ -75,9 +90,13 @@ if failedTotal > 0 then
 		printer.termStyles.bold,
 		printer.termStyles.underlined
 	)
-	for i = 1, #failed do
-		io.write(string.format("%d. ", i))
-		errorx.print(failed[i].err)
+	local n = 1
+	for lvl = 1, #failed do
+		for j = 1, #failed[lvl] do
+			io.write(string.format("%d. ", n))
+			errorx.print(failed[lvl][j].err)
+			n = n + 1
+		end
 	end
 end
 
@@ -88,10 +107,11 @@ printer.printStyle(
 )
 
 local successMsg =
-	string.format("%d of %d passing\n", passedTotal, total - skippedTotal)
+	string.format("%d of %d passing\n", passedTotal, allTotal - skippedTotal)
 io.write(successMsg)
 
-local failedMessage = string.format("%d failing\n", failedTotal, total)
+local failedMessage =
+	string.format("%d failing\n", failedTotal, allTotal - skippedTotal)
 io.write(failedMessage)
 
 local skippedMessage = string.format("%d skipping\n", skippedTotal)

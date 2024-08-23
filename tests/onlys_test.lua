@@ -1,0 +1,13 @@
+local expect = require("lib.expect")
+local describe = require("lib.describe")
+local it = require("lib.it")
+
+-- describe("foo", "bar")
+describe("only tests", function()
+	it("only first", function()
+		expect(1 == 1).toBeTruthy()
+	end)
+	it("only second", function()
+		expect(1 == 2).toBeFalsy()
+	end)
+end)

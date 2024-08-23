@@ -21,8 +21,8 @@ local termStyles = {
 }
 ---@enum colors
 local colors = {
-	[Status.expected] = "32",
-	[Status.actual] = "31",
+	[Status.passed] = "32",
+	[Status.failed] = "31",
 	[Status.skipped] = "0;36",
 	[Status.common] = "1;1",
 	[Status.unchanged] = "90",
@@ -71,11 +71,11 @@ end
 ---@type {printExpected: Printer, printActual: Printer, printSkipped: Printer, printStyle: fun(msg: string, ...?: termStyles), setColor: fun(status: Status): string, resetColor: fun(): string, statuses: Status, termStyles: termStyles}
 return {
 	printExpected = function(msg, suffix, level)
-		printResult(msg, Status.expected, suffix, level)
+		printResult(msg, Status.passed, suffix, level)
 	end,
 
 	printActual = function(msg, suffix, level)
-		printResult(msg, Status.actual, suffix, level)
+		printResult(msg, Status.failed, suffix, level)
 	end,
 
 	printSkipped = function(msg, suffix, level)

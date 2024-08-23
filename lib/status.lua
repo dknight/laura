@@ -1,7 +1,7 @@
 ---@enum Status
 local Status = {
-	expected = "PASSED",
-	actual = "FAILED",
+	passed = "PASSED",
+	failed = "FAILED",
 	skipped = "SKIPPED",
 	common = "COMMON",
 	unchanged = "UNCHANGED",

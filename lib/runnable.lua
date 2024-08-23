@@ -2,6 +2,7 @@
 
 local context = require("lib.context")
 local Status = require("lib.status")
+local tablex = require("lib.tablex")
 
 local ctx = context.global()
 
@@ -10,37 +11,72 @@ local ctx = context.global()
 ---@field public fn function
 ---@field public status Status|nil
 ---@field public err Error|nil
+---@field public level number
 ---@field protected execTime number
+---@field protected isOnly boolean
 ---@field protected isSuite boolean
 local Runnable = {
-	---@return Runnable[]
-	getAll = function()
-		local t = {}
-		for i = 1, #ctx.tests do
-			for j = 1, #ctx.tests[i] do
-				t[#t + 1] = ctx.tests[i][j]
-			end
-		end
-		return t
-	end,
-
-	---@param collection Runnable[]
-	---@param filter SearchFilter
-	filter = function(collection, filter)
+	---@param collection Runnable[][]
+	---@param f SearchFilter
+	---@return Runnable[][], number
+	filter = function(collection, f)
+		local n = 0
 		local t = {}
 		for i = 1, #collection do
-			local meet = true
-			for k in pairs(filter) do
-				if filter[k] ~= collection[i][k] then
-					meet = false
-					break
+			t[i] = tablex.filter(collection[i], function(v)
+				for key in pairs(f) do
+					if f[key] ~= v[key] then
+						return false
+					end
+				end
+				n = n + 1
+				return true
+			end)
+		end
+		return t, n
+	end,
+
+	---Get only tests.
+	---
+	---FIXME: The logic is as bit overkill here, definitely building trees is
+	---most preferable solution here. Refactoring needed.
+	---
+	---@param collection Runnable[][]
+	---@return Runnable[][], number
+	getOnly = function(collection)
+		local hasOnly = function(t)
+			for _, v in pairs(t) do
+				if v.isOnly then
+					return true
 				end
 			end
-			if meet then
-				t[#t + 1] = collection[i]
-			end
+			return false
 		end
-		return t
+
+		local n = 0
+		local t = {}
+		local parent = nil
+		for i = 1, #collection do
+			local hasOnlyChildren = hasOnly(collection[i])
+			t[i] = tablex.filter(collection[i], function(v)
+				if v.isSuite then
+					parent = v
+				end
+				if
+					(parent.isOnly or not hasOnlyChildren)
+					or (not v.isSuite and v.isOnly and hasOnlyChildren)
+					or (v.isSuite and not v.isOnly and hasOnlyChildren)
+				then
+					if not v.isSuite then
+						n = n + 1
+					end
+					return true
+				else
+				end
+				return false
+			end)
+		end
+		return t, n
 	end,
 }
 
@@ -50,62 +86,59 @@ local Runnable = {
 ---@return Runnable
 function Runnable:new(description, fn)
 	local t = {
-		execTime = 0,
-		isSuite = false,
 		description = description,
 		err = nil,
+		execTime = 0,
 		fn = fn,
+		isOnly = false,
+		isSuite = false,
+		level = 0,
 		status = nil,
 	}
 	return setmetatable(t, {
 		__index = self,
 		__call = function(class, d, f)
-			class:new(d, f):run()
+			class:new(d, f):prepare()
 		end,
 	})
 end
 
----Running the test.
-function Runnable:run()
-	local tstart = os.clock()
+---Prepares the test case.
+function Runnable:prepare()
+	self.level = ctx.level
 	self:appendToContext()
+end
 
-	if type(self.fn) ~= "function" and self.status ~= Status.skipped then
-		local err = {
+---Runs the test case.
+function Runnable:run()
+	if self.status == Status.skipped then
+		return
+	end
+	if type(self.fn) ~= "function" then
+		self.err = {
 			message = "Runnable.it: callback is not a function",
 			expected = "function",
 			actual = type(self.fn),
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
-		self.err = err
-		self.status = Status.actual
+		self.status = Status.failed
 		return
 	end
 
 	-- Exec
+	local tstart = os.clock()
 	local ok, err = pcall(self.fn)
 
-	-- not very elegant
-	local describeInfo = debug.getinfo(5, "n")
-
-	if self.status == Status.skipped or describeInfo.name == "skip" then
-		-- if itInfo.name == "skip" or describeInfo.name == "skip" then
-		self.status = Status.skipped
-		return
-	end
-
-	-- local tdiff = string.format(" (%s)", time.format(os.clock() - tstart))
 	local tdiff = os.clock() - tstart
 	if not ok then
-		err.description = self.description
-		err.debuginfo = debug.getinfo(self.fn, "S")
-		err.traceback = debug.traceback()
-
+		print(type(err), err)
 		self.err = err
-		self.status = Status.actual
+		self.err.debuginfo = debug.getinfo(self.fn, "S")
+		self.err.traceback = debug.traceback()
+		self.status = Status.failed
 	else
-		self.status = Status.expected
+		self.status = Status.passed
 	end
 	self.execTime = tdiff
 end
@@ -116,14 +149,16 @@ end
 function Runnable:skip(description, fn)
 	local r = self:new(description, fn)
 	r.status = Status.skipped
-	r:run()
+	r:prepare()
 end
 
 ---Running only marked tasks.
 ---@param description string
 ---@param fn function
 function Runnable:only(description, fn)
-	-- TODO implement
+	local r = self:new(description, fn)
+	r.isOnly = true
+	r:prepare()
 end
 
 ---Appends current runnable to context.
