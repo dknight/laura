@@ -1,13 +1,13 @@
 local startTime = os.clock()
 local printer = require("lib.printer")
-local context = require("lib.context")
 local labels = require("lib.labels")
-local fs = require("lib.fs")
+local fs = require("lib.util.fs")
 local config = require("config")
 local helpers = require("lib.util.helpers")
-local Runner = require("runner")
+local Context = require("lib.classes.Context")
+local Runner = require("lib.classes.Runner")
 
-local ctx = context.global()
+local ctx = Context.global()
 local runner = Runner:new(ctx)
 
 local files, fcount = fs.getFiles(arg[1] or config.dir)

@@ -1,13 +1,13 @@
 ---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
+local config = require("config")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local printer = require("lib.printer")
-local context = require("lib.context")
-local config = require("config")
-local Status = require("lib.status")
+local Context = require("lib.classes.Context")
+local Status = require("lib.classes.Status")
 
-local ctx = context.global()
+local ctx = Context.global()
 
 ---Creates a new error object.
 ---@param message string Extra messgef for the error.

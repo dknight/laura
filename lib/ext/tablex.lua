@@ -4,7 +4,7 @@
 local labels = require("lib.labels")
 local helpers = require("lib.util.helpers")
 local printer = require("lib.printer")
-local Status = require("lib.status")
+local Status = require("lib.classes.Status")
 
 local spairs = helpers.spairs
 local tab = helpers.tab

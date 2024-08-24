@@ -1,4 +1,4 @@
-local Runnable = require("lib.runnable")
+local Runnable = require("lib.classes.Runnable")
 
 ---@class It : Runnable
 local It = Runnable

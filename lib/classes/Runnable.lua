@@ -1,10 +1,10 @@
 ---@alias SearchFilter {status: Status, isSuite: boolean}
 
-local context = require("lib.context")
-local Status = require("lib.status")
-local tablex = require("lib.tablex")
+local Context = require("lib.classes.Context")
+local Status = require("lib.classes.Status")
+local tablex = require("lib.ext.tablex")
 
-local ctx = context.global()
+local ctx = Context.global()
 
 ---@class Runnable
 ---@field public description string

@@ -1,8 +1,8 @@
-local Runnable = require("lib.runnable")
-local context = require("lib.context")
+local Runnable = require("lib.classes.Runnable")
+local Context = require("lib.classes.Context")
 
 ---@type Context
-local ctx = context.global()
+local ctx = Context.global()
 
 ---@class Describe : Runnable
 local Describe = Runnable.new(Runnable)

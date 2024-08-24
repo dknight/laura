@@ -1,15 +1,15 @@
 ---@alias Printer fun(msg: string, ...?: (string|nil)): nil
 
 local config = require("config")
-local context = require("lib.context")
 local sys = require("lib.util.sys")
-local Status = require("lib.status")
 local helpers = require("lib.util.helpers")
+local Context = require("lib.classes.Context")
+local Status = require("lib.classes.Status")
 
-local ctx = context.global()
+local ctx = Context.global()
 
 ---@enum termStyles
-local termStyles = {
+local style = {
 	normalStyle = 0,
 	bold = 1,
 	dim = 2,
@@ -20,7 +20,7 @@ local termStyles = {
 	invisible = 8,
 }
 ---@enum colors
-local colors = {
+local color = {
 	[Status.passed] = "32",
 	[Status.failed] = "31",
 	[Status.skipped] = "0;36",
@@ -40,7 +40,7 @@ end
 ---@return string
 local function setColor(status)
 	if sys.isColorSupported() then
-		return string.format("\27[%sm", colors[status])
+		return string.format("\27[%sm", color[status])
 	end
 	return ""
 end
@@ -96,5 +96,5 @@ return {
 
 	resetColor = resetColor,
 	setColor = setColor,
-	termStyles = termStyles,
+	termStyles = style,
 }
