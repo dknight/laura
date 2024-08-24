@@ -2,7 +2,7 @@
 
 ---@type Config
 local config = {
-	appKey = "aura",
+	appKey = "Laura",
 	color = true,
 	dir = ".",
 	exitFailed = 1,
