@@ -12,28 +12,33 @@ local ctx = context.global()
 ---@field public status Status|nil
 ---@field public err Error|nil
 ---@field public level number
----@field protected execTime number
----@field protected isOnly boolean
----@field protected isSuite boolean
+---@field public parent Runnable | nil
+---@field public isOnly boolean
+---@field public isSuite boolean
+---@field private execTime number
 local Runnable = {
-	---@param collection Runnable[][]
+	__debug__ = 0,
+	---@param collection Runnable[]
 	---@param f SearchFilter
-	---@return Runnable[][], number
+	---@return Runnable[]
 	filter = function(collection, f)
-		local n = 0
-		local t = {}
-		for i = 1, #collection do
-			t[i] = tablex.filter(collection[i], function(v)
-				for key in pairs(f) do
-					if f[key] ~= v[key] then
-						return false
-					end
+		local newt = tablex.filter(collection, function(v)
+			for k in pairs(f) do
+				if f[k] ~= v[k] then
+					return false
 				end
-				n = n + 1
-				return true
-			end)
+			end
+			return true
+		end)
+		return newt
+	end,
+
+	---@param collection  Runnable[]
+	---@param cb function(runnable: Runnable)
+	traverse = function(collection, cb)
+		for i = 1, #collection do
+			cb(collection[i])
 		end
-		return t, n
 	end,
 
 	---Get only tests.
@@ -41,42 +46,23 @@ local Runnable = {
 	---FIXME: The logic is as bit overkill here, definitely building trees is
 	---most preferable solution here. Refactoring needed.
 	---
-	---@param collection Runnable[][]
-	---@return Runnable[][], number
+	---@param collection Runnable[]
+	---@return Runnable[], number
 	getOnly = function(collection)
-		local hasOnly = function(t)
-			for _, v in pairs(t) do
-				if v.isOnly then
-					return true
-				end
-			end
-			return false
-		end
-
 		local n = 0
-		local t = {}
-		local parent = nil
+		local newt = {}
 		for i = 1, #collection do
-			local hasOnlyChildren = hasOnly(collection[i])
-			t[i] = tablex.filter(collection[i], function(v)
-				if v.isSuite then
-					parent = v
-				end
-				if
-					(parent.isOnly or not hasOnlyChildren)
-					or (not v.isSuite and v.isOnly and hasOnlyChildren)
-					or (v.isSuite and not v.isOnly and hasOnlyChildren)
-				then
-					if not v.isSuite then
-						n = n + 1
-					end
-					return true
-				else
-				end
-				return false
-			end)
+			local test = collection[i]
+			local hasOnlyChildren = test:hasOnly()
+			if
+				(test.isSuite and hasOnlyChildren)
+				or (not test.isSuite and test.isOnly)
+				or (test.parent ~= nil and test.parent.isOnly)
+			then
+				newt[#newt + 1] = test
+			end
 		end
-		return t, n
+		return newt, n
 	end,
 }
 
@@ -93,24 +79,30 @@ function Runnable:new(description, fn)
 		isOnly = false,
 		isSuite = false,
 		level = 0,
+		parent = nil,
 		status = nil,
 	}
 	return setmetatable(t, {
 		__index = self,
-		__call = function(class, d, f)
-			class:new(d, f):prepare()
+		__call = function(_, d, f)
+			self:new(d, f):prepare()
 		end,
 	})
 end
 
 ---Prepares the test case.
 function Runnable:prepare()
+	Runnable.__debug__ = Runnable.__debug__ + 1
 	self.level = ctx.level
 	self:appendToContext()
 end
 
 ---Runs the test case.
 function Runnable:run()
+	local tstart = os.clock()
+	if self.parent ~= nil and self.parent.status == Status.skipped then
+		self.status = Status.skipped
+	end
 	if self.status == Status.skipped then
 		return
 	end
@@ -127,12 +119,10 @@ function Runnable:run()
 	end
 
 	-- Exec
-	local tstart = os.clock()
 	local ok, err = pcall(self.fn)
 
 	local tdiff = os.clock() - tstart
 	if not ok then
-		print(type(err), err)
 		self.err = err
 		self.err.debuginfo = debug.getinfo(self.fn, "S")
 		self.err.traceback = debug.traceback()
@@ -164,8 +154,18 @@ end
 ---Appends current runnable to context.
 ---@protected
 function Runnable:appendToContext()
-	ctx.tests[ctx.level] = ctx.tests[ctx.level] or {}
-	table.insert(ctx.tests[ctx.level], self)
+	-- ctx.tests[ctx.level] = ctx.tests[ctx.level] or {}
+	ctx.tests[#ctx.tests + 1] = self
+end
+
+function Runnable:hasOnly()
+	if self.parent == nil then
+		return false
+	end
+	local found = tablex.filter(ctx.tests, function(test)
+		return test.parent ~= nil and test.parent == self.parent and test.isOnly
+	end)
+	return #found > 0
 end
 
 return Runnable
