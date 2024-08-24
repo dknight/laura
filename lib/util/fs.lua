@@ -1,12 +1,11 @@
 local config = require("config")
-local osx    = require("lib.ext.osx")
+local osx = require("lib.ext.osx")
 
 -- TDOO checks for read failed
 ---@param directory string
 ---@return table{[number]: string}
 local scandir = function(directory)
 	local cmd
-	--- TODO better test on windows
 	if osx.isWindows() then
 		cmd = "DIR /S/B/O:n %s\\%s"
 	else
