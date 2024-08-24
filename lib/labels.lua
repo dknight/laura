@@ -11,6 +11,6 @@ return {
 	pass = "PASS",
 	removed = "-",
 	summary = "SUMMARY",
-	timeSummary = "\nApproximate execution time is %s @ %s\n",
+	timeSummary = "\nApproximate execution time %s @ %s\n",
 	unchanged = "",
 }

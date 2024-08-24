@@ -100,8 +100,12 @@ end
 ---Runs the test case.
 function Runnable:run()
 	local tstart = os.clock()
+	if self.level == 0 then
+		self.parent = nil
+	end
 	if self.parent ~= nil and self.parent.status == Status.skipped then
 		self.status = Status.skipped
+		return
 	end
 	if self.status == Status.skipped then
 		return
@@ -154,7 +158,6 @@ end
 ---Appends current runnable to context.
 ---@protected
 function Runnable:appendToContext()
-	-- ctx.tests[ctx.level] = ctx.tests[ctx.level] or {}
 	ctx.tests[#ctx.tests + 1] = self
 end
 

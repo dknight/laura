@@ -28,3 +28,7 @@
 -- 		expect(1 == 2).toBeFalsy()
 -- 	end)
 -- end)
+
+-- 	it:only("only standalone", function()
+-- 		expect(1 == 1).toBeTruthy()
+-- 	end)
