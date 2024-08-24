@@ -1,4 +1,4 @@
-local bind = require("lib.bind")
+local bind = require("lib.util.bind")
 local matchers = require("lib.matchers")
 
 ---Expects value to be tested with matcher.
