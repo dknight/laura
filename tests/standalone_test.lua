@@ -19,7 +19,7 @@ it("should be standalone 4 parent", function()
 
 	-- FIXME? Not allowed these
 	it("should be child 4-1", function()
-		print("hello")
+		print("ignores this")
 		expect(true).toEqual(false)
 	end)
 end)
