@@ -1,5 +1,5 @@
-local sys = require("lib.util.sys")
 local config = require("config")
+local osx    = require("lib.ext.osx")
 
 -- TDOO checks for read failed
 ---@param directory string
@@ -7,7 +7,7 @@ local config = require("config")
 local scandir = function(directory)
 	local cmd
 	--- TODO better test on windows
-	if sys.isWindows() then
+	if osx.isWindows() then
 		cmd = "DIR /S/B/O:n %s\\%s"
 	else
 		cmd = "find '%s' -type f -name '%s' -print0 | sort"
