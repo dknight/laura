@@ -1,5 +1,5 @@
-local Runnable = require("lib.classes.Runnable")
 local Context = require("lib.classes.Context")
+local Runnable = require("lib.classes.Runnable")
 
 ---@type Context
 local ctx = Context.global()

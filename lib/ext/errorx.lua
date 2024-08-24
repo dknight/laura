@@ -1,11 +1,11 @@
 ---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
 local config = require("config")
+local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
-local printer = require("lib.printer")
-local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
+local Terminal = require("lib.classes.Terminal")
 
 local ctx = Context.global()
 
@@ -36,14 +36,14 @@ local function tostring(err)
 		helpers.tab(ctx.level),
 		err.message .. (err.description or ""),
 		"\t" .. labels.removed,
-		labels.errorExpected .. printer.setColor(Status.passed),
+		labels.errorExpected .. Terminal.setColor(Status.Passed),
 		err.expected,
-		printer.resetColor(),
+		Terminal.resetColor(),
 		helpers.tab(ctx.level),
 		"\t" .. labels.added,
-		labels.errorActual .. printer.setColor(Status.failed),
+		labels.errorActual .. Terminal.setColor(Status.Failed),
 		err.actual,
-		printer.resetColor(),
+		Terminal.resetColor(),
 		"\n" .. (err.diffString or "")
 	)
 	if err.debuginfo ~= nil then

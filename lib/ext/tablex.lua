@@ -1,10 +1,10 @@
 ---@alias DiffResults table{del: table|nil, mod: table|nil, sub: table|nil}
 ---@alias DiffCount table{added: number, remove: number}
 
-local labels = require("lib.labels")
 local helpers = require("lib.util.helpers")
-local printer = require("lib.printer")
+local labels = require("lib.labels")
 local Status = require("lib.classes.Status")
+local Terminal = require("lib.classes.Terminal")
 
 local spairs = helpers.spairs
 local tab = helpers.tab
@@ -111,7 +111,7 @@ end
 
 ---Prints the value, if table prints table as string.
 ---@param val any Value to be printed.
----@param key string | number Key to be printerd.
+---@param key string | number Key to be printed.
 ---@param sign string Added, removed or unchanged sign.
 ---@param status Status Status of the difference.
 ---@param i number Indentation level
@@ -139,9 +139,9 @@ local function printValue(val, key, sign, status, i)
 		out = out .. string.format("%q", val)
 	end
 
-	return printer.setColor(status)
+	return Terminal.setColor(status)
 		.. string.format("%s%s[%q] = %s\n", tab(i), sign, key, out)
-		.. printer.resetColor()
+		.. Terminal.resetColor()
 end
 
 ---@param t table Table to print
@@ -160,17 +160,17 @@ local function printDiff(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out = out .. printValue(t[k], k, labels.added, Status.failed, i)
+			out = out .. printValue(t[k], k, labels.added, Status.Failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out = out
-				.. printValue(d.mod[k], k, labels.removed, Status.passed, i)
+				.. printValue(d.mod[k], k, labels.removed, Status.Passed, i)
 
 			if t[k] ~= nil then
-				out = out .. printValue(t[k], k, labels.added, Status.failed, i)
+				out = out .. printValue(t[k], k, labels.added, Status.Failed, i)
 			end
 			isKeyChanged = true
 		end
@@ -185,7 +185,7 @@ local function printDiff(t, d, i)
 		-- Not changed
 		if not isKeyChanged then
 			out = out
-				.. printValue(t[k], k, labels.unchanged, Status.unchanged, i)
+				.. printValue(t[k], k, labels.unchanged, Status.Unchanged, i)
 		end
 	end
 	i = i - 1

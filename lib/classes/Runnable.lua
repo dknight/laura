@@ -103,11 +103,11 @@ function Runnable:run()
 	if self.level == 0 then
 		self.parent = nil
 	end
-	if self.parent ~= nil and self.parent.status == Status.skipped then
-		self.status = Status.skipped
+	if self.parent ~= nil and self.parent.status == Status.Skipped then
+		self.status = Status.Skipped
 		return
 	end
-	if self.status == Status.skipped then
+	if self.status == Status.Skipped then
 		return
 	end
 	if type(self.fn) ~= "function" then
@@ -118,7 +118,7 @@ function Runnable:run()
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
-		self.status = Status.failed
+		self.status = Status.Failed
 		return
 	end
 
@@ -130,9 +130,9 @@ function Runnable:run()
 		self.err = err
 		self.err.debuginfo = debug.getinfo(self.fn, "S")
 		self.err.traceback = debug.traceback()
-		self.status = Status.failed
+		self.status = Status.Failed
 	else
-		self.status = Status.passed
+		self.status = Status.Passed
 	end
 	self.execTime = tdiff
 end
@@ -142,7 +142,7 @@ end
 ---@param fn function
 function Runnable:skip(description, fn)
 	local r = self:new(description, fn)
-	r.status = Status.skipped
+	r.status = Status.Skipped
 	r:prepare()
 end
 

@@ -1,8 +1,8 @@
 ---@alias MatchResult {a: any, err: Error, ok: boolean}
 
-local tablex = require("lib.ext.tablex")
 local errorx = require("lib.ext.errorx")
 local labels = require("lib.labels")
+local tablex = require("lib.ext.tablex")
 
 local matchers = {}
 

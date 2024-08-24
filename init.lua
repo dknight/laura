@@ -1,11 +1,12 @@
 local startTime = os.clock()
-local printer = require("lib.printer")
-local labels = require("lib.labels")
-local fs = require("lib.util.fs")
+
 local config = require("config")
-local helpers = require("lib.util.helpers")
 local Context = require("lib.classes.Context")
+local fs = require("lib.util.fs")
+local helpers = require("lib.util.helpers")
+local labels = require("lib.labels")
 local Runner = require("lib.classes.Runner")
+local Terminal = require("lib.classes.Terminal")
 
 local ctx = Context.global()
 local runner = Runner:new(ctx)
@@ -22,7 +23,7 @@ for fname in helpers.spairs(files) do
 	if chunk ~= nil then
 		chunk() -- pcall? check descibe
 	else
-		printer.printActual(loadErr or labels.errorSyntax)
+		Terminal.printActual(loadErr or labels.errorSyntax)
 		os.exit(config.exitFailed)
 	end
 end

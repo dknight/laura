@@ -1,10 +1,10 @@
 ---@enum Status
 local Status = {
-	passed = "PASSED",
-	failed = "FAILED",
-	skipped = "SKIPPED",
-	common = "COMMON",
-	unchanged = "UNCHANGED",
+	Passed = "PASSED",
+	Failed = "FAILED",
+	Skipped = "SKIPPED",
+	Common = "COMMON",
+	Unchanged = "UNCHANGED",
 }
 
 return Status

@@ -1,11 +1,11 @@
-local Runnable = require("lib.classes.Runnable")
-local printer = require("lib.printer")
-local Status = require("lib.classes.Status")
-local labels = require("lib.labels")
+local config = require("config")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
+local labels = require("lib.labels")
+local Runnable = require("lib.classes.Runnable")
+local Status = require("lib.classes.Status")
+local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
-local config = require("config")
 
 ---@class Runner
 ---@field private tests Runnable[]
@@ -60,15 +60,15 @@ function Runner:runTests()
 		self.totalCount = #Runnable.filter(self.all, { isSuite = false })
 		self.failed = Runnable.filter(
 			self.all,
-			{ status = Status.failed, isSuite = false }
+			{ status = Status.Failed, isSuite = false }
 		)
 		self.passed = Runnable.filter(
 			self.all,
-			{ status = Status.passed, isSuite = false }
+			{ status = Status.Passed, isSuite = false }
 		)
 		self.skipped = Runnable.filter(
 			self.all,
-			{ status = Status.skipped, isSuite = false }
+			{ status = Status.Skipped, isSuite = false }
 		)
 	end)
 end
@@ -77,18 +77,18 @@ end
 function Runner:reportTests()
 	Runnable.traverse(self.all, function(test)
 		if test.isSuite then
-			printer.printStyle(
+			Terminal.printStyle(
 				helpers.tab(test.level - 1) .. test.description,
 				1
 			)
 		else
 			local tdiffstr = string.format(" (%s)", time.format(test.execTime))
-			if test.status == Status.skipped then
-				printer.printSkipped(test.description, nil, test.level)
-			elseif test.status == Status.failed then
-				printer.printActual(test.description, tdiffstr, test.level)
-			elseif test.status == Status.passed then
-				printer.printExpected(test.description, tdiffstr, test.level)
+			if test.status == Status.Skipped then
+				Terminal.printSkipped(test.description, nil, test.level)
+			elseif test.status == Status.Failed then
+				Terminal.printActual(test.description, tdiffstr, test.level)
+			elseif test.status == Status.Passed then
+				Terminal.printExpected(test.description, tdiffstr, test.level)
 			end
 		end
 	end)
@@ -100,10 +100,10 @@ function Runner:reportErrors()
 		return
 	end
 	io.write("\n")
-	printer.printStyle(
+	Terminal.printStyle(
 		labels.failedTests,
-		printer.termStyles.bold,
-		printer.termStyles.underlined
+		Terminal.Style.Bold,
+		Terminal.Style.Underlined
 	)
 	local n = 1
 	Runnable.traverse(self.failed, function(test)
@@ -115,10 +115,10 @@ end
 
 ---Reports summary.
 function Runner:reportSummary()
-	printer.printStyle(
+	Terminal.printStyle(
 		labels.summary,
-		printer.termStyles.bold,
-		printer.termStyles.underlined
+		Terminal.Style.Bold,
+		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
