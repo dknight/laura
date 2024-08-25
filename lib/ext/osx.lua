@@ -1,4 +1,3 @@
----Checks that OS is Microsoft Windows.
 ---@return boolean
 local function isWindows()
 	return type(package) == "table"

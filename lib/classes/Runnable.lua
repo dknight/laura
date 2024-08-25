@@ -66,7 +66,7 @@ local Runnable = {
 	end,
 }
 
----New runnable instance.
+---Create a new Runnable instance.
 ---@param description? string
 ---@param fn? function
 ---@return Runnable

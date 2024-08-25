@@ -26,38 +26,41 @@ local function new(message, actual, expected, description, diffString)
 	}
 end
 
----Converts error to string.
 ---@param err Error
 ---@return string
 local function tostring(err)
-	-- TODO refactor to readable code
-	local retval = string.format(
-		"%s%s\n\n%s%s%q%s\n%s%s%s%q%s%s\n",
+	local out = {
 		helpers.tab(ctx.level),
-		err.message .. (err.description or ""),
-		"\t" .. labels.removed,
-		labels.errorExpected .. Terminal.setColor(Status.Passed),
-		err.expected,
+		err.message,
+		err.description or "",
+		"\n\n\t",
+		labels.removed,
+		labels.errorExpected,
+		Terminal.setColor(Status.Passed),
+		string.format("%q", err.expected),
 		Terminal.resetColor(),
 		helpers.tab(ctx.level),
-		"\t" .. labels.added,
-		labels.errorActual .. Terminal.setColor(Status.Failed),
-		err.actual,
+		"\n\t",
+		labels.added,
+		labels.errorActual,
+		Terminal.setColor(Status.Failed),
+		string.format("%q", err.actual),
 		Terminal.resetColor(),
-		"\n" .. (err.diffString or "")
-	)
+		err.diffString or "",
+		"\n\n",
+	}
 	if err.debuginfo ~= nil then
-		retval = retval
-			.. string.format(
-				"%s:%d\n\n",
-				err.debuginfo.source,
-				err.debuginfo.linedefined
-			)
+		out[#out + 1] = string.format(
+			"%s:%d\n\n",
+			err.debuginfo.source,
+			err.debuginfo.linedefined
+		)
 	end
 	if config.traceback then
-		retval = retval .. err.traceback .. "\n"
+		out[#out + 1] = err.traceback
+		out[#out + 1] = "\n"
 	end
-	return retval
+	return table.concat(out)
 end
 
 ---@param err Error

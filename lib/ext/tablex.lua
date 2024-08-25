@@ -71,7 +71,7 @@ local function diff(a, b, count)
 	return df, count
 end
 
----Creates new table from source table and difference table.
+---Patches table a with table b.
 ---@param a table
 ---@param d DiffResults
 ---@return table
@@ -117,30 +117,35 @@ end
 ---@param i number Indentation level
 local function printValue(val, key, sign, status, i)
 	i = i or 0
-	local out = ""
+	local out = {}
 
 	if type(val) == "table" then
-		out = "\n" .. tab(i) .. sign .. "{\n"
+		out[#out + 1] = "\n" .. tab(i) .. sign .. "{\n"
 		i = i + 1
 		for k, v in pairs(val) do
-			out = out
-				.. string.format(
-					"%s%s%s[%q] = %q,\n",
-					tab(i - 1),
-					sign,
-					tab(1),
-					k,
-					v
-				)
+			out[#out + 1] = string.format(
+				"%s%s%s[%q] = %q,\n",
+				tab(i - 1),
+				sign,
+				tab(1),
+				k,
+				v
+			)
 		end
 		i = i - 1
-		out = out .. tab(i) .. sign .. "}"
+		out[#out + 1] = tab(i) .. sign .. "}"
 	else
-		out = out .. string.format("%q", val)
+		out[#out + 1] = string.format("%q", val)
 	end
 
 	return Terminal.setColor(status)
-		.. string.format("%s%s[%q] = %s\n", tab(i), sign, key, out)
+		.. string.format(
+			"%s%s[%q] = %s\n",
+			tab(i),
+			sign,
+			key,
+			table.concat(out)
+		)
 		.. Terminal.resetColor()
 end
 
@@ -150,7 +155,7 @@ end
 ---@return string
 local function printDiff(t, d, i)
 	i = i or 0
-	local out = tab(i) .. "{\n"
+	local out = { tab(i), "{\n" }
 	i = i + 1
 
 	local patched = patch(t, d)
@@ -160,36 +165,39 @@ local function printDiff(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out = out .. printValue(t[k], k, labels.added, Status.Failed, i)
+			out[#out + 1] = printValue(t[k], k, labels.added, Status.Failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
-			out = out
-				.. printValue(d.mod[k], k, labels.removed, Status.Passed, i)
+			out[#out + 1] =
+				printValue(d.mod[k], k, labels.removed, Status.Passed, i)
 
 			if t[k] ~= nil then
-				out = out .. printValue(t[k], k, labels.added, Status.Failed, i)
+				out[#out + 1] =
+					printValue(t[k], k, labels.added, Status.Failed, i)
 			end
 			isKeyChanged = true
 		end
 
 		-- Sub-tables
 		if d.sub ~= nil and d.sub[k] ~= nil then
-			out = out .. string.format("%s[%q] = \n", tab(i), k)
-			out = out .. printDiff(t[k], d.sub[k], i)
+			out[#out + 1] = string.format("%s[%q] = \n", tab(i), k)
+			out[#out + 1] = printDiff(t[k], d.sub[k], i)
 			isKeyChanged = true
 		end
 
 		-- Not changed
 		if not isKeyChanged then
-			out = out
-				.. printValue(t[k], k, labels.unchanged, Status.Unchanged, i)
+			out[#out + 1] =
+				printValue(t[k], k, labels.unchanged, Status.Unchanged, i)
 		end
 	end
 	i = i - 1
-	return out .. tab(i) .. "}\n"
+	out[#out + 1] = tab(i)
+	out[#out + 1] = "}\n"
+	return table.concat(out)
 end
 
 ---@param t table
