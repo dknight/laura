@@ -1,4 +1,4 @@
-local config = require("config")
+local config = require("tests.config")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")

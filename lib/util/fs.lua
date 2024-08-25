@@ -1,4 +1,4 @@
-local config = require("config")
+local config = require("tests.config")
 local osx = require("lib.ext.osx")
 
 -- TDOO checks for read failed

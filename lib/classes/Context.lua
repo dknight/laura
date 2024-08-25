@@ -1,4 +1,4 @@
-local config = require("config")
+local config = require("tests.config")
 
 ---@class Context
 ---@field public level number
