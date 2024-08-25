@@ -1,4 +1,2 @@
-- scandir() is not well tested on Windows;
 - Better check for isColorSupported for unix;
 - refactor printer to terminal + reporter
-- Try to optimize string bffers
