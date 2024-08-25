@@ -34,7 +34,7 @@ local function tostring(err)
 		err.message,
 		err.description or "",
 		"\n\n",
-		config.tab(1),
+		helpers.tab(1),
 		labels.removed,
 		labels.errorExpected,
 		Terminal.setColor(Status.Passed),
