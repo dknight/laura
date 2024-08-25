@@ -1,4 +1,4 @@
-local config = require("tests.config")
+local config = require("config")
 
 ---Sort table by keys in alphabetical order.
 ---@param t table

@@ -1,6 +1,6 @@
 local startTime = os.clock()
 
-local config = require("tests.config")
+local config = require("config")
 local Context = require("lib.classes.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")

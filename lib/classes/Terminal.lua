@@ -1,4 +1,4 @@
-local config = require("tests.config")
+local config = require("config")
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
 local osx = require("lib.ext.osx")

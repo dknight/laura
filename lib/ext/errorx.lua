@@ -1,6 +1,6 @@
 ---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
-local config = require("tests.config")
+local config = require("config")
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
@@ -33,14 +33,16 @@ local function tostring(err)
 		helpers.tab(ctx.level),
 		err.message,
 		err.description or "",
-		"\n\n\t",
+		"\n\n",
+		config.tab(1),
 		labels.removed,
 		labels.errorExpected,
 		Terminal.setColor(Status.Passed),
 		string.format("%q", err.expected),
 		Terminal.resetColor(),
 		helpers.tab(ctx.level),
-		"\n\t",
+		"\n",
+		helpers.tab(1),
 		labels.added,
 		labels.errorActual,
 		Terminal.setColor(Status.Failed),
