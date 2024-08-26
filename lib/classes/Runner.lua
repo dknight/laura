@@ -1,4 +1,4 @@
-local config = require("config")
+local constants = require("lib.util.constants")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
@@ -147,15 +147,15 @@ function Runner:reportTime(startTime)
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- config.exitFailed (1) There are the failures.
---- config.exitOk (0) All tests are passed.
+--- constants.exitFailed (1) There are the failures.
+--- constants.exitOk (0) All tests are passed.
 function Runner:done()
 	if #self.failed > 0 then
 		print(labels.failed)
-		os.exit(config.exitFailed)
+		os.exit(constants.exitFailed)
 	else
 		print(labels.pass)
-		os.exit(config.exitOk)
+		os.exit(constants.exitOk)
 	end
 end
 

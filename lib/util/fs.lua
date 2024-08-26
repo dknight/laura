@@ -1,5 +1,7 @@
-local config = require("config")
 local osx = require("lib.ext.osx")
+local Context = require("lib.classes.Context")
+
+local ctx = Context.global()
 
 -- TDOO checks for read failed
 ---@param directory string
@@ -13,7 +15,7 @@ local scandir = function(directory)
 	end
 	local t = {}
 	local fd =
-		assert(io.popen((cmd):format(directory, config.filePattern), "r"))
+		assert(io.popen((cmd):format(directory, ctx.config.filePattern), "r"))
 	local list = fd:read("*a")
 	fd:close()
 
@@ -39,7 +41,29 @@ local function getFiles(pattern)
 	return files, i
 end
 
+---Checks that file exists,
+---@param file string
+---@return boolean, string|nil
+local function exists(file)
+	local ok, err, code = os.rename(file, file)
+	if not ok then
+		if code == 13 then
+			return true, nil
+		end
+	end
+	return ok, err
+end
+
+---Check if a directory exists in this path
+---@Param path string
+---@return boolean
+local function isdir(path)
+	return exists(path .. "/")
+end
+
 return {
-	scandir = scandir,
+	exists = exists,
 	getFiles = getFiles,
+	isDir = isdir,
+	scandir = scandir,
 }

@@ -1,6 +1,5 @@
 local expect = require("lib.expect")
 local it = require("lib.classes.It")
-local describe = require("lib.classes.Describe")
 
 it("should be standalone 1", function()
 	expect(true).toEqual(true)

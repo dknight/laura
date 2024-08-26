@@ -217,5 +217,6 @@ return {
 	diff = diff,
 	equal = equal,
 	filter = filter,
+	patch = patch,
 	print = printDiff,
 }

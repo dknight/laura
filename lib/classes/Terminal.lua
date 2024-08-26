@@ -1,4 +1,3 @@
-local config = require("config")
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
 local osx = require("lib.ext.osx")
@@ -31,7 +30,7 @@ local Color = {
 ---the function ignores all checks and return false immideatly.
 ---@return boolean
 local function isColorSupported()
-	if not config.color then
+	if not ctx.config.color then
 		return false
 	end
 	if osx.isWindows() then
@@ -64,7 +63,7 @@ end
 local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
-	local tpl = string.rep(config.tab, ctx.level)
+	local tpl = string.rep(ctx.config.tab, ctx.level)
 	if status ~= Status.Common then
 		tpl = tpl .. "%s[%s] %s%s\n"
 	else

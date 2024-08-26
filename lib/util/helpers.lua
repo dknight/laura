@@ -1,4 +1,6 @@
-local config = require("config")
+local Context = require("lib.classes.Context")
+
+local ctx = Context.global()
 
 ---Sort table by keys in alphabetical order.
 ---@param t table
@@ -31,7 +33,7 @@ end
 ---@param n number
 ---@string
 local function tab(n)
-	return string.rep(config.tab, n)
+	return string.rep(ctx.config.tab, n)
 end
 
 return {

@@ -1,6 +1,5 @@
 ---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
-local config = require("config")
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
@@ -58,7 +57,7 @@ local function tostring(err)
 			err.debuginfo.linedefined
 		)
 	end
-	if config.traceback then
+	if ctx.config.traceback then
 		out[#out + 1] = err.traceback
 		out[#out + 1] = "\n"
 	end

@@ -1,8 +1,9 @@
-local config = require("config")
+local constants = require("lib.util.constants")
 
 ---@class Context
 ---@field public level number
 ---@field public tests Runnable[]
+---@field public config {[string]: any}
 local Context = {}
 
 ---Creates new app context.
@@ -11,6 +12,7 @@ function Context.new()
 	return {
 		level = 0,
 		tests = {},
+		config = {},
 	}
 end
 
@@ -18,8 +20,8 @@ end
 ---creates a new context in _G.
 ---@return Context
 function Context.global()
-	_G[config.appKey] = _G[config.appKey] or Context.new()
-	return _G[config.appKey]
+	_G[constants.appKey] = _G[constants.appKey] or Context.new()
+	return _G[constants.appKey]
 end
 
 return Context
