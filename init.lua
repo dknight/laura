@@ -12,10 +12,10 @@ local ctx = Context.global()
 local runner = Runner:new(ctx)
 ctx.config = require("config")
 
----Reads config from the path.
+---Read config from the path.
 ---@param path string
 local function setConfigFromFile(path)
-	local chunk = loadfile(path, "t")
+	local chunk, err = loadfile(path, "t")
 	if chunk ~= nil then
 		for k, v in pairs(chunk()) do
 			if ctx.config[k] ~= nil then
@@ -23,7 +23,7 @@ local function setConfigFromFile(path)
 			end
 		end
 	else
-		error("cannot read config file")
+		error("cannot read config file\n" .. err)
 	end
 end
 
