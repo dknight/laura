@@ -1,4 +1,5 @@
 local Context = require("lib.classes.Context")
+local constants = require("lib.util.constants")
 
 local ctx = Context.global()
 
@@ -36,7 +37,33 @@ local function tab(n)
 	return string.rep(ctx.config.tab, n)
 end
 
+---Read version number from file VERSION.
+---@return string
+local function version()
+	local fd, err = io.open("VERSION")
+	if fd ~= nil then
+		local contents = fd:read("*a")
+		fd:close()
+		return contents
+	else
+		error(err)
+	end
+end
+
+---Prints usage in terminal.
+local function usage()
+	print(table.concat({
+		string.format("%s v%s", constants.appKey, version()),
+		"Usage: laura [-chv?] <directory-with-tests>",
+		"\t" .. "-c, --config\tPath to config file.",
+		"\t" .. "-v, --version\tPrint program name and it's version.",
+		"\t" .. "-h, -?, --help\tPrint the usage.",
+	}, "\n"))
+end
+
 return {
 	spairs = spairs,
 	tab = tab,
+	usage = usage,
+	version = version,
 }
