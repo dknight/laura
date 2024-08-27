@@ -47,8 +47,9 @@ local function tostring(err)
 		Terminal.setColor(Status.Failed),
 		string.format("%q", err.actual),
 		Terminal.resetColor(),
+		"\n",
 		err.diffString or "",
-		"\n\n",
+		"\n",
 	}
 	if err.debuginfo ~= nil then
 		out[#out + 1] = string.format(
