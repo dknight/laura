@@ -9,13 +9,13 @@ local ctx = Context.global()
 ---@enum style
 local Style = {
 	Normal = 0,
-	Bold = 1,
-	Dim = 2,
-	Italic = 3,
-	Underlined = 4,
-	Blinking = 5,
-	Reverse = 7,
-	Invisible = 8,
+	Bold = 10,
+	Dim = 100,
+	Italic = 1000,
+	Underlined = 10000,
+	Blinking = 100000,
+	Reverse = 1000000,
+	Invisible = 10000000,
 }
 
 ---@enum colors

@@ -10,6 +10,8 @@ return {
 	failedTests = "FAILED TESTS",
 	noTests = "No tests found",
 	removed = "-",
+	resultFailed = "FAILED",
+	resultPass = "PASS",
 	statuses = {
 		[Status.Passed] = "PASSED",
 		[Status.Unchanged] = "",
@@ -17,6 +19,11 @@ return {
 		[Status.Skipped] = "SKIPPED",
 		[Status.Common] = "",
 	},
-	summary = "SUMMARY",
-	timeSummary = "\nApproximate execution time %s @ %s\n",
+	summary = {
+		title = "\nSUMMARY",
+		failing = "%d failing\n",
+		passing = "%d of %d passing\n",
+		skipping = "%d skipping\n",
+	},
+	performance = "\nApproximate execution time %s / Mem: %s @ %s\n",
 }
