@@ -10,8 +10,6 @@ return {
 	failedTests = "FAILED TESTS",
 	noTests = "No tests found",
 	removed = "-",
-	summary = "SUMMARY",
-	timeSummary = "\nApproximate execution time %s @ %s\n",
 	statuses = {
 		[Status.Passed] = "PASSED",
 		[Status.Unchanged] = "",
@@ -19,4 +17,6 @@ return {
 		[Status.Skipped] = "SKIPPED",
 		[Status.Common] = "",
 	},
+	summary = "SUMMARY",
+	timeSummary = "\nApproximate execution time %s @ %s\n",
 }
