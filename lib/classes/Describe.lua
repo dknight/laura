@@ -1,5 +1,8 @@
+local constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Runnable = require("lib.classes.Runnable")
+
+local describeErrorLevel = 3
 
 ---@type Context
 local ctx = Context.global()
@@ -7,23 +10,36 @@ local ctx = Context.global()
 ---@class Describe : Runnable
 local Describe = Runnable.new(Runnable)
 
----@diagnostic disable-next-line: duplicate-set-field
 function Describe:prepare()
-	if type(self.fn) ~= "function" then
-		local err = {
-			message = "Runnable.describe: callback is not a function",
-			actual = type(self.fn),
-			expected = "function",
-		}
-		error(err, 3)
-		return
+	if not ctx.root then
+		local root = Runnable:new(constants.rootSuiteKey, function() end)
+		ctx.root = root
+		ctx.suitesLevels[0] = root
+		ctx.suites[#ctx.suites + 1] = root
+		ctx.level = ctx.level + 1
 	end
+
+	if type(self.fn) ~= "function" then
+		error(
+			"Runnable.describe: callback is not a function",
+			constants.DescribeErrorLevel
+		)
+	end
+
+	self.level = ctx.level
 	self.isSuite = true
 
+	ctx.suites[#ctx.suites + 1] = self
+	ctx.suitesLevels[ctx.level] = self
+
+	self.parent = ctx.suitesLevels[ctx.level - 1]
+	table.insert(self.parent.children, self)
 	ctx.level = ctx.level + 1
-	self.level = ctx.level
-	self:appendToContext()
-	self.fn()
+	local ok, err = pcall(self.fn)
+	if not ok then
+		error(err, constants.DescribeErrorLevel)
+	end
+
 	ctx.level = ctx.level - 1
 end
 

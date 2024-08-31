@@ -1,5 +1,5 @@
-local osx = require("lib.ext.osx")
 local Context = require("lib.classes.Context")
+local osx = require("lib.ext.osx")
 
 local ctx = Context.global()
 

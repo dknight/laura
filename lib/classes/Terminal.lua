@@ -1,5 +1,6 @@
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
+local labels = require("lib.labels")
 local osx = require("lib.ext.osx")
 local Status = require("lib.classes.Status")
 
@@ -63,7 +64,7 @@ end
 local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
-	local tpl = string.rep(ctx.config.tab, ctx.level)
+	local tpl = ""
 	if status ~= Status.Common then
 		tpl = tpl .. "%s[%s] %s%s\n"
 	else
@@ -72,7 +73,7 @@ local function printResult(message, status, suffix, level)
 	local str = string.format(
 		tpl,
 		helpers.tab(level),
-		setColor(status) .. status .. resetColor(),
+		setColor(status) .. labels.statuses[status] .. resetColor(),
 		message,
 		suffix
 	)

@@ -201,12 +201,14 @@ local function printDiff(t, d, i)
 end
 
 ---@param t table
----@oaram function(v: any): boolean
+---@oaram function(v: any, index?: number): boolean
 ---@return table
 local function filter(t, predicate)
 	local newt = {}
+	local i = 0
 	for _, v in pairs(t) do
-		if predicate(v) then
+		i = i + 1
+		if predicate(v, i) then
 			newt[#newt + 1] = v
 		end
 	end

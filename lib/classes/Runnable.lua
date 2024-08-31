@@ -7,64 +7,57 @@ local tablex = require("lib.ext.tablex")
 local ctx = Context.global()
 
 ---@class Runnable
+---@field public children Runnable[]
 ---@field public description string
+---@field public err Error | nil
+---@field public execTime number
 ---@field public fn function
----@field public status Status|nil
----@field public err Error|nil
----@field public level number
----@field public parent Runnable | nil
 ---@field public isOnly boolean
 ---@field public isSuite boolean
----@field private execTime number
+---@field public level number
+---@field public parent Runnable | nil
+---@field public status Status | nil'
+---@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
+---@field public traverse fun(collection: Runnable[], cb: fun(suite: Runnable, index?: number))
+---@field public filterOnly fun(root: Runnable)
 local Runnable = {
 	__debug__ = 0,
-	---@param collection Runnable[]
-	---@param f SearchFilter
-	---@return Runnable[]
-	filter = function(collection, f)
-		local newt = tablex.filter(collection, function(v)
-			for k in pairs(f) do
-				if f[k] ~= v[k] then
-					return false
-				end
-			end
-			return true
-		end)
-		return newt
-	end,
-
-	---@param collection  Runnable[]
-	---@param cb function(runnable: Runnable)
-	traverse = function(collection, cb)
-		for i = 1, #collection do
-			cb(collection[i])
-		end
-	end,
-
-	---Get only tests.
-	---
-	---FIXME: The logic is as bit overkill here, definitely building trees is
-	---most preferable solution here. Refactoring needed.
-	---
-	---@param collection Runnable[]
-	---@return Runnable[], number
-	getOnly = function(collection)
-		local n = 0
-		local newt = {}
-		for i = 1, #collection do
-			local test = collection[i]
-			local hasOnlyChildren = test:hasOnly()
-			if
-				(test.isSuite and hasOnlyChildren)
-				or (not test.isSuite and test.isOnly)
-				or (test.parent ~= nil and test.parent.isOnly)
-			then
-				newt[#newt + 1] = test
-			end
-		end
-		return newt, n
-	end,
 }
+
+Runnable.filter = function(collection, fn)
+	local newt = tablex.filter(collection, function(v)
+		for k in pairs(fn) do
+			if fn[k] ~= v[k] then
+				return false
+			end
+		end
+		return true
+	end)
+	return newt
+end
+
+Runnable.traverse = function(collection, cb)
+	for i, test in ipairs(collection) do
+		cb(test, i)
+	end
+end
+
+Runnable.filterOnly = function(root)
+	for _, child in ipairs(root.children) do
+		-- root children
+		if child.isOnly then
+			table.insert(ctx.onlyTests, child)
+		end
+
+		if not child:hasOnly() then
+			for _, test in ipairs(child.children) do
+				table.insert(ctx.onlyTests, test)
+			end
+		end
+
+		Runnable.filterOnly(child)
+	end
+end
 
 ---Create a new Runnable instance.
 ---@param description? string
@@ -72,6 +65,7 @@ local Runnable = {
 ---@return Runnable
 function Runnable:new(description, fn)
 	local t = {
+		children = {},
 		description = description,
 		err = nil,
 		execTime = 0,
@@ -90,24 +84,31 @@ function Runnable:new(description, fn)
 	})
 end
 
----Prepares the test case.
+---Prepares the tests before running.
 function Runnable:prepare()
-	Runnable.__debug__ = Runnable.__debug__ + 1
 	self.level = ctx.level
-	self:appendToContext()
+	self.parent = ctx.suitesLevels[self.level - 1]
+	table.insert(self.parent.children, self)
+	table.insert(ctx.tests, self)
 end
 
----Runs the test case.
+---Runs the all tests.
 function Runnable:run()
+	Runnable.__debug__ = Runnable.__debug__ + 1
 	local tstart = os.clock()
-	if self.level == 0 then
-		self.parent = nil
+	local parentIsSkipped = false
+	local nxt = self.parent
+	while nxt ~= nil and nxt ~= ctx.root do
+		if nxt.status == Status.Skipped then
+			parentIsSkipped = true
+			break
+		end
+		nxt = nxt.parent
 	end
-	if self.parent ~= nil and self.parent.status == Status.Skipped then
+	if parentIsSkipped then
 		self.status = Status.Skipped
-		return
 	end
-	if self.status == Status.Skipped then
+	if parentIsSkipped or self.status == Status.Skipped then
 		return
 	end
 	if type(self.fn) ~= "function" then
@@ -124,8 +125,6 @@ function Runnable:run()
 
 	-- Exec
 	local ok, err = pcall(self.fn)
-
-	local tdiff = os.clock() - tstart
 	if not ok then
 		self.err = err
 		self.err.debuginfo = debug.getinfo(self.fn, "S")
@@ -134,7 +133,7 @@ function Runnable:run()
 	else
 		self.status = Status.Passed
 	end
-	self.execTime = tdiff
+	self.execTime = os.clock() - tstart
 end
 
 ---Skipping the task.
@@ -142,8 +141,8 @@ end
 ---@param fn function
 function Runnable:skip(description, fn)
 	local r = self:new(description, fn)
-	r.status = Status.Skipped
 	r:prepare()
+	r.status = Status.Skipped
 end
 
 ---Running only marked tasks.
@@ -151,24 +150,20 @@ end
 ---@param fn function
 function Runnable:only(description, fn)
 	local r = self:new(description, fn)
-	r.isOnly = true
 	r:prepare()
+	r.isOnly = true
+	r.parent.isOnly = true
 end
 
----Appends current runnable to context.
----@protected
-function Runnable:appendToContext()
-	ctx.tests[#ctx.tests + 1] = self
-end
-
+---Checks that test or duite has only cases.
+---@return boolean
 function Runnable:hasOnly()
-	if self.parent == nil then
-		return false
+	for _, test in ipairs(self.children) do
+		if test.isOnly then
+			return true
+		end
 	end
-	local found = tablex.filter(ctx.tests, function(test)
-		return test.parent ~= nil and test.parent == self.parent and test.isOnly
-	end)
-	return #found > 0
+	return false
 end
 
 return Runnable

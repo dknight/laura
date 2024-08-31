@@ -1,5 +1,5 @@
-local Context = require("lib.classes.Context")
 local constants = require("lib.util.constants")
+local Context = require("lib.classes.Context")
 
 local ctx = Context.global()
 

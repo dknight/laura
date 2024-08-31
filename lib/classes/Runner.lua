@@ -1,4 +1,5 @@
 local constants = require("lib.util.constants")
+local Context = require("lib.classes.Context")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
@@ -7,23 +8,18 @@ local Status = require("lib.classes.Status")
 local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
 
+local ctx = Context.global()
+
 ---@class Runner
----@field private tests Runnable[]
----@field private all Runnable[]
----@field private onlyTests Runnable[]
 ---@field private totalCount number
 ---@field private passed Runnable[]
 ---@field private failed Runnable[]
 ---@field private skipped Runnable[]
 local Runner = {}
 
----@param ctx Context
 ---@return Runner
-function Runner:new(ctx)
+function Runner:new()
 	local t = {
-		tests = ctx.tests,
-		all = {},
-		onlyTests = {},
 		totalCount = 0,
 		passed = {},
 		failed = {},
@@ -34,64 +30,44 @@ function Runner:new(ctx)
 	})
 end
 
----Prepare and return prepared test caees.
----@private
----@return Runnable[]
-function Runner:prepare()
-	return Runnable.filter(self.tests, {})
-end
-
----Runs all test caees.
+---Runs all test cases.
 function Runner:runTests()
-	self.all = self:prepare()
-	self.onlyTests = Runnable.getOnly(self.all)
-	if #self.onlyTests > 0 then
-		self.all = self.onlyTests
+	if ctx.root:hasOnly() then
+		Runnable.filterOnly(ctx.root)
+	end
+	if #ctx.onlyTests > 0 then
+		ctx.tests = Runnable.filter(ctx.onlyTests, { isSuite = false })
 	end
 
-	local parent = nil
-	Runnable.traverse(self.tests, function(test)
-		if test.isSuite then
-			parent = test
-		end
-		test.parent = parent
+	Runnable.traverse(ctx.tests, function(test)
 		test:run()
-
-		self.totalCount = #Runnable.filter(self.all, { isSuite = false })
-		self.failed = Runnable.filter(
-			self.all,
-			{ status = Status.Failed, isSuite = false }
-		)
-		self.passed = Runnable.filter(
-			self.all,
-			{ status = Status.Passed, isSuite = false }
-		)
-		self.skipped = Runnable.filter(
-			self.all,
-			{ status = Status.Skipped, isSuite = false }
-		)
 	end)
+
+	self.totalCount = #ctx.tests
+	self.failed = Runnable.filter(ctx.tests, { status = Status.Failed })
+	self.passed = Runnable.filter(ctx.tests, { status = Status.Passed })
+	self.skipped = Runnable.filter(ctx.tests, { status = Status.Skipped })
 end
 
 ---Reports the tests
-function Runner:reportTests()
-	Runnable.traverse(self.all, function(test)
+function Runner:reportTests(suite)
+	suite = suite or ctx.root
+	for _, test in ipairs(suite.children) do
+		local lvl = test.level - 1
 		if test.isSuite then
-			Terminal.printStyle(
-				helpers.tab(test.level - 1) .. test.description,
-				1
-			)
+			Terminal.printStyle(helpers.tab(lvl) .. test.description, 1)
 		else
-			local tdiffstr = string.format(" (%s)", time.format(test.execTime))
+			local tmStr = time.toString(test.execTime, " (%s)")
 			if test.status == Status.Skipped then
-				Terminal.printSkipped(test.description, nil, test.level)
+				Terminal.printSkipped(test.description, nil, lvl)
 			elseif test.status == Status.Failed then
-				Terminal.printActual(test.description, tdiffstr, test.level)
+				Terminal.printActual(test.description, tmStr, lvl)
 			elseif test.status == Status.Passed then
-				Terminal.printExpected(test.description, tdiffstr, test.level)
+				Terminal.printExpected(test.description, tmStr, lvl)
 			end
 		end
-	end)
+		Runner:reportTests(test)
+	end
 end
 
 ---Prints the errors if exist.
@@ -147,8 +123,8 @@ function Runner:reportTime(startTime)
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- constants.exitFailed (1) There are the failures.
---- constants.exitOk (0) All tests are passed.
+--- * constants.exitFailed (1) There are the failures.
+--- * constants.exitOk (0) All tests are passed.
 function Runner:done()
 	if #self.failed > 0 then
 		print(labels.failed)

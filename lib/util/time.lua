@@ -37,6 +37,16 @@ local function format(secs)
 	return string.format("%." .. digits .. "f%s", n, unit)
 end
 
+---Formats time to string
+---@param secs number
+---@param pattern string
+---@return string
+local function toString(secs, pattern)
+	pattern = pattern or "%s"
+	return string.format(pattern, format(secs))
+end
+
 return {
 	format = format,
+	toString = toString,
 }

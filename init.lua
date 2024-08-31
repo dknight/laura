@@ -7,9 +7,10 @@ local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local Runner = require("lib.classes.Runner")
 local Terminal = require("lib.classes.Terminal")
+local Runnable = require("lib.classes.Runnable")
 
 local ctx = Context.global()
-local runner = Runner:new(ctx)
+local runner = Runner:new()
 ctx.config = require("config")
 
 ---Read config from the path.
@@ -73,7 +74,7 @@ end
 for fname in helpers.spairs(files) do
 	local chunk, err = loadfile(fname, "t", _G)
 	if chunk ~= nil then
-		chunk() -- pcall? check descibe
+		chunk()
 	else
 		Terminal.printActual(err or labels.errorSyntax)
 		os.exit(constants.exitFailed)
