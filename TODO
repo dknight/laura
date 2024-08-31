@@ -1,4 +1,3 @@
 - Better check for isColorSupported for unix;
 - refactor printer to terminal + reporter
 - before, after, beforeEach, afterEach
-- add memory usage in final summary
