@@ -9,20 +9,20 @@ local ctx = Context.global()
 ---@enum style
 local Style = {
 	Normal = 0,
-	Bold = 10,
-	Dim = 100,
-	Italic = 1000,
-	Underlined = 10000,
-	Blinking = 100000,
-	Reverse = 1000000,
-	Invisible = 10000000,
+	Bold = 1,
+	Dim = 2,
+	Italic = 3,
+	Underlined = 4,
+	Blinking = 5,
+	Reverse = 7,
+	Invisible = 8,
 }
 
 ---@enum colors
 local Color = {
 	[Status.Passed] = "32",
 	[Status.Failed] = "31",
-	[Status.Skipped] = "0;36",
+	[Status.Skipped] = "2;36",
 	[Status.Common] = "1;1",
 	[Status.Unchanged] = "90",
 }
@@ -57,6 +57,24 @@ local function setColor(status)
 	return ""
 end
 
+---Sets terminal styles.
+---@param msg string
+---@param ... style
+local function setStyle(msg, ...)
+	if isColorSupported() then
+		local styles = table.concat({ ... }, ";")
+		msg = "\27[" .. styles .. "m" .. msg .. "\27[0m"
+	end
+	return msg
+end
+
+---Prints out styles in the terminal.
+---@param msg string
+---@param ... style
+local function printStyle(msg, ...)
+	io.write(setStyle(msg .. "\n", ...))
+end
+
 ---@param message string
 ---@param status Status
 ---@param suffix? string | nil
@@ -64,11 +82,15 @@ end
 local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
-	local tpl = ""
+	local tpl = "%s%s%s\n"
 	if status ~= Status.Common then
-		tpl = tpl .. "%s[%s] %s%s\n"
-	else
-		tpl = tpl .. "%s%s%s\n"
+		tpl = "%s[%s] %s%s\n"
+	end
+	if status == Status.Skipped then
+		tpl = "%s"
+			.. setStyle("[", Style.Dim)
+			.. "%s"
+			.. setStyle("] %s%s\n", Style.Dim)
 	end
 	local str = string.format(
 		tpl,
@@ -78,18 +100,6 @@ local function printResult(message, status, suffix, level)
 		suffix
 	)
 	io.write(str)
-end
-
----Prints out styles in the terminal.
----@param msg string
----@param ... style
-local function printStyle(msg, ...)
-	if isColorSupported() then
-		local styles = table.concat({ ... }, ";")
-		io.write("\27[" .. styles .. "m" .. msg .. "\27[0m\n")
-	else
-		io.write(msg .. "\n")
-	end
 end
 
 local function printExpected(msg, suffix, level)
