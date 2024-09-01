@@ -9,6 +9,7 @@ local ctx = Context.global()
 local Describe = Runnable.new(Runnable)
 
 function Describe:prepare()
+	Describe.createRootSuite()
 	if type(self.fn) ~= "function" then
 		error(
 			"Runnable.describe: callback is not a function",

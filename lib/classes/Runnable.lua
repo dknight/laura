@@ -1,5 +1,6 @@
 ---@alias SearchFilter {status: Status, isSuite: boolean}
 
+local constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
 local tablex = require("lib.ext.tablex")
@@ -20,6 +21,7 @@ local ctx = Context.global()
 ---@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
 ---@field public traverse fun(collection: Runnable[], cb: fun(suite: Runnable, index?: number))
 ---@field public filterOnly fun(root: Runnable)
+---@field protected createRootSuite function
 local Runnable = {
 	__debug__ = 0,
 }
@@ -59,6 +61,16 @@ Runnable.filterOnly = function(root)
 	end
 end
 
+Runnable.createRootSuite = function()
+	if not ctx.root then
+		local root = Runnable:new(constants.rootSuiteKey, function() end)
+		ctx.root = root
+		ctx.suitesLevels[0] = root
+		ctx.suites[#ctx.suites + 1] = root
+		ctx.level = ctx.level + 1
+	end
+end
+
 ---Create a new Runnable instance.
 ---@param description? string
 ---@param fn? function
@@ -86,6 +98,7 @@ end
 
 ---Prepares the tests before running.
 function Runnable:prepare()
+	Runnable.createRootSuite()
 	self.level = ctx.level
 	self.parent = ctx.suitesLevels[self.level - 1]
 	table.insert(self.parent.children, self)
