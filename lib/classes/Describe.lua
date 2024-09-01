@@ -20,7 +20,7 @@ function Describe:prepare()
 	if type(self.fn) ~= "function" then
 		error(
 			"Runnable.describe: callback is not a function",
-			constants.DescribeErrorLevel
+			constants.SuiteErrorLevel
 		)
 	end
 
@@ -35,7 +35,7 @@ function Describe:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.fn)
 	if not ok then
-		error(err, constants.DescribeErrorLevel)
+		error(err, constants.SuiteErrorLevel)
 	end
 
 	ctx.level = ctx.level - 1
