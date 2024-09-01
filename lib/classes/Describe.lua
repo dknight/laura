@@ -9,18 +9,10 @@ local ctx = Context.global()
 local Describe = Runnable.new(Runnable)
 
 function Describe:prepare()
-	if not ctx.root then
-		local root = Runnable:new(constants.rootSuiteKey, function() end)
-		ctx.root = root
-		ctx.suitesLevels[0] = root
-		ctx.suites[#ctx.suites + 1] = root
-		ctx.level = ctx.level + 1
-	end
-
 	if type(self.fn) ~= "function" then
 		error(
 			"Runnable.describe: callback is not a function",
-			constants.SuiteErrorLevel
+			constants.SuiteLevel
 		)
 	end
 
@@ -35,7 +27,7 @@ function Describe:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.fn)
 	if not ok then
-		error(err, constants.SuiteErrorLevel)
+		error(err, constants.SuiteLevel)
 	end
 
 	ctx.level = ctx.level - 1

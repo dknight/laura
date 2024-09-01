@@ -31,8 +31,21 @@ function Runner:new()
 	})
 end
 
+---Creates root context
+---@private
+function Runner:_createRootSuite()
+	if not ctx.root then
+		local root = Runnable:new(constants.rootSuiteKey, function() end)
+		ctx.root = root
+		ctx.suitesLevels[0] = root
+		ctx.suites[#ctx.suites + 1] = root
+		ctx.level = ctx.level + 1
+	end
+end
+
 ---Runs all test cases.
 function Runner:runTests()
+	self:_createRootSuite()
 	if ctx.root:hasOnly() then
 		Runnable.filterOnly(ctx.root)
 	end
@@ -71,6 +84,10 @@ function Runner:reportTests(suite)
 			end
 		end
 		Runner:reportTests(test)
+	end
+
+	if self.totalCount == 0 then
+		Terminal.printStyle(labels.noTests)
 	end
 end
 
