@@ -1,4 +1,4 @@
----@alias DiffResults table{del: table|nil, mod: table|nil, sub: table|nil}
+---@alias DiffResults table{del?: table, mod?: table, sub?: table}
 ---@alias DiffCount table{added: number, remove: number}
 
 local helpers = require("lib.util.helpers")

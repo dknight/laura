@@ -7,7 +7,6 @@ local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local Runner = require("lib.classes.Runner")
 local Terminal = require("lib.classes.Terminal")
-local Runnable = require("lib.classes.Runnable")
 
 local ctx = Context.global()
 local runner = Runner:new()

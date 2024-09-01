@@ -10,17 +10,18 @@ local ctx = Context.global()
 ---@class Runnable
 ---@field public children Runnable[]
 ---@field public description string
----@field public err Error | nil
+---@field public err? Error
 ---@field public execTime number
 ---@field public fn function
 ---@field public isOnly boolean
 ---@field public isSuite boolean
 ---@field public level number
----@field public parent Runnable | nil
----@field public status Status | nil'
+---@field public parent? Runnable
+---@field public status? Status
 ---@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
 ---@field public traverse fun(collection: Runnable[], cb: fun(suite: Runnable, index?: number))
 ---@field public filterOnly fun(root: Runnable)
+---@field public hooks {[HookType]: Hook}
 ---@field protected createRootSuite function
 local Runnable = {
 	__debug__ = 0,
@@ -68,6 +69,7 @@ Runnable.createRootSuite = function()
 		ctx.suitesLevels[0] = root
 		ctx.suites[#ctx.suites + 1] = root
 		ctx.level = ctx.level + 1
+		ctx.current = root
 	end
 end
 
@@ -87,6 +89,12 @@ function Runnable:new(description, fn)
 		level = 0,
 		parent = nil,
 		status = nil,
+		hooks = {
+			[constants.AfterAllName] = {},
+			[constants.AfterEachName] = {},
+			[constants.BeforeAllName] = {},
+			[constants.BeforeEachName] = {},
+		},
 	}
 	return setmetatable(t, {
 		__index = self,
@@ -136,6 +144,15 @@ function Runnable:run()
 		return
 	end
 
+	ctx.current = self
+
+	local isFirst = self.parent.children[1] == self
+	local isLast = self.parent.children[#self.parent.children] == self
+	if isFirst then
+		self.parent:runHooks(constants.BeforeAllName)
+	end
+	self.parent:runHooks(constants.BeforeEachName)
+
 	-- Exec
 	local ok, err = pcall(self.fn)
 	if not ok then
@@ -146,6 +163,12 @@ function Runnable:run()
 	else
 		self.status = Status.Passed
 	end
+
+	self.parent:runHooks(constants.AfterEachName)
+	if isLast then
+		self.parent:runHooks(constants.AfterAllName)
+	end
+
 	self.execTime = os.clock() - tstart
 end
 
@@ -166,6 +189,14 @@ function Runnable:only(description, fn)
 	r:prepare()
 	r.isOnly = true
 	r.parent.isOnly = true
+end
+
+---@param typ HookType
+function Runnable:runHooks(typ)
+	for _, hook in ipairs(self.hooks[typ]) do
+		-- print(hook.name, hook.func)
+		hook.func()
+	end
 end
 
 ---Checks that test or duite has only cases.

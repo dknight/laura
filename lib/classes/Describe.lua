@@ -22,10 +22,12 @@ function Describe:prepare()
 
 	ctx.suites[#ctx.suites + 1] = self
 	ctx.suitesLevels[ctx.level] = self
+	ctx.current = self
 
 	self.parent = ctx.suitesLevels[ctx.level - 1]
 	table.insert(self.parent.children, self)
 	ctx.level = ctx.level + 1
+	-- self:runHooks(constants.BeforeAllName)
 	local ok, err = pcall(self.fn)
 	if not ok then
 		error(err, constants.SuiteLevel)

@@ -7,6 +7,7 @@ return {
 	errorAssertion = "Assertion error: ",
 	errorExpected = "Exptected: ",
 	errorSyntax = "Syntax error",
+	errorHookNotFunction = "Hook is not a function",
 	failedTests = "FAILED TESTS",
 	noTests = "No tests found",
 	removed = "-",
@@ -26,4 +27,5 @@ return {
 		skipping = "%d skipping\n",
 	},
 	performance = "\nApproximate execution time %s / Mem: %s @ %s\n",
+	unknownContext = "Unknown context",
 }

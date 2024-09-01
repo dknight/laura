@@ -1,3 +1,4 @@
 - Better check for isColorSupported for unix;
 - refactor printer to terminal + reporter
-- before, after, beforeEach, afterEach
+- rename describe to suite
+- labels, constants to capitalize

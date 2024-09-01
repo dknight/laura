@@ -77,7 +77,7 @@ end
 
 ---@param message string
 ---@param status Status
----@param suffix? string | nil
+---@param suffix? string
 ---@param level? number
 local function printResult(message, status, suffix, level)
 	level = level or 0

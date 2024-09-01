@@ -43,7 +43,7 @@ end
 
 ---Checks that file exists,
 ---@param file string
----@return boolean, string|nil
+---@return boolean, string?
 local function exists(file)
 	local ok, err, code = os.rename(file, file)
 	if not ok then

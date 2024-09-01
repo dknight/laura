@@ -3,10 +3,11 @@ local constants = require("lib.util.constants")
 ---@class Context
 ---@field public children Runnable[]
 ---@field public config {[string]: any}
+---@field public current Runnable
 ---@field public level number
 ---@field public onlyTests Runnable[]
----@field public parent Runnable| nil
----@field public root Runnable | nil
+---@field public parent? Runnable
+---@field public root? Runnable
 ---@field public suites Runnable[]
 ---@field public suitesLevels Runnable[]
 ---@field public tests Runnable[]
@@ -25,6 +26,7 @@ function Context.new()
 		suites = {},
 		suitesLevels = {},
 		tests = {},
+		current = nil,
 	}
 end
 
