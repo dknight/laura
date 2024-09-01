@@ -2,8 +2,6 @@ local constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Runnable = require("lib.classes.Runnable")
 
-local describeErrorLevel = 3
-
 ---@type Context
 local ctx = Context.global()
 
