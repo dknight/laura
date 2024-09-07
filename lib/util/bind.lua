@@ -1,10 +1,10 @@
 ---Binds a value to the function, analogue function in JS .bind().
----@param fn function
+---@param func function
 ---@param ... any
 ---@return function
-return function(fn, ...)
+return function(func, ...)
 	local args = table.unpack({ ... })
 	return function(b)
-		return fn(args, b)
+		return func(args, b)
 	end
 end

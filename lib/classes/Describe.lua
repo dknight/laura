@@ -10,7 +10,7 @@ local Describe = Runnable.new(Runnable)
 
 function Describe:prepare()
 	Describe.createRootSuiteMaybe()
-	if type(self.fn) ~= "function" then
+	if type(self.func) ~= "function" then
 		error(
 			"Runnable.describe: callback is not a function",
 			constants.SuiteLevel
@@ -28,7 +28,7 @@ function Describe:prepare()
 	table.insert(self.parent.children, self)
 
 	ctx.level = ctx.level + 1
-	local ok, err = pcall(self.fn)
+	local ok, err = pcall(self.func)
 	if not ok then
 		error(err, constants.SuiteLevel)
 	end

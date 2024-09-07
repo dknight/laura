@@ -3,8 +3,6 @@
 local constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
-local tablex = require("lib.ext.tablex")
-local bind = require("lib.util.bind")
 local Queue = require("lib.classes.Queue")
 
 local ctx = Context.global()
@@ -14,9 +12,8 @@ local ctx = Context.global()
 ---@field public description string
 ---@field public err? Error
 ---@field public execTime number
----@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
 ---@field public filterOnly fun(root: Runnable)
----@field public fn function
+---@field public func function
 ---@field public hooks {[HookType]: Hook}
 ---@field public level number
 ---@field public parent? Runnable
@@ -29,6 +26,8 @@ local Runnable = {
 	__debug__ = 0,
 }
 
+---Filters only tests. This method modifies context in place.
+---@oaram suite Runnable
 Runnable.filterOnly = function(suite)
 	suite = suite or ctx.root
 	for i = #suite.children, 1, -1 do
@@ -65,6 +64,7 @@ Runnable.traverse = function(suite, cb)
 	end
 end
 
+---Creates root context if not yet exists.
 Runnable.createRootSuiteMaybe = function()
 	if not ctx.root then
 		local root = Runnable:new(constants.rootSuiteKey, function() end)
@@ -78,15 +78,15 @@ end
 
 ---Create a new Runnable instance.
 ---@param description? string
----@param fn? function
+---@param func? function
 ---@return Runnable
-function Runnable:new(description, fn)
+function Runnable:new(description, func)
 	local t = {
 		children = {},
 		description = description,
 		err = nil,
 		execTime = 0,
-		fn = fn,
+		func = func,
 		_only = false,
 		_suite = false,
 		level = 0,
@@ -132,11 +132,11 @@ function Runnable:run()
 		self.status = Status.Skipped
 		return
 	end
-	if type(self.fn) ~= "function" then
+	if type(self.func) ~= "function" then
 		self.err = {
 			message = "Runnable.it: callback is not a function",
 			expected = "function",
-			actual = type(self.fn),
+			actual = type(self.func),
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
@@ -153,10 +153,10 @@ function Runnable:run()
 	end
 	self.parent:runHooks(constants.BeforeEachName)
 
-	local ok, err = pcall(self.fn)
+	local ok, err = pcall(self.func)
 	if not ok then
 		self.err = err
-		self.err.debuginfo = debug.getinfo(self.fn, "S")
+		self.err.debuginfo = debug.getinfo(self.func, "S")
 		self.err.traceback = debug.traceback()
 		self.status = Status.Failed
 	else
@@ -173,18 +173,18 @@ end
 
 ---Skipping the task.
 ---@param description string
----@param fn function
-function Runnable:skip(description, fn)
-	local r = self:new(description, fn)
+---@param func function
+function Runnable:skip(description, func)
+	local r = self:new(description, func)
 	r:prepare()
 	r.status = Status.Skipped
 end
 
 ---Mark test/suite as only to run.
 ---@param description string
----@param fn function
-function Runnable:only(description, fn)
-	local r = self:new(description, fn)
+---@param func function
+function Runnable:only(description, func)
+	local r = self:new(description, func)
 	r._only = true
 	r:prepare()
 	r:traverseAncestors(function(parent) -- ???
