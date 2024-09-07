@@ -69,8 +69,7 @@ Runnable.createRootSuiteMaybe = function()
 	if not ctx.root then
 		local root = Runnable:new(Constants.RootSuiteKey, function() end)
 		ctx.root = root
-		ctx.suitesLevels[0] = root
-		ctx.suites[#ctx.suites + 1] = root
+		ctx.suites[0] = root
 		ctx.level = ctx.level + 1
 		ctx.current = root
 	end
@@ -111,7 +110,7 @@ end
 function Runnable:prepare()
 	Runnable.createRootSuiteMaybe()
 	self.level = ctx.level
-	self.parent = ctx.suitesLevels[self.level - 1]
+	self.parent = ctx.suites[self.level - 1]
 	table.insert(self.parent.children, self)
 end
 
@@ -187,7 +186,7 @@ function Runnable:only(description, func)
 	local r = self:new(description, func)
 	r._only = true
 	r:prepare()
-	r:traverseAncestors(function(parent) -- ???
+	r:traverseAncestors(function(parent)
 		---@diagnostic disable-next-line
 		parent._only = true
 	end)

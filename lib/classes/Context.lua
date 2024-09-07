@@ -8,7 +8,6 @@ local Constants = require("lib.util.constants")
 ---@field public parent? Runnable
 ---@field public root? Runnable
 ---@field public suites Runnable[]
----@field public suitesLevels Runnable[]
 local Context = {}
 
 ---Creates new app context.
@@ -21,7 +20,6 @@ function Context.new()
 		parent = nil,
 		root = nil,
 		suites = {},
-		suitesLevels = {},
 		current = nil,
 	}
 end

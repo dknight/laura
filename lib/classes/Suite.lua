@@ -20,11 +20,10 @@ function Suite:prepare()
 	self.level = ctx.level
 	self._suite = true
 
-	ctx.suites[#ctx.suites + 1] = self
-	ctx.suitesLevels[ctx.level] = self
+	ctx.suites[ctx.level] = self
 	ctx.current = self
 
-	self.parent = ctx.suitesLevels[ctx.level - 1]
+	self.parent = ctx.suites[ctx.level - 1]
 	table.insert(self.parent.children, self)
 
 	ctx.level = ctx.level + 1
