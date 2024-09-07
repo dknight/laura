@@ -5,9 +5,9 @@ local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local memory = require("lib.util.memory")
 local Runnable = require("lib.classes.Runnable")
-local Status = require("lib.classes.Status")
 local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
+local tablex = require("lib.ext.tablex")
 
 local ctx = Context.global()
 
@@ -22,9 +22,9 @@ local Runner = {}
 function Runner:new()
 	local t = {
 		totalCount = 0,
-		passed = {},
-		failed = {},
-		skipped = {},
+		passing = {},
+		failing = {},
+		skipping = {},
 	}
 	return setmetatable(t, {
 		__index = self,
@@ -36,45 +36,51 @@ function Runner:runTests()
 	if ctx.root:hasOnly() then
 		Runnable.filterOnly(ctx.root)
 	end
-	if #ctx.onlyTests > 0 then
-		ctx.tests = Runnable.filter(ctx.onlyTests, { isSuite = false })
-	end
 
-	Runnable.traverse(ctx.tests, function(test)
+	self.totalCount = 0
+	Runnable.traverse(ctx.root, function(test)
 		test:run()
-	end)
 
-	self.totalCount = #ctx.tests
-	self.failing = Runnable.filter(ctx.tests, { status = Status.Failed })
-	self.passing = Runnable.filter(ctx.tests, { status = Status.Passed })
-	self.skipping = Runnable.filter(ctx.tests, { status = Status.Skipped })
+		if test:isFailed() then
+			self.failing[#self.failing + 1] = test
+		end
+
+		if test:isPassed() then
+			self.passing[#self.passing + 1] = test
+		end
+
+		if test:isSkipped() then
+			self.skipping[#self.skipping + 1] = test
+		end
+		self.totalCount = self.totalCount + 1
+	end)
 end
 
 ---Reports the tests
 function Runner:reportTests(suite)
+	if self.totalCount == 0 then
+		Terminal.printStyle(labels.noTests)
+		return
+	end
 	suite = suite or ctx.root
 	for _, test in ipairs(suite.children) do
 		local lvl = test.level - 1
-		if test.isSuite then
+		if test:isSuite() then
 			Terminal.printStyle(
 				helpers.tab(lvl) .. test.description,
 				Terminal.Style.Bold
 			)
 		else
 			local tmStr = time.toString(test.execTime, " (%s)")
-			if test.status == Status.Skipped then
+			if test:isSkipped() then
 				Terminal.printSkipped(test.description, nil, lvl)
-			elseif test.status == Status.Failed then
+			elseif test:isFailed() then
 				Terminal.printActual(test.description, tmStr, lvl)
-			elseif test.status == Status.Passed then
+			elseif test:isPassed() then
 				Terminal.printExpected(test.description, tmStr, lvl)
 			end
 		end
 		Runner:reportTests(test)
-	end
-
-	if self.totalCount == 0 then
-		Terminal.printStyle(labels.noTests)
 	end
 end
 
@@ -89,12 +95,11 @@ function Runner:reportErrors()
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
-	local n = 1
-	Runnable.traverse(self.failing, function(test)
-		io.write(string.format("%d. ", n))
+
+	for i, test in ipairs(self.failing) do
+		io.write(string.format("%d. ", i))
 		errorx.print(test.err)
-		n = n + 1
-	end)
+	end
 end
 
 ---Reports summary.

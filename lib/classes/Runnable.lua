@@ -4,6 +4,8 @@ local constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
 local tablex = require("lib.ext.tablex")
+local bind = require("lib.util.bind")
+local Queue = require("lib.classes.Queue")
 
 local ctx = Context.global()
 
@@ -12,57 +14,58 @@ local ctx = Context.global()
 ---@field public description string
 ---@field public err? Error
 ---@field public execTime number
+---@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
+---@field public filterOnly fun(root: Runnable)
 ---@field public fn function
----@field public isOnly boolean
----@field public isSuite boolean
+---@field public hooks {[HookType]: Hook}
 ---@field public level number
 ---@field public parent? Runnable
 ---@field public status? Status
----@field public filter fun(collection: Runnable[], fn: SearchFilter): Runnable[]
 ---@field public traverse fun(collection: Runnable[], cb: fun(suite: Runnable, index?: number))
----@field public filterOnly fun(root: Runnable)
----@field public hooks {[HookType]: Hook}
----@field protected createRootSuite function
+---@field private _suite boolean
+---@field protected _only boolean
+---@field protected createRootSuiteMaybe function
 local Runnable = {
 	__debug__ = 0,
 }
 
-Runnable.filter = function(collection, fn)
-	local newt = tablex.filter(collection, function(v)
-		for k in pairs(fn) do
-			if fn[k] ~= v[k] then
-				return false
-			end
+Runnable.filterOnly = function(suite)
+	suite = suite or ctx.root
+	for i = #suite.children, 1, -1 do
+		local test = suite.children[i]
+		if suite:hasOnly() and not test:isOnly() or test:isSkipped() then
+			table.remove(suite.children, i)
 		end
-		return true
-	end)
-	return newt
-end
-
-Runnable.traverse = function(collection, cb)
-	for i, test in ipairs(collection) do
-		cb(test, i)
+		Runnable.filterOnly(test)
 	end
 end
 
-Runnable.filterOnly = function(root)
-	for _, child in ipairs(root.children) do
-		-- root children
-		if child.isOnly then
-			table.insert(ctx.onlyTests, child)
-		end
+---Traversing tests and suites tree
+---@param suite Runnable
+---@param cb fun(test: Runnable, i?: number)
+Runnable.traverse = function(suite, cb)
+	if suite == nil then
+		return
+	end
+	local q = Queue:new()
+	q:enqueue(suite)
+	while q:size() > 0 do
+		local n = q:size()
 
-		if not child:hasOnly() then
-			for _, test in ipairs(child.children) do
-				table.insert(ctx.onlyTests, test)
+		while n > 0 do
+			local test = q:dequeue()
+			if not test:isSuite() and test.parent ~= nil then
+				cb(test)
 			end
+			for i = 1, #test.children do
+				q:enqueue(test.children[i])
+			end
+			n = n - 1
 		end
-
-		Runnable.filterOnly(child)
 	end
 end
 
-Runnable.createRootSuite = function()
+Runnable.createRootSuiteMaybe = function()
 	if not ctx.root then
 		local root = Runnable:new(constants.rootSuiteKey, function() end)
 		ctx.root = root
@@ -84,8 +87,8 @@ function Runnable:new(description, fn)
 		err = nil,
 		execTime = 0,
 		fn = fn,
-		isOnly = false,
-		isSuite = false,
+		_only = false,
+		_suite = false,
 		level = 0,
 		parent = nil,
 		status = nil,
@@ -106,11 +109,10 @@ end
 
 ---Prepares the tests before running.
 function Runnable:prepare()
-	Runnable.createRootSuite()
+	Runnable.createRootSuiteMaybe()
 	self.level = ctx.level
 	self.parent = ctx.suitesLevels[self.level - 1]
 	table.insert(self.parent.children, self)
-	table.insert(ctx.tests, self)
 end
 
 ---Runs the all tests.
@@ -118,18 +120,16 @@ function Runnable:run()
 	Runnable.__debug__ = Runnable.__debug__ + 1
 	local tstart = os.clock()
 	local parentIsSkipped = false
-	local nxt = self.parent
-	while nxt ~= nil and nxt ~= ctx.root do
-		if nxt.status == Status.Skipped then
+	self:traverseAncestors(function(parent)
+		if parent:isSkipped() then
 			parentIsSkipped = true
-			break
 		end
-		nxt = nxt.parent
-	end
-	if parentIsSkipped then
+	end, function(parent)
+		return parent ~= ctx.root
+	end)
+
+	if parentIsSkipped or self:isSkipped() then
 		self.status = Status.Skipped
-	end
-	if parentIsSkipped or self.status == Status.Skipped then
 		return
 	end
 	if type(self.fn) ~= "function" then
@@ -153,7 +153,6 @@ function Runnable:run()
 	end
 	self.parent:runHooks(constants.BeforeEachName)
 
-	-- Exec
 	local ok, err = pcall(self.fn)
 	if not ok then
 		self.err = err
@@ -181,21 +180,69 @@ function Runnable:skip(description, fn)
 	r.status = Status.Skipped
 end
 
----Running only marked tasks.
+---Mark test/suite as only to run.
 ---@param description string
 ---@param fn function
 function Runnable:only(description, fn)
 	local r = self:new(description, fn)
+	r._only = true
 	r:prepare()
-	r.isOnly = true
-	r.parent.isOnly = true
+	r:traverseAncestors(function(parent) -- ???
+		---@diagnostic disable-next-line
+		parent._only = true
+	end)
+end
+
+---@return boolean
+function Runnable:isOnly()
+	return self._only
+end
+
+---@return boolean
+function Runnable:isSuite()
+	return self._suite
+end
+
+---@return boolean
+function Runnable:isPassed()
+	return self.status == Status.Passed
+end
+
+---@return boolean
+function Runnable:isSkipped()
+	return self.status == Status.Skipped
+end
+
+---@return boolean
+function Runnable:isFailed()
+	return self.status == Status.Failed
+end
+
+---Traverses ancestors up to the root, or stopped after
+---predicate stopper func.
+---@param func fun(parent: Runnable)
+---@param stop? fun(parent: Runnable): boolean
+function Runnable:traverseAncestors(func, stop)
+	stop = stop or function()
+		return true
+	end
+	local nextParent = self.parent
+	while nextParent ~= nil and stop(nextParent) do
+		func(nextParent)
+		nextParent = nextParent.parent
+	end
 end
 
 ---@param typ HookType
 function Runnable:runHooks(typ)
 	for _, hook in ipairs(self.hooks[typ]) do
-		-- print(hook.name, hook.func)
-		hook.func()
+		local ok, err = pcall(hook.func)
+		if not ok then
+			self.err = {
+				message = err,
+			}
+			self.status = Status.Failed
+		end
 	end
 end
 
@@ -203,7 +250,7 @@ end
 ---@return boolean
 function Runnable:hasOnly()
 	for _, test in ipairs(self.children) do
-		if test.isOnly then
+		if test:isOnly() then
 			return true
 		end
 	end

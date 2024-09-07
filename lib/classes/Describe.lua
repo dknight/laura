@@ -9,7 +9,7 @@ local ctx = Context.global()
 local Describe = Runnable.new(Runnable)
 
 function Describe:prepare()
-	Describe.createRootSuite()
+	Describe.createRootSuiteMaybe()
 	if type(self.fn) ~= "function" then
 		error(
 			"Runnable.describe: callback is not a function",
@@ -18,7 +18,7 @@ function Describe:prepare()
 	end
 
 	self.level = ctx.level
-	self.isSuite = true
+	self._suite = true
 
 	ctx.suites[#ctx.suites + 1] = self
 	ctx.suitesLevels[ctx.level] = self
@@ -26,13 +26,12 @@ function Describe:prepare()
 
 	self.parent = ctx.suitesLevels[ctx.level - 1]
 	table.insert(self.parent.children, self)
+
 	ctx.level = ctx.level + 1
-	-- self:runHooks(constants.BeforeAllName)
 	local ok, err = pcall(self.fn)
 	if not ok then
 		error(err, constants.SuiteLevel)
 	end
-
 	ctx.level = ctx.level - 1
 end
 

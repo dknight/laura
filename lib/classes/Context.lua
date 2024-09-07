@@ -5,12 +5,10 @@ local constants = require("lib.util.constants")
 ---@field public config {[string]: any}
 ---@field public current Runnable
 ---@field public level number
----@field public onlyTests Runnable[]
 ---@field public parent? Runnable
 ---@field public root? Runnable
 ---@field public suites Runnable[]
 ---@field public suitesLevels Runnable[]
----@field public tests Runnable[]
 local Context = {}
 
 ---Creates new app context.
@@ -20,12 +18,10 @@ function Context.new()
 		children = {},
 		config = {},
 		level = 0,
-		onlyTests = {},
 		parent = nil,
 		root = nil,
 		suites = {},
 		suitesLevels = {},
-		tests = {},
 		current = nil,
 	}
 end
