@@ -27,6 +27,20 @@ local Color = {
 	[Status.Unchanged] = "90",
 }
 
+---Runs `tput colors` command and get color count
+---@return boolean
+local function testTputColors()
+	local fd = io.popen("tput colors", "r")
+	local colorsNum = 0
+	if fd ~= nil then
+		colorsNum = fd:read("*n")
+		fd:close()
+	end
+	return colorsNum > 0
+end
+
+local colorsNum = testTputColors()
+
 ---Checks that termianl supports colors. If in config file 'color' set to false
 ---the function ignores all checks and return false immideatly.
 ---@return boolean
@@ -37,7 +51,9 @@ local function isColorSupported()
 	if osx.isWindows() then
 		return not not os.getenv("ANSICON")
 	end
-	return true
+
+	local term = os.getenv("TERM") or ""
+	return term:match("color") or os.getenv("LS_COLORS") or colorsNum
 end
 
 ---@return string
@@ -54,7 +70,6 @@ local function setColor(status)
 	if isColorSupported() then
 		return string.format("\27[%sm", Color[status])
 	end
-	print(os.getenv("TERM"))
 	return ""
 end
 
