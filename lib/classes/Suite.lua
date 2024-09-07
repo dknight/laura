@@ -5,14 +5,14 @@ local Runnable = require("lib.classes.Runnable")
 ---@type Context
 local ctx = Context.global()
 
----@class Describe : Runnable
-local Describe = Runnable.new(Runnable)
+---@class Suite : Runnable
+local Suite = Runnable.new(Runnable)
 
-function Describe:prepare()
-	Describe.createRootSuiteMaybe()
+function Suite:prepare()
+	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
 		error(
-			"Runnable.describe: callback is not a function",
+			"Runnable : Suite: callback is not a function",
 			constants.SuiteLevel
 		)
 	end
@@ -35,4 +35,4 @@ function Describe:prepare()
 	ctx.level = ctx.level - 1
 end
 
-return Describe.new(Describe)
+return Suite.new(Suite)

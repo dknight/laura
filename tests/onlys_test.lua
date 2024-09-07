@@ -1,6 +1,6 @@
 local expect = require("lib.expect")
-local describe = require("lib.classes.Describe")
-local it = require("lib.classes.It")
+local describe = require("lib.classes.Suite")
+local it = require("lib.classes.Test")
 
 describe:only("only describe", function()
 	it("only 1st", function()

@@ -1,6 +1,6 @@
-local it = require("lib.classes.It")
+local it = require("lib.classes.Test")
 local expect = require("lib.expect")
-local describe = require("lib.classes.Describe")
+local describe = require("lib.classes.Suite")
 local hooks = require("lib.hooks")
 
 describe("hooks", function()
