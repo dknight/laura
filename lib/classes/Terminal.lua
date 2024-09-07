@@ -1,6 +1,6 @@
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
+local Labels = require("lib.labels")
 local osx = require("lib.ext.osx")
 local Status = require("lib.classes.Status")
 
@@ -95,7 +95,7 @@ local function printResult(message, status, suffix, level)
 	local str = string.format(
 		tpl,
 		helpers.tab(level),
-		setColor(status) .. labels.statuses[status] .. resetColor(),
+		setColor(status) .. Labels.Statuses[status] .. resetColor(),
 		message,
 		suffix
 	)

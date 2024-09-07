@@ -1,4 +1,4 @@
-local constants = require("lib.util.constants")
+local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 
 local ctx = Context.global()
@@ -53,7 +53,7 @@ end
 ---Prints usage in terminal.
 local function usage()
 	print(table.concat({
-		string.format("%s v%s", constants.appKey, version()),
+		string.format("%s v%s", Constants.AppKey, version()),
 		"Usage: laura [-chv?] <directory-with-tests>",
 		"\t" .. "-c, --config\tPath to config file.",
 		"\t" .. "-v, --version\tPrint program name and it's version.",

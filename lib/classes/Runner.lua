@@ -1,13 +1,12 @@
-local constants = require("lib.util.constants")
+local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
+local Labels = require("lib.labels")
 local memory = require("lib.util.memory")
 local Runnable = require("lib.classes.Runnable")
 local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
-local tablex = require("lib.ext.tablex")
 
 local ctx = Context.global()
 
@@ -59,7 +58,7 @@ end
 ---Reports the tests
 function Runner:reportTests(suite)
 	if self.totalCount == 0 then
-		Terminal.printStyle(labels.noTests)
+		Terminal.printStyle(Labels.NoTests)
 		return
 	end
 	suite = suite or ctx.root
@@ -91,7 +90,7 @@ function Runner:reportErrors()
 	end
 	io.write("\n")
 	Terminal.printStyle(
-		labels.failedTests,
+		Labels.FailedTests,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
@@ -105,23 +104,23 @@ end
 ---Reports summary.
 function Runner:reportSummary()
 	Terminal.printStyle(
-		labels.summary.title,
+		Labels.Summary.Title,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
-		labels.summary.passing,
+		Labels.Summary.Passing,
 		#self.passing,
 		self.totalCount - #self.skipping
 	)
 	io.write(successMsg)
 
-	local failedMessage = string.format(labels.summary.failing, #self.failing)
+	local failedMessage = string.format(Labels.Summary.Failing, #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(labels.summary.skipping, #self.skipping)
+		string.format(Labels.Summary.Skipping, #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -132,7 +131,7 @@ function Runner:reportPerformance(startTime)
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			labels.performance,
+			Labels.Performance,
 			formatedTime,
 			formattedMemory,
 			os.date()
@@ -141,15 +140,15 @@ function Runner:reportPerformance(startTime)
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- * constants.exitFailed (1) There are the failures.
---- * constants.exitOk (0) All tests are passed.
+--- * Constants.ExitFailed (1) There are the failures.
+--- * Constants.ExitOK (0) All tests are passed.
 function Runner:done()
 	if #self.failing > 0 then
-		print(labels.resultFailed)
-		os.exit(constants.exitFailed)
+		print(Labels.ResultFailed)
+		os.exit(Constants.ExitFailed)
 	else
-		print(labels.resultPass)
-		os.exit(constants.exitOk)
+		print(Labels.ResultPass)
+		os.exit(Constants.ExitOK)
 	end
 end
 

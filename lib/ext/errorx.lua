@@ -2,7 +2,7 @@
 
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
+local Labels = require("lib.labels")
 local Status = require("lib.classes.Status")
 local Terminal = require("lib.classes.Terminal")
 
@@ -34,16 +34,16 @@ local function tostring(err)
 		err.description or "",
 		"\n\n",
 		helpers.tab(1),
-		labels.removed,
-		labels.errorExpected,
+		Labels.Removed,
+		Labels.ErrorExpected,
 		Terminal.setColor(Status.Passed),
 		string.format("%q", err.expected),
 		Terminal.resetColor(),
 		helpers.tab(ctx.level),
 		"\n",
 		helpers.tab(1),
-		labels.added,
-		labels.errorActual,
+		Labels.Added,
+		Labels.ErrorActual,
 		Terminal.setColor(Status.Failed),
 		string.format("%q", err.actual),
 		Terminal.resetColor(),

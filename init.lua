@@ -1,10 +1,10 @@
 local startTime = os.clock()
 
-local constants = require("lib.util.constants")
+local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
+local Labels = require("lib.labels")
 local Runner = require("lib.classes.Runner")
 local Terminal = require("lib.classes.Terminal")
 
@@ -31,12 +31,12 @@ end
 for k, v in ipairs(arg) do
 	if v == "-h" or v == "-?" or v == "--help" then
 		helpers.usage()
-		os.exit(constants.exitOk)
+		os.exit(Constants.ExitOK)
 	end
 
 	if v == "-v" or v == "--version" then
-		print(string.format("%s v%s", constants.appKey, helpers.version()))
-		os.exit(constants.exitOk)
+		print(string.format("%s v%s", Constants.AppKey, helpers.version()))
+		os.exit(Constants.ExitOK)
 	end
 
 	if v == "-c" or v == "--config" then
@@ -65,8 +65,8 @@ end
 
 local files, fcount = fs.getFiles(filesDir)
 if fcount == 0 then
-	print(labels.noTests)
-	os.exit(constants.exitOk)
+	print(Labels.NoTests)
+	os.exit(Constants.ExitOK)
 end
 
 -- Sorting files in alphabetical order to keep consistency.
@@ -75,8 +75,8 @@ for fname in helpers.spairs(files) do
 	if chunk ~= nil then
 		chunk()
 	else
-		Terminal.printActual(err or labels.errorSyntax)
-		os.exit(constants.exitFailed)
+		Terminal.printActual(err or Labels.ErrorSyntax)
+		os.exit(Constants.ExitFailed)
 	end
 end
 

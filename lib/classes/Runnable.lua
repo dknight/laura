@@ -1,6 +1,6 @@
 ---@alias SearchFilter {status: Status, isSuite: boolean}
 
-local constants = require("lib.util.constants")
+local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
 local Queue = require("lib.classes.Queue")
@@ -67,7 +67,7 @@ end
 ---Creates root context if not yet exists.
 Runnable.createRootSuiteMaybe = function()
 	if not ctx.root then
-		local root = Runnable:new(constants.rootSuiteKey, function() end)
+		local root = Runnable:new(Constants.RootSuiteKey, function() end)
 		ctx.root = root
 		ctx.suitesLevels[0] = root
 		ctx.suites[#ctx.suites + 1] = root
@@ -93,10 +93,10 @@ function Runnable:new(description, func)
 		parent = nil,
 		status = nil,
 		hooks = {
-			[constants.AfterAllName] = {},
-			[constants.AfterEachName] = {},
-			[constants.BeforeAllName] = {},
-			[constants.BeforeEachName] = {},
+			[Constants.AfterAllName] = {},
+			[Constants.AfterEachName] = {},
+			[Constants.BeforeAllName] = {},
+			[Constants.BeforeEachName] = {},
 		},
 	}
 	return setmetatable(t, {
@@ -149,9 +149,9 @@ function Runnable:run()
 	local isFirst = self.parent.children[1] == self
 	local isLast = self.parent.children[#self.parent.children] == self
 	if isFirst then
-		self.parent:runHooks(constants.BeforeAllName)
+		self.parent:runHooks(Constants.BeforeAllName)
 	end
-	self.parent:runHooks(constants.BeforeEachName)
+	self.parent:runHooks(Constants.BeforeEachName)
 
 	local ok, err = pcall(self.func)
 	if not ok then
@@ -163,9 +163,9 @@ function Runnable:run()
 		self.status = Status.Passed
 	end
 
-	self.parent:runHooks(constants.AfterEachName)
+	self.parent:runHooks(Constants.AfterEachName)
 	if isLast then
-		self.parent:runHooks(constants.AfterAllName)
+		self.parent:runHooks(Constants.AfterAllName)
 	end
 
 	self.execTime = os.clock() - tstart

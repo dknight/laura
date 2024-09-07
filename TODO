@@ -1,3 +1,2 @@
 - Better check for isColorSupported for unix;
 - refactor printer to terminal + reporter
-- labels, constants to capitalize

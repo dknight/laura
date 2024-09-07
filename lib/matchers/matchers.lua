@@ -1,7 +1,7 @@
 ---@alias MatchResult {a: any, err: Error, ok: boolean}
 
 local errorx = require("lib.ext.errorx")
-local labels = require("lib.labels")
+local Labels = require("lib.labels")
 local tablex = require("lib.ext.tablex")
 
 local matchers = {}
@@ -14,7 +14,7 @@ local matchers = {}
 matchers.toEqual = function(t, b)
 	t.ok = t.a == b
 	if not t.ok then
-		t.err = errorx.new(labels.errorAssertion, t.a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, t.a, b)
 	end
 	return t(b)
 end
@@ -40,7 +40,7 @@ matchers.toDeepEqual = function(t, b)
 	if not t.ok then
 		local diff, count = tablex.diff(t.a, b)
 		t.err = errorx.new(
-			labels.errorAssertion,
+			Labels.ErrorAssertion,
 			count.added,
 			count.removed,
 			nil,
@@ -56,7 +56,7 @@ end
 matchers.toBeTruthy = function(t)
 	t.ok = not not t.a
 	if not t.ok then
-		t.err = errorx.new(labels.errorAssertion, true, t.a)
+		t.err = errorx.new(Labels.ErrorAssertion, true, t.a)
 	end
 	return t()
 end
@@ -67,7 +67,7 @@ end
 matchers.toBeFalsy = function(t)
 	t.ok = t.a == false or t.a == nil
 	if not t.ok then
-		t.err = errorx.new(labels.errorAssertion, false, t.a)
+		t.err = errorx.new(Labels.ErrorAssertion, false, t.a)
 	end
 	return t()
 end
@@ -78,7 +78,7 @@ end
 matchers.toBeNil = function(t)
 	t.ok = t.a == nil
 	if not t.ok then
-		t.err = errorx.new(labels.errorAssertion, nil, t.a)
+		t.err = errorx.new(Labels.errorAssertion, nil, t.a)
 	end
 	return t()
 end

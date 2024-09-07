@@ -1,4 +1,4 @@
-local constants = require("lib.util.constants")
+local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local Runnable = require("lib.classes.Runnable")
 
@@ -13,7 +13,7 @@ function Suite:prepare()
 	if type(self.func) ~= "function" then
 		error(
 			"Runnable : Suite: callback is not a function",
-			constants.SuiteLevel
+			Constants.SuiteLevel
 		)
 	end
 
@@ -30,7 +30,7 @@ function Suite:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
-		error(err, constants.SuiteLevel)
+		error(err, Constants.SuiteLevel)
 	end
 	ctx.level = ctx.level - 1
 end
