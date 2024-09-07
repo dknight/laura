@@ -54,6 +54,7 @@ local function setColor(status)
 	if isColorSupported() then
 		return string.format("\27[%sm", Color[status])
 	end
+	print(os.getenv("TERM"))
 	return ""
 end
 
