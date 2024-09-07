@@ -18,9 +18,9 @@ local ctx = Context.global()
 ---@field public level number
 ---@field public parent? Runnable
 ---@field public status? Status
----@field public traverse fun(collection: Runnable[], cb: fun(suite: Runnable, index?: number))
+---@field public traverse fun(suite: Runnable, func: fun(test: Runnable, i?: number))
 ---@field private _suite boolean
----@field protected _only boolean
+---@field private _only boolean
 ---@field protected createRootSuiteMaybe function
 local Runnable = {
 	__debug__ = 0,
@@ -41,8 +41,8 @@ end
 
 ---Traversing tests and suites tree
 ---@param suite Runnable
----@param cb fun(test: Runnable, i?: number)
-Runnable.traverse = function(suite, cb)
+---@param func fun(test: Runnable, i?: number)
+Runnable.traverse = function(suite, func)
 	if suite == nil then
 		return
 	end
@@ -54,7 +54,7 @@ Runnable.traverse = function(suite, cb)
 		while n > 0 do
 			local test = q:dequeue()
 			if not test:isSuite() and test.parent ~= nil then
-				cb(test)
+				func(test)
 			end
 			for i = 1, #test.children do
 				q:enqueue(test.children[i])
