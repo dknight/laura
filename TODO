@@ -1,1 +1,3 @@
-- refactor printer to terminal + reporter
+- add dots reporter
+- percent reporter
+- other reporter
