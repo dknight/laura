@@ -4,6 +4,7 @@ local Status = require("lib.classes.Status")
 return {
 	Added = "+",
 	ErrorActual = "Actual: ",
+	ErrorNoRoot = "No root found",
 	ErrorAssertion = "Assertion error: ",
 	ErrorExpected = "Exptected: ",
 	ErrorSyntax = "Syntax error",

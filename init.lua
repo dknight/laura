@@ -3,7 +3,7 @@ local startTime = os.clock()
 local Context = require("lib.classes.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")
-local Labels = require("lib.labels")
+local labels = require("lib.labels")
 local Runner = require("lib.classes.Runner")
 local Terminal = require("lib.classes.Terminal")
 
@@ -64,7 +64,7 @@ end
 
 local files, fcount = fs.getFiles(filesDir)
 if fcount == 0 then
-	print(Labels.NoTests)
+	print(labels.NoTests)
 	os.exit(ctx.config._exitOK)
 end
 
@@ -74,7 +74,7 @@ for fname in helpers.spairs(files) do
 	if chunk ~= nil then
 		chunk()
 	else
-		Terminal.printActual(err or Labels.ErrorSyntax)
+		Terminal.printActual(err or labels.ErrorSyntax)
 		os.exit(ctx.config._exitFailed)
 	end
 end

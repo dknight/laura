@@ -1,11 +1,12 @@
 local Context = require("lib.classes.Context")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
-local Labels = require("lib.labels")
+local labels = require("lib.labels")
 local memory = require("lib.util.memory")
 local Runnable = require("lib.classes.Runnable")
 local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
+local labels = require("lib.labels")
 
 local ctx = Context.global()
 
@@ -55,12 +56,16 @@ function Runner:runTests()
 end
 
 ---Reports the tests
+---@param suite? Runnable
 function Runner:reportTests(suite)
 	if self.totalCount == 0 then
-		Terminal.printStyle(Labels.NoTests)
+		Terminal.printStyle(labels.NoTests)
 		return
 	end
 	suite = suite or ctx.root
+	if suite == nil then
+		error(labels.ErrorNoRoot)
+	end
 	for _, test in ipairs(suite.children) do
 		local lvl = test.level - 1
 		if test:isSuite() then
@@ -89,7 +94,7 @@ function Runner:reportErrors()
 	end
 	io.write("\n")
 	Terminal.printStyle(
-		Labels.FailedTests,
+		labels.FailedTests,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
@@ -103,23 +108,23 @@ end
 ---Reports summary.
 function Runner:reportSummary()
 	Terminal.printStyle(
-		Labels.Summary.Title,
+		labels.Summary.Title,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
-		Labels.Summary.Passing,
+		labels.Summary.Passing,
 		#self.passing,
 		self.totalCount - #self.skipping
 	)
 	io.write(successMsg)
 
-	local failedMessage = string.format(Labels.Summary.Failing, #self.failing)
+	local failedMessage = string.format(labels.Summary.Failing, #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(Labels.Summary.Skipping, #self.skipping)
+		string.format(labels.Summary.Skipping, #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -130,7 +135,7 @@ function Runner:reportPerformance(startTime)
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			Labels.Performance,
+			labels.Performance,
 			formatedTime,
 			formattedMemory,
 			os.date()
@@ -143,10 +148,10 @@ end
 --- * ctx.config._exitOK (0) All tests are passed.
 function Runner:done()
 	if #self.failing > 0 then
-		print(Labels.ResultFailed)
+		print(labels.ResultFailed)
 		os.exit(ctx.config._exitFailed)
 	else
-		print(Labels.ResultPass)
+		print(labels.ResultPass)
 		os.exit(ctx.config._exitOK)
 	end
 end

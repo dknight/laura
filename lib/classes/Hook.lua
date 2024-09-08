@@ -6,7 +6,7 @@
 
 local Context = require("lib.classes.Context")
 local errorx = require("lib.ext.errorx")
-local Labels = require("lib.labels")
+local labels = require("lib.labels")
 
 local ctx = Context.global()
 
@@ -24,11 +24,11 @@ Hook.new = function(typ, name)
 	return function(func)
 		if type(func) ~= "function" then
 			error(
-				errorx.new(Labels.ErrorHookNotFunction, type(func), "function")
+				errorx.new(labels.ErrorHookNotFunction, type(func), "function")
 			)
 		end
 		if not ctx.current then
-			error(errorx.new(Labels.UnknownContext))
+			error(errorx.new(labels.UnknownContext))
 		end
 		table.insert(ctx.current.hooks[typ], {
 			name = localName,
