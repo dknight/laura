@@ -66,7 +66,7 @@ end
 ---Creates root context if not yet exists.
 Runnable.createRootSuiteMaybe = function()
 	if not ctx.root then
-		local root = Runnable:new(ctx.config.RootSuiteKey, function() end)
+		local root = Runnable:new(ctx.config._rootSuiteKey, function() end)
 		ctx.root = root
 		ctx.suites[0] = root
 		ctx.level = ctx.level + 1
@@ -91,10 +91,10 @@ function Runnable:new(description, func)
 		parent = nil,
 		status = nil,
 		hooks = {
-			[ctx.config.AfterAllName] = {},
-			[ctx.config.AfterEachName] = {},
-			[ctx.config.BeforeAllName] = {},
-			[ctx.config.BeforeEachName] = {},
+			[ctx.config._afterAllName] = {},
+			[ctx.config._afterEachName] = {},
+			[ctx.config._beforeAllName] = {},
+			[ctx.config._beforeEachName] = {},
 		},
 	}
 	return setmetatable(t, {
@@ -147,9 +147,9 @@ function Runnable:run()
 	local isFirst = self.parent.children[1] == self
 	local isLast = self.parent.children[#self.parent.children] == self
 	if isFirst then
-		self.parent:runHooks(ctx.config.BeforeAllName)
+		self.parent:runHooks(ctx.config._beforeAllName)
 	end
-	self.parent:runHooks(ctx.config.BeforeEachName)
+	self.parent:runHooks(ctx.config._beforeEachName)
 
 	local ok, err = pcall(self.func)
 	if not ok then
@@ -161,9 +161,9 @@ function Runnable:run()
 		self.status = Status.Passed
 	end
 
-	self.parent:runHooks(ctx.config.AfterEachName)
+	self.parent:runHooks(ctx.config._afterEachName)
 	if isLast then
-		self.parent:runHooks(ctx.config.AfterAllName)
+		self.parent:runHooks(ctx.config._afterAllName)
 	end
 
 	self.execTime = os.clock() - tstart

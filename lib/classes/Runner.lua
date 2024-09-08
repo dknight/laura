@@ -139,15 +139,15 @@ function Runner:reportPerformance(startTime)
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- * ctx.config.ExitFailed (1) There are the failures.
---- * ctx.config.ExitOK (0) All tests are passed.
+--- * ctx.config._exitFailed (1) There are the failures.
+--- * ctx.config._exitOK (0) All tests are passed.
 function Runner:done()
 	if #self.failing > 0 then
 		print(Labels.ResultFailed)
-		os.exit(ctx.config.ExitFailed)
+		os.exit(ctx.config._exitFailed)
 	else
 		print(Labels.ResultPass)
-		os.exit(ctx.config.ExitOK)
+		os.exit(ctx.config._exitOK)
 	end
 end
 

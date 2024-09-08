@@ -9,16 +9,16 @@ local Config = {
 	tab = "\t",
 	traceback = false,
 
-	-- Internal do not change
-	AppKey = key,
-	SuiteLevel = 3,
-	ExitFailed = 1,
-	ExitOK = 0,
-	RootSuiteKey = "__LAURA_ROOT__",
-	BeforeEachName = "beforeEach", ---@as [[HookType]]
-	BeforeAllName = "beforeAll", ---@as [[HookType]]
-	AfterEachName = "afterEach", ---@as [[HookType]]
-	AfterAllName = "afterAll", ---@as [[HookType]]
+	-- Internal, do not meant to be change externally,
+	_appKey = key,
+	_suiteLevel = 3,
+	_exitFailed = 1,
+	_exitOK = 0,
+	_rootSuiteKey = "__LAURA_ROOT__",
+	_beforeEachName = "beforeEach", ---@as [[HookType]]
+	_beforeAllName = "beforeAll", ---@as [[HookType]]
+	_afterEachName = "afterEach", ---@as [[HookType]]
+	_afterAllName = "afterAll", ---@as [[HookType]]
 }
 
 return Config

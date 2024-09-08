@@ -30,12 +30,12 @@ end
 for k, v in ipairs(arg) do
 	if v == "-h" or v == "-?" or v == "--help" then
 		helpers.usage()
-		os.exit(ctx.config.ExitOK)
+		os.exit(ctx.config._exitOK)
 	end
 
 	if v == "-v" or v == "--version" then
-		print(string.format("%s v%s", ctx.config.AppKey, helpers.version()))
-		os.exit(ctx.config.ExitOK)
+		print(string.format("%s v%s", ctx.config._appKey, helpers.version()))
+		os.exit(ctx.config._exitOK)
 	end
 
 	if v == "-c" or v == "--config" then
@@ -65,7 +65,7 @@ end
 local files, fcount = fs.getFiles(filesDir)
 if fcount == 0 then
 	print(Labels.NoTests)
-	os.exit(ctx.config.ExitOK)
+	os.exit(ctx.config._exitOK)
 end
 
 -- Sorting files in alphabetical order to keep consistency.
@@ -75,7 +75,7 @@ for fname in helpers.spairs(files) do
 		chunk()
 	else
 		Terminal.printActual(err or Labels.ErrorSyntax)
-		os.exit(ctx.config.ExitFailed)
+		os.exit(ctx.config._exitFailed)
 	end
 end
 

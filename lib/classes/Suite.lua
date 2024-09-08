@@ -12,7 +12,7 @@ function Suite:prepare()
 	if type(self.func) ~= "function" then
 		error(
 			"Runnable : Suite: callback is not a function",
-			ctx.config.SuiteLevel
+			ctx.config._suiteLevel
 		)
 	end
 
@@ -28,7 +28,7 @@ function Suite:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
-		error(err, ctx.config.SuiteLevel)
+		error(err, ctx.config._suiteLevel)
 	end
 	ctx.level = ctx.level - 1
 end
