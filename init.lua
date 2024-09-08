@@ -48,7 +48,7 @@ for k, v in ipairs(arg) do
 end
 
 -- last argument should be directory with tests
-local filesDir = ctx.config.Dir
+local filesDir = ctx.config.dir
 if #arg ~= 0 then
 	filesDir = arg[#arg]
 end

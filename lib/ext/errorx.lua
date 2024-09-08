@@ -58,7 +58,7 @@ local function tostring(err)
 			err.debuginfo.linedefined
 		)
 	end
-	if ctx.config.Traceback then
+	if ctx.config.traceback then
 		out[#out + 1] = err.traceback
 		out[#out + 1] = "\n"
 	end

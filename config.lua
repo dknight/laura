@@ -1,12 +1,13 @@
 local key = require("key")
 
+---@type {[string]: boolean | number | string}
 local Config = {
 	-- External configurable
-	Color = true,
-	Dir = ".",
-	FilePattern = "*_test.lua",
-	Tab = "\t",
-	Traceback = false,
+	color = true,
+	dir = ".",
+	filePattern = "*_test.lua",
+	tab = "\t",
+	traceback = false,
 
 	-- Internal do not change
 	AppKey = key,

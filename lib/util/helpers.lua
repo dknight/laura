@@ -33,7 +33,7 @@ end
 ---@param n number
 ---@string
 local function tab(n)
-	return string.rep(ctx.config.Tab, n)
+	return string.rep(ctx.config.tab, n)
 end
 
 ---Read version number from file VERSION.
