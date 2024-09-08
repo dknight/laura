@@ -1,4 +1,4 @@
-local Constants = require("lib.util.constants")
+local key = require("key")
 
 ---@class Context
 ---@field public children Runnable[]
@@ -28,8 +28,8 @@ end
 ---creates a new context in _G.
 ---@return Context
 function Context.global()
-	_G[Constants.AppKey] = _G[Constants.AppKey] or Context.new()
-	return _G[Constants.AppKey]
+	_G[key] = _G[key] or Context.new()
+	return _G[key]
 end
 
 return Context

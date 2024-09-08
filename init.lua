@@ -1,6 +1,5 @@
 local startTime = os.clock()
 
-local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")
@@ -31,12 +30,12 @@ end
 for k, v in ipairs(arg) do
 	if v == "-h" or v == "-?" or v == "--help" then
 		helpers.usage()
-		os.exit(Constants.ExitOK)
+		os.exit(ctx.config.ExitOK)
 	end
 
 	if v == "-v" or v == "--version" then
-		print(string.format("%s v%s", Constants.AppKey, helpers.version()))
-		os.exit(Constants.ExitOK)
+		print(string.format("%s v%s", ctx.config.AppKey, helpers.version()))
+		os.exit(ctx.config.ExitOK)
 	end
 
 	if v == "-c" or v == "--config" then
@@ -49,7 +48,7 @@ for k, v in ipairs(arg) do
 end
 
 -- last argument should be directory with tests
-local filesDir = ctx.config.dir
+local filesDir = ctx.config.Dir
 if #arg ~= 0 then
 	filesDir = arg[#arg]
 end
@@ -66,7 +65,7 @@ end
 local files, fcount = fs.getFiles(filesDir)
 if fcount == 0 then
 	print(Labels.NoTests)
-	os.exit(Constants.ExitOK)
+	os.exit(ctx.config.ExitOK)
 end
 
 -- Sorting files in alphabetical order to keep consistency.
@@ -76,7 +75,7 @@ for fname in helpers.spairs(files) do
 		chunk()
 	else
 		Terminal.printActual(err or Labels.ErrorSyntax)
-		os.exit(Constants.ExitFailed)
+		os.exit(ctx.config.ExitFailed)
 	end
 end
 

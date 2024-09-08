@@ -15,7 +15,7 @@ local scandir = function(directory)
 	end
 	local t = {}
 	local fd =
-		assert(io.popen((cmd):format(directory, ctx.config.filePattern), "r"))
+		assert(io.popen((cmd):format(directory, ctx.config.FilePattern), "r"))
 	local list = fd:read("*a")
 	fd:close()
 

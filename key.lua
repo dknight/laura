@@ -1,0 +1,1 @@
+return "^^__LAURA__^^"

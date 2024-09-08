@@ -45,7 +45,7 @@ local colorsNum = testTputColors()
 ---the function ignores all checks and return false immideatly.
 ---@return boolean
 local function isColorSupported()
-	if not ctx.config.color then
+	if not ctx.config.Color then
 		return false
 	end
 	if osx.isWindows() then

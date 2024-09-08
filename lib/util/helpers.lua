@@ -1,4 +1,3 @@
-local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 
 local ctx = Context.global()
@@ -34,7 +33,7 @@ end
 ---@param n number
 ---@string
 local function tab(n)
-	return string.rep(ctx.config.tab, n)
+	return string.rep(ctx.config.Tab, n)
 end
 
 ---Read version number from file VERSION.
@@ -53,7 +52,7 @@ end
 ---Prints usage in terminal.
 local function usage()
 	print(table.concat({
-		string.format("%s v%s", Constants.AppKey, version()),
+		string.format("%s v%s", ctx.config.AppKey, version()),
 		"Usage: laura [-chv?] <directory-with-tests>",
 		"\t" .. "-c, --config\tPath to config file.",
 		"\t" .. "-v, --version\tPrint program name and it's version.",

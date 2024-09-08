@@ -1,4 +1,3 @@
-local Constants = require("lib.util.constants")
 local Context = require("lib.classes.Context")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
@@ -140,15 +139,15 @@ function Runner:reportPerformance(startTime)
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- * Constants.ExitFailed (1) There are the failures.
---- * Constants.ExitOK (0) All tests are passed.
+--- * ctx.config.ExitFailed (1) There are the failures.
+--- * ctx.config.ExitOK (0) All tests are passed.
 function Runner:done()
 	if #self.failing > 0 then
 		print(Labels.ResultFailed)
-		os.exit(Constants.ExitFailed)
+		os.exit(ctx.config.ExitFailed)
 	else
 		print(Labels.ResultPass)
-		os.exit(Constants.ExitOK)
+		os.exit(ctx.config.ExitOK)
 	end
 end
 
