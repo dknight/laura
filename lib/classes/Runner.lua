@@ -1,12 +1,8 @@
+---@alias RunResults {memory: any, datetime: string|osdate, duration: number, total: number, passing: Runnable[], failing: Runnable[], skipping: Runnable[]}
+
 local Context = require("lib.classes.Context")
-local errorx = require("lib.ext.errorx")
-local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
-local memory = require("lib.util.memory")
 local Runnable = require("lib.classes.Runnable")
-local Terminal = require("lib.classes.Terminal")
-local time = require("lib.util.time")
-local labels = require("lib.labels")
 
 local ctx = Context.global()
 
@@ -31,7 +27,9 @@ function Runner:new()
 end
 
 ---Runs all test cases.
+---@return RunResults
 function Runner:runTests()
+	local tstart = os.clock()
 	if ctx.root:hasOnly() then
 		Runnable.filterOnly(ctx.root)
 	end
@@ -53,94 +51,16 @@ function Runner:runTests()
 		end
 		self.totalCount = self.totalCount + 1
 	end)
-end
 
----Reports the tests
----@param suite? Runnable
-function Runner:reportTests(suite)
-	if self.totalCount == 0 then
-		Terminal.printStyle(labels.NoTests)
-		return
-	end
-	suite = suite or ctx.root
-	if suite == nil then
-		error(labels.ErrorNoRoot)
-	end
-	for _, test in ipairs(suite.children) do
-		local lvl = test.level - 1
-		if test:isSuite() then
-			Terminal.printStyle(
-				helpers.tab(lvl) .. test.description,
-				Terminal.Style.Bold
-			)
-		else
-			local tmStr = time.toString(test.execTime, " (%s)")
-			if test:isSkipped() then
-				Terminal.printSkipped(test.description, nil, lvl)
-			elseif test:isFailed() then
-				Terminal.printActual(test.description, tmStr, lvl)
-			elseif test:isPassed() then
-				Terminal.printExpected(test.description, tmStr, lvl)
-			end
-		end
-		Runner:reportTests(test)
-	end
-end
-
----Prints the errors if exist.
-function Runner:reportErrors()
-	if #self.failing <= 0 then
-		return
-	end
-	io.write("\n")
-	Terminal.printStyle(
-		labels.FailedTests,
-		Terminal.Style.Bold,
-		Terminal.Style.Underlined
-	)
-
-	for i, test in ipairs(self.failing) do
-		io.write(string.format("%d. ", i))
-		errorx.print(test.err)
-	end
-end
-
----Reports summary.
-function Runner:reportSummary()
-	Terminal.printStyle(
-		labels.Summary.Title,
-		Terminal.Style.Bold,
-		Terminal.Style.Underlined
-	)
-
-	local successMsg = string.format(
-		labels.Summary.Passing,
-		#self.passing,
-		self.totalCount - #self.skipping
-	)
-	io.write(successMsg)
-
-	local failedMessage = string.format(labels.Summary.Failing, #self.failing)
-	io.write(failedMessage)
-
-	local skippedMessage =
-		string.format(labels.Summary.Skipping, #self.skipping)
-	io.write(skippedMessage)
-end
-
----Prints the approximate execution time of the runner.
----@param startTime number
-function Runner:reportPerformance(startTime)
-	local formatedTime = time.format(os.clock() - startTime)
-	local formattedMemory = memory.format(collectgarbage("count"))
-	io.write(
-		string.format(
-			labels.Performance,
-			formatedTime,
-			formattedMemory,
-			os.date()
-		)
-	)
+	return {
+		datetime = os.date(),
+		duration = os.clock() - tstart,
+		failing = self.failing,
+		memory = collectgarbage("count"),
+		passing = self.passing,
+		skipping = self.skipping,
+		total = self.totalCount,
+	}
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:

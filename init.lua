@@ -1,5 +1,3 @@
-local startTime = os.clock()
-
 local Context = require("lib.classes.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")
@@ -79,9 +77,9 @@ for fname in helpers.spairs(files) do
 	end
 end
 
-runner:runTests()
-runner:reportTests()
-runner:reportErrors()
-runner:reportSummary()
-runner:reportPerformance(startTime)
+local results = runner:runTests()
+for _, id in ipairs(ctx.config.reporters) do
+	local reporter = require("lib.reporters." .. id):new(results)
+	reporter:report()
+end
 runner:done()
