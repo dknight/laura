@@ -1,5 +1,4 @@
 local Context = require("lib.classes.Context")
-local helpers = require("lib.util.helpers")
 local labels = require("lib.labels")
 local Reporter = require("lib.reporters.Reporter")
 local Terminal = require("lib.classes.Terminal")
@@ -8,7 +7,7 @@ local Status = require("lib.classes.Status")
 local ctx = Context.global()
 local dot = "."
 
----@class DotsReporter: Reporter
+---@class DotsReporter : Reporter
 local DotsReporter = {}
 
 ---@param results RunResults

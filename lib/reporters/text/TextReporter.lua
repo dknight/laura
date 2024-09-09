@@ -7,7 +7,7 @@ local time = require("lib.util.time")
 
 local ctx = Context.global()
 
----@class TextReporter: Reporter
+---@class TextReporter : Reporter
 local TextReporter = {}
 
 ---@param results RunResults

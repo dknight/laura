@@ -2,7 +2,7 @@ local key = require("key")
 
 ---@type {[string]: string | ReporterType[] | boolean | number}
 local Config = {
-	-- External configurable
+	-- Externally configurable
 	color = true,
 	dir = ".",
 	filePattern = "*_test.lua",
@@ -10,7 +10,7 @@ local Config = {
 	traceback = false,
 	reporters = { "text" },
 
-	-- Internal, do not meant to be change externally,
+	-- Internally configurable, do not meant to be change externally.
 	_appKey = key,
 	_suiteLevel = 3,
 	_exitFailed = 1,

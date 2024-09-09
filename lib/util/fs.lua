@@ -1,4 +1,5 @@
 local Context = require("lib.classes.Context")
+local labels = require("lib.labels")
 local osx = require("lib.ext.osx")
 
 local ctx = Context.global()
@@ -61,9 +62,25 @@ local function isdir(path)
 	return exists(path .. "/")
 end
 
+---Read config from the path.
+---@param path string
+local function mergeFromConfigFile(path)
+	local chunk, err = loadfile(path, "t")
+	if chunk ~= nil then
+		for k, v in pairs(chunk()) do
+			if ctx.config[k] ~= nil then
+				ctx.config[k] = v
+			end
+		end
+	else
+		error(labels.errorConfigRead .. err)
+	end
+end
+
 return {
 	exists = exists,
 	getFiles = getFiles,
 	isDir = isdir,
 	scandir = scandir,
+	mergeFromConfigFile = mergeFromConfigFile,
 }

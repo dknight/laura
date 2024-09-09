@@ -9,6 +9,7 @@ return {
 	errorExpected = "Exptected: ",
 	errorSyntax = "Syntax error",
 	errorHookNotFunction = "Hook is not a function",
+	errorConfigRead = "cannot read config file\n",
 	failedTests = "FAILED TESTS",
 	noTests = "No tests found",
 	removedSymbol = "-",
