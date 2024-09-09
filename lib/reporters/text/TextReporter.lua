@@ -21,7 +21,7 @@ end
 ---@param suite Runnable
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
-		helpers.tab(suite.level - 1) .. suite.description,
+		helpers.tab(suite.level - 1) .. suite.description .. "\n",
 		Terminal.style.bold
 	)
 end

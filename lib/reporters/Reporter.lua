@@ -1,3 +1,7 @@
+---@alias ReporterType
+---| '"text"' # Prints reports as text in the termianl (default).
+---| '"dots"' # Prints a dot for every test (very compact).
+
 local errorx = require("lib.ext.errorx")
 local labels = require("lib.labels")
 local memory = require("lib.util.memory")

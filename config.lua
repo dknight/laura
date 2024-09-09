@@ -1,6 +1,6 @@
 local key = require("key")
 
----@type {[string]: any}
+---@type {[string]: string | ReporterType[] | boolean | number}
 local Config = {
 	-- External configurable
 	color = true,

@@ -19,7 +19,7 @@ local style = {
 }
 
 ---@enum colors
-local color = {
+local colors = {
 	[Status.passed] = "32",
 	[Status.failed] = "31",
 	[Status.skipped] = "2;36",
@@ -68,7 +68,7 @@ end
 ---@return string
 local function setColor(status)
 	if isColorSupported() then
-		return string.format("\27[%sm", color[status])
+		return string.format("\27[%sm", colors[status])
 	end
 	return ""
 end
@@ -118,21 +118,30 @@ local function printResult(message, status, suffix, level)
 	io.write(str)
 end
 
+---@param msg string
+---@param suffix? string
+---@param level? number
 local function printExpected(msg, suffix, level)
 	printResult(msg, Status.passed, suffix, level)
 end
 
+---@param msg string
+---@param suffix? string
+---@param level? number
 local function printActual(msg, suffix, level)
 	printResult(msg, Status.failed, suffix, level)
 end
 
+---@param msg string
+---@param suffix? string
+---@param level? number
 local function printSkipped(msg, suffix, level)
 	printResult(msg, Status.skipped, suffix, level)
 end
 
 ---@enum Terminal
 local Terminal = {
-	color = color,
+	color = colors,
 	isColorSupported = isColorSupported,
 	printActual = printActual,
 	printExpected = printExpected,
