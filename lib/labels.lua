@@ -6,7 +6,7 @@ return {
 	errorActual = "actual: ",
 	errorNoRoot = "no root found",
 	errorAssertion = "assertion error: ",
-	errorExpected = "Exptected: ",
+	errorExpected = "exptected: ",
 	errorSyntax = "syntax error",
 	errorHookNotFunction = "hook is not a function",
 	errorConfigRead = "cannot read config file\n",
@@ -32,6 +32,6 @@ return {
 		skipping = "%d skipping\n",
 	},
 	unchangedSymbol = "",
-	performance = "\napproximate execution time %s / Mem: %s @ %s\n",
+	performance = "\ntime: ≈%s / mem: %s @ %s\n",
 	unknownContext = "unknown context",
 }
