@@ -7,24 +7,24 @@ local Status = require("lib.classes.Status")
 local ctx = Context.global()
 
 ---@enum style
-local Style = {
-	Normal = 0,
-	Bold = 1,
-	Dim = 2,
-	Italic = 3,
-	Underlined = 4,
-	Blinking = 5,
-	Reverse = 7,
-	Invisible = 8,
+local style = {
+	normal = 0,
+	bold = 1,
+	dim = 2,
+	italic = 3,
+	underlined = 4,
+	blinking = 5,
+	reverse = 7,
+	invisible = 8,
 }
 
 ---@enum colors
-local Color = {
-	[Status.Passed] = "32",
-	[Status.Failed] = "31",
-	[Status.Skipped] = "2;36",
-	[Status.Common] = "1;1",
-	[Status.Unchanged] = "90",
+local color = {
+	[Status.passed] = "32",
+	[Status.failed] = "31",
+	[Status.skipped] = "2;36",
+	[Status.common] = "1;1",
+	[Status.unchanged] = "90",
 }
 
 ---Runs `tput colors` command and get color count
@@ -68,7 +68,7 @@ end
 ---@return string
 local function setColor(status)
 	if isColorSupported() then
-		return string.format("\27[%sm", Color[status])
+		return string.format("\27[%sm", color[status])
 	end
 	return ""
 end
@@ -99,19 +99,19 @@ local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
 	local tpl = "%s%s%s\n"
-	if status ~= Status.Common then
+	if status ~= Status.common then
 		tpl = "%s[%s] %s%s\n"
 	end
-	if status == Status.Skipped then
+	if status == Status.skipped then
 		tpl = "%s"
-			.. setStyle("[", Style.Dim)
+			.. setStyle("[", style.dim)
 			.. "%s"
-			.. setStyle("] %s%s\n", Style.Dim)
+			.. setStyle("] %s%s\n", style.dim)
 	end
 	local str = string.format(
 		tpl,
 		helpers.tab(level),
-		setColor(status) .. labels.Statuses[status] .. resetColor(),
+		setColor(status) .. labels.statuses[status] .. resetColor(),
 		message,
 		suffix
 	)
@@ -119,20 +119,20 @@ local function printResult(message, status, suffix, level)
 end
 
 local function printExpected(msg, suffix, level)
-	printResult(msg, Status.Passed, suffix, level)
+	printResult(msg, Status.passed, suffix, level)
 end
 
 local function printActual(msg, suffix, level)
-	printResult(msg, Status.Failed, suffix, level)
+	printResult(msg, Status.failed, suffix, level)
 end
 
 local function printSkipped(msg, suffix, level)
-	printResult(msg, Status.Skipped, suffix, level)
+	printResult(msg, Status.skipped, suffix, level)
 end
 
 ---@enum Terminal
 local Terminal = {
-	Color = Color,
+	color = color,
 	isColorSupported = isColorSupported,
 	printActual = printActual,
 	printExpected = printExpected,
@@ -141,7 +141,7 @@ local Terminal = {
 	printStyle = printStyle,
 	resetColor = resetColor,
 	setColor = setColor,
-	Style = Style,
+	style = style,
 }
 
 return Terminal

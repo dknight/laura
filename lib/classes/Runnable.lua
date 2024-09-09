@@ -127,7 +127,7 @@ function Runnable:run()
 	end)
 
 	if parentIsSkipped or self:isSkipped() then
-		self.status = Status.Skipped
+		self.status = Status.skipped
 		return
 	end
 	if type(self.func) ~= "function" then
@@ -138,7 +138,7 @@ function Runnable:run()
 			debuginfo = debug.getinfo(1),
 			traceback = debug.traceback(),
 		}
-		self.status = Status.Failed
+		self.status = Status.failed
 		return
 	end
 
@@ -156,9 +156,9 @@ function Runnable:run()
 		self.err = err
 		self.err.debuginfo = debug.getinfo(self.func, "S")
 		self.err.traceback = debug.traceback()
-		self.status = Status.Failed
+		self.status = Status.failed
 	else
-		self.status = Status.Passed
+		self.status = Status.passed
 	end
 
 	self.parent:runHooks(ctx.config._afterEachName)
@@ -175,7 +175,7 @@ end
 function Runnable:skip(description, func)
 	local r = self:new(description, func)
 	r:prepare()
-	r.status = Status.Skipped
+	r.status = Status.skipped
 end
 
 ---Mark test/suite as only to run.
@@ -203,17 +203,17 @@ end
 
 ---@return boolean
 function Runnable:isPassed()
-	return self.status == Status.Passed
+	return self.status == Status.passed
 end
 
 ---@return boolean
 function Runnable:isSkipped()
-	return self.status == Status.Skipped
+	return self.status == Status.skipped
 end
 
 ---@return boolean
 function Runnable:isFailed()
-	return self.status == Status.Failed
+	return self.status == Status.failed
 end
 
 ---Traverses ancestors up to the root, or stopped after
@@ -239,7 +239,7 @@ function Runnable:runHooks(typ)
 			self.err = {
 				message = err,
 			}
-			self.status = Status.Failed
+			self.status = Status.failed
 		end
 	end
 end

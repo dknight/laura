@@ -14,7 +14,7 @@ local matchers = {}
 matchers.toEqual = function(t, b)
 	t.ok = t.a == b
 	if not t.ok then
-		t.err = errorx.new(labels.ErrorAssertion, t.a, b)
+		t.err = errorx.new(labels.errorAssertion, t.a, b)
 	end
 	return t(b)
 end
@@ -40,7 +40,7 @@ matchers.toDeepEqual = function(t, b)
 	if not t.ok then
 		local diff, count = tablex.diff(t.a, b)
 		t.err = errorx.new(
-			labels.ErrorAssertion,
+			labels.errorAssertion,
 			count.added,
 			count.removed,
 			nil,
@@ -56,7 +56,7 @@ end
 matchers.toBeTruthy = function(t)
 	t.ok = not not t.a
 	if not t.ok then
-		t.err = errorx.new(labels.ErrorAssertion, true, t.a)
+		t.err = errorx.new(labels.errorAssertion, true, t.a)
 	end
 	return t()
 end
@@ -67,7 +67,7 @@ end
 matchers.toBeFalsy = function(t)
 	t.ok = t.a == false or t.a == nil
 	if not t.ok then
-		t.err = errorx.new(labels.ErrorAssertion, false, t.a)
+		t.err = errorx.new(labels.errorAssertion, false, t.a)
 	end
 	return t()
 end

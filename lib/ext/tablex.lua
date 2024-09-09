@@ -165,18 +165,19 @@ local function printDiff(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out[#out + 1] = printValue(t[k], k, labels.Added, Status.Failed, i)
+			out[#out + 1] =
+				printValue(t[k], k, labels.addedSymbol, Status.failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out[#out + 1] =
-				printValue(d.mod[k], k, labels.Removed, Status.Passed, i)
+				printValue(d.mod[k], k, labels.removedSymbol, Status.passed, i)
 
 			if t[k] ~= nil then
 				out[#out + 1] =
-					printValue(t[k], k, labels.Added, Status.Failed, i)
+					printValue(t[k], k, labels.addedSymbol, Status.failed, i)
 			end
 			isKeyChanged = true
 		end
@@ -191,7 +192,7 @@ local function printDiff(t, d, i)
 		-- Not changed
 		if not isKeyChanged then
 			out[#out + 1] =
-				printValue(t[k], k, labels.Unchanged, Status.Unchanged, i)
+				printValue(t[k], k, labels.unchangedSymbol, Status.unchanged, i)
 		end
 	end
 	i = i - 1

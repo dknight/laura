@@ -24,11 +24,11 @@ Hook.new = function(typ, name)
 	return function(func)
 		if type(func) ~= "function" then
 			error(
-				errorx.new(labels.ErrorHookNotFunction, type(func), "function")
+				errorx.new(labels.errorHookNotFunction, type(func), "function")
 			)
 		end
 		if not ctx.current then
-			error(errorx.new(labels.UnknownContext))
+			error(errorx.new(labels.unknownContext))
 		end
 		table.insert(ctx.current.hooks[typ], {
 			name = localName,

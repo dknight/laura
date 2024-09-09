@@ -68,10 +68,10 @@ end
 --- * ctx.config._exitOK (0) All tests are passed.
 function Runner:done()
 	if #self.failing > 0 then
-		print(labels.ResultFailed)
+		print(labels.resultFailed)
 		os.exit(ctx.config._exitFailed)
 	else
-		print(labels.ResultPass)
+		print(labels.resultPass)
 		os.exit(ctx.config._exitOK)
 	end
 end

@@ -22,7 +22,7 @@ end
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
 		helpers.tab(suite.level - 1) .. suite.description,
-		Terminal.Style.Bold
+		Terminal.style.bold
 	)
 end
 
@@ -51,19 +51,19 @@ end
 ---@param suite? Runnable
 function TextReporter:reportTests(suite)
 	if self.total == 0 then
-		Terminal.printStyle(labels.NoTests)
+		Terminal.printStyle(labels.noTests)
 		return
 	end
 	suite = suite or ctx.root
 	if suite == nil then
-		error(labels.ErrorNoRoot)
+		error(labels.errorNoRoot)
 	end
 	for _, test in ipairs(suite.children) do
 		local lvl = test.level - 1
 		if test:isSuite() then
 			Terminal.printStyle(
 				helpers.tab(lvl) .. test.description,
-				Terminal.Style.Bold
+				Terminal.style.bold
 			)
 		else
 			local tmStr = time.toString(test.execTime, " (%s)")

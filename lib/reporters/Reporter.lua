@@ -22,42 +22,26 @@ function Reporter:new(results)
 	return setmetatable(results, self)
 end
 
----Print suite title.
----@param suite Runnable
-function Reporter:printSuiteTitle(suite) end
-
----Print failed test message.
----@param test Runnable
-function Reporter:printFailed(test) end
-
----Print passed test message.
----@param test Runnable
-function Reporter:printPassed(test) end
-
----Print skipped test message.
----@param test Runnable
-function Reporter:printSkipped(test) end
-
 ---Print report summary.
 function Reporter:reportSummary()
 	Terminal.printStyle(
-		labels.Summary.Title,
-		Terminal.Style.Bold,
-		Terminal.Style.Underlined
+		labels.summary.title,
+		Terminal.style.bold,
+		Terminal.style.underlined
 	)
 
 	local successMsg = string.format(
-		labels.Summary.Passing,
+		labels.summary.passing,
 		#self.passing,
 		self.total - #self.skipping
 	)
 	io.write(successMsg)
 
-	local failedMessage = string.format(labels.Summary.Failing, #self.failing)
+	local failedMessage = string.format(labels.summary.failing, #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(labels.Summary.Skipping, #self.skipping)
+		string.format(labels.summary.skipping, #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -67,17 +51,13 @@ function Reporter:reportPerformance()
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			labels.Performance,
+			labels.performance,
 			formatedTime,
 			formattedMemory,
 			os.date()
 		)
 	)
 end
-
----Report the tests
----@param suite? Runnable
-function Reporter:reportTests(suite) end
 
 ---Prints the errors if exist.
 function Reporter:reportErrors()
@@ -86,15 +66,43 @@ function Reporter:reportErrors()
 	end
 	io.write("\n")
 	Terminal.printStyle(
-		labels.FailedTests,
-		Terminal.Style.Bold,
-		Terminal.Style.Underlined
+		labels.failedTests,
+		Terminal.style.bold,
+		Terminal.style.underlined
 	)
 
 	for i, test in ipairs(self.failing) do
 		io.write(string.format("%d. ", i))
 		errorx.print(test.err)
 	end
+end
+
+---Report the tests
+---@param suite? Runnable
+function Reporter:reportTests(suite) end
+
+---Print suite title.
+---@param suite Runnable
+function Reporter:printSuiteTitle(suite)
+	-- to implement
+end
+
+---Print failed test message.
+---@param test Runnable
+function Reporter:printFailed(test)
+	-- to implement
+end
+
+---Print passed test message.
+---@param test Runnable
+function Reporter:printPassed(test)
+	-- to implement
+end
+
+---Print skipped test message.
+---@param test Runnable
+function Reporter:printSkipped(test)
+	-- to implement
 end
 
 ---Reports everything

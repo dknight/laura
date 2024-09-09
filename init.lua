@@ -62,7 +62,7 @@ end
 
 local files, fcount = fs.getFiles(filesDir)
 if fcount == 0 then
-	print(labels.NoTests)
+	print(labels.noTests)
 	os.exit(ctx.config._exitOK)
 end
 
@@ -72,7 +72,7 @@ for fname in helpers.spairs(files) do
 	if chunk ~= nil then
 		chunk()
 	else
-		Terminal.printActual(err or labels.ErrorSyntax)
+		Terminal.printActual(err or labels.errorSyntax)
 		os.exit(ctx.config._exitFailed)
 	end
 end
