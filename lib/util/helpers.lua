@@ -1,4 +1,7 @@
 local Context = require("lib.classes.Context")
+local fs = require("lib.util.fs")
+local labels = require("lib.labels")
+local stringx = require("lib.ext.stringx")
 
 local ctx = Context.global()
 
@@ -53,14 +56,61 @@ end
 local function usage()
 	print(table.concat({
 		string.format("%s v%s", ctx.config._appKey, version()),
-		"Usage: laura [-chv?] <directory-with-tests>",
-		"\t" .. "-c, --config\tPath to config file.",
-		"\t" .. "-v, --version\tPrint program name and it's version.",
-		"\t" .. "-h, -?, --help\tPrint the usage.",
+		"Usage: laura [-chvrS?] <directory-with-tests>",
+		"\t" .. "-c,--config\tPath to config file.",
+		"\t" .. "-v,--version\tPrint program name and it's version.",
+		"\t" .. "-r,--reporters\tComma-separated reporters:",
+		"\t\t" .. "text - Reports as text in the terminal (default).",
+		"\t\t" .. "dots - Prints a dot for every test (very compact)",
+		"\t\t" .. "blank - Do not report any test information.",
+		"",
+		"\t" .. "-S\tDo not report summary.",
+		"\t" .. "-h, -?, --help\tPrint this help message.",
 	}, "\n"))
 end
 
+local function processFlags()
+	-- Very dirty and primitive arguments parsing.
+	for k, v in ipairs(arg) do
+		if v == "-h" or v == "-?" or v == "--help" then
+			usage()
+			os.exit(ctx.config._exitOK)
+		end
+
+		if v == "-v" or v == "--version" then
+			print(string.format("%s v%s", ctx.config._appKey, version()))
+			os.exit(ctx.config._exitOK)
+		end
+
+		if v == "-c" or v == "--config" then
+			local path = arg[k + 1]
+			if path == nil then
+				error(labels.errorConfigFilePath)
+			end
+			fs.mergeFromConfigFile(path)
+		end
+
+		if v == "-r" or v == "--reporters" then
+			local reportersStr = arg[k + 1]
+			if reportersStr == nil then
+				warn(labels.warningNoReporters)
+				ctx.config.reporters = {}
+			else
+				local rs = stringx.split(reportersStr, ",;")
+				for i in ipairs(rs) do
+					rs[i] = stringx.trim(rs[i])
+				end
+				ctx.config.reporters = rs
+			end
+		end
+		if v == "-S" then
+			ctx.config.reportSummary = false
+		end
+	end
+end
+
 return {
+	processFlags = processFlags,
 	spairs = spairs,
 	tab = tab,
 	usage = usage,

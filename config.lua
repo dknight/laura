@@ -9,6 +9,7 @@ local Config = {
 	tab = "\t",
 	traceback = false,
 	reporters = { "text" },
+	reportSummary = true,
 
 	-- Internally configurable, do not meant to be change externally.
 	_appKey = key,

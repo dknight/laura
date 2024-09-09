@@ -1,1 +1,1 @@
-return "^^__LAURA__^^"
+return "Laura"

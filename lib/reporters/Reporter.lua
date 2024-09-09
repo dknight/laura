@@ -1,7 +1,7 @@
 ---@alias ReporterType
 ---| '"text"'  # Reports as text in the terminal (default).
 ---| '"dots"'  # Prints a dot for every test (very compact).
----| '"blank"' # Do not report any test information, only print summary.
+---| '"blank"' # Do not report any test information, doesnt affect on summary.
 
 local errorx = require("lib.ext.errorx")
 local labels = require("lib.labels")

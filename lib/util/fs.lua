@@ -20,7 +20,7 @@ local scandir = function(directory)
 	local list = fd:read("*a")
 	fd:close()
 
-	-- [^\n\0]+ carefully fir new lines
+	-- [^\n\0]+ carefully for new lines
 	for fname in list:gmatch("[^\n\0]+") do
 		t[fname] = true
 	end
