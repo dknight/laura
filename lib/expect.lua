@@ -19,9 +19,7 @@ local function expect(a)
 
 	return setmetatable(t, {
 		__call = function()
-			if not t.ok then
-				error(t.err)
-			end
+			assert(t.ok, t.err)
 		end,
 	})
 end
