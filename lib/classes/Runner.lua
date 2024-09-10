@@ -38,6 +38,10 @@ end
 ---Runs all test cases.
 ---@return RunResults
 function Runner:runTests()
+	if not ctx.root then
+		print(labels.noTests)
+		os.exit(ctx.config._exitOK)
+	end
 	local tstart = os.clock()
 	if ctx.root:hasOnly() then
 		Runnable.filterOnly(ctx.root)
