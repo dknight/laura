@@ -11,13 +11,13 @@ local function format(kb)
 		unit = "MB"
 	end
 
-	if kb >= 1048576 then -- 2 ^ 30
-		n = n / 1048576
+	if kb >= 1048576 then -- 2 ^ 20
+		n = n / 1024
 		unit = "GB"
 	end
 
 	if kb >= 1073741824 then -- 2 ^ 30
-		n = n / 1073741824
+		n = n / 1024
 		unit = "TB"
 	end
 
