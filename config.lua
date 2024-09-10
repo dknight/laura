@@ -1,6 +1,6 @@
 local key = require("key")
 
----@type {[string]: string | ReporterType[] | boolean | number}
+---@type {[string]: ReporterType[] | HookType | boolean | number | string}
 local Config = {
 	-- Externally configurable
 	color = true,
@@ -8,7 +8,7 @@ local Config = {
 	filePattern = "*_test.lua",
 	tab = "\t",
 	traceback = false,
-	reporters = { "count" },
+	reporters = { "text" },
 	reportSummary = true,
 
 	-- Internally configurable, do not meant to be change externally.
@@ -17,10 +17,10 @@ local Config = {
 	_exitFailed = 1,
 	_exitOK = 0,
 	_rootSuiteKey = "__LAURA_ROOT__",
-	_beforeEachName = "beforeEach", ---@as [[HookType]]
-	_beforeAllName = "beforeAll", ---@as [[HookType]]
-	_afterEachName = "afterEach", ---@as [[HookType]]
-	_afterAllName = "afterAll", ---@as [[HookType]]
+	_beforeEachName = "beforeEach",
+	_beforeAllName = "beforeAll",
+	_afterEachName = "afterEach",
+	_afterAllName = "afterAll",
 }
 
 return Config

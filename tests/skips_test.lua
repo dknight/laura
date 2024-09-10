@@ -1,6 +1,6 @@
-local it = require("lib.classes.Test")
-local describe = require("lib.classes.Suite")
-local expect = require("lib.expect")
+local describe = require("describe")
+local expect = require("expect")
+local it = require("it")
 
 describe:skip("skip describe", function()
 	it("skip 1-1", function()

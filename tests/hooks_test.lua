@@ -1,7 +1,7 @@
-local it = require("lib.classes.Test")
-local expect = require("lib.expect")
-local describe = require("lib.classes.Suite")
-local hooks = require("lib.hooks")
+local describe = require("describe")
+local expect = require("expect")
+local hooks = require("hooks")
+local it = require("it")
 
 describe("hooks", function()
 	hooks.beforeAll(function()
