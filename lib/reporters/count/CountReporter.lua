@@ -1,6 +1,7 @@
+local labels = require("lib.labels")
 local Reporter = require("lib.reporters.Reporter")
-local Terminal = require("lib.classes.Terminal")
 local Status = require("lib.classes.Status")
+local Terminal = require("lib.classes.Terminal")
 
 ---@class CountReporter : Reporter
 local CountReporter = {}
@@ -21,22 +22,9 @@ end
 ---Prints a single test report.
 ---@param test Runnable
 function CountReporter:reportTest(test)
-	local out = {}
-	out[#out + 1] = Terminal.toggleCursor(true)
-	out[#out + 1] = total
-	out[#out + 1] = "\t"
-	out[#out + 1] = Terminal.setColor(Status.passed)
-	out[#out + 1] = passed
-	out[#out + 1] = "\t"
-	out[#out + 1] = Terminal.setColor(Status.failed)
-	out[#out + 1] = failed
-	out[#out + 1] = "\t"
-	out[#out + 1] = Terminal.setColor(Status.skipped)
-	out[#out + 1] = skipped
-	out[#out + 1] = Terminal.resetColor()
-
-	io.write(table.concat(out, "") .. "\r")
-	total = total + 1
+	if not test:isSkipped() then
+		total = total + 1
+	end
 	if test:isSkipped() then
 		skipped = skipped + 1
 	elseif test:isFailed() then
@@ -44,6 +32,23 @@ function CountReporter:reportTest(test)
 	elseif test:isPassed() then
 		passed = passed + 1
 	end
+
+	local out = {}
+	out[#out + 1] = Terminal.toggleCursor(true)
+	out[#out + 1] = labels.total
+	out[#out + 1] = total
+	out[#out + 1] = Terminal.setColor(Status.passed)
+	out[#out + 1] = labels.statuses[Status.passed]
+	out[#out + 1] = passed
+	out[#out + 1] = Terminal.resetColor()
+	out[#out + 1] = Terminal.setColor(Status.failed)
+	out[#out + 1] = labels.statuses[Status.failed]
+	out[#out + 1] = failed
+	out[#out + 1] = Terminal.setColor(Status.skipped)
+	out[#out + 1] = labels.statuses[Status.skipped]
+	out[#out + 1] = skipped
+	out[#out + 1] = Terminal.resetColor()
+	io.write(table.concat(out, " ") .. "\r")
 end
 
 return CountReporter
