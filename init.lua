@@ -7,11 +7,11 @@ local Runner = require("lib.classes.Runner")
 local Terminal = require("lib.classes.Terminal")
 
 local ctx = Context.global()
-local runner = Runner:new()
-
 ctx.config = require("config")
 
 helpers.processFlags()
+
+local runner = Runner:new()
 
 -- last argument should be directory with tests
 local dir = arg[#arg]
@@ -42,11 +42,6 @@ end
 
 local results = runner:runTests()
 local genericReporter = Reporter:new(results)
-
-for _, id in ipairs(ctx.config.reporters) do
-	local reporter = require("lib.reporters." .. id):new(results)
-	reporter:reportTests()
-end
 
 if ctx.config.reportSummary and #ctx.config.reporters > 0 then
 	genericReporter:report()

@@ -1,6 +1,5 @@
 local Context = require("lib.classes.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
 local Reporter = require("lib.reporters.Reporter")
 local Terminal = require("lib.classes.Terminal")
 local time = require("lib.util.time")
@@ -8,9 +7,11 @@ local time = require("lib.util.time")
 local ctx = Context.global()
 
 ---@class TextReporter : Reporter
+---@field printSuiteTitle fun(reporter: Reporter, suite: Runnable)
 local TextReporter = {}
 
 ---@param results RunResults
+---@return TextReporter
 function TextReporter:new(results)
 	setmetatable(results, { __index = TextReporter })
 	setmetatable(TextReporter, { __index = Reporter })
@@ -21,7 +22,7 @@ end
 ---@param suite Runnable
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
-		helpers.tab(suite.level - 1) .. suite.description .. "\n",
+		helpers.tab(suite.level - 1) .. suite.description,
 		Terminal.style.bold
 	)
 end
@@ -47,35 +48,24 @@ function TextReporter:printSkipped(test)
 	Terminal.printSkipped(test.description, timeFmt, test.level - 1)
 end
 
----Report the tests
----@param suite? Runnable
-function TextReporter:reportTests(suite)
-	if self.total == 0 then
-		Terminal.printStyle(labels.noTests)
-		return
-	end
-	suite = suite or ctx.root
-	if suite == nil then
-		error(labels.errorNoRoot)
-	end
-	for _, test in ipairs(suite.children) do
-		local lvl = test.level - 1
-		if test:isSuite() then
-			Terminal.printStyle(
-				helpers.tab(lvl) .. test.description,
-				Terminal.style.bold
-			)
-		else
-			local tmStr = time.toString(test.execTime, " (%s)")
-			if test:isSkipped() then
-				Terminal.printSkipped(test.description, nil, lvl)
-			elseif test:isFailed() then
-				Terminal.printActual(test.description, tmStr, lvl)
-			elseif test:isPassed() then
-				Terminal.printExpected(test.description, tmStr, lvl)
-			end
+---Prints a single test report.
+---@param test Runnable
+function TextReporter:reportTest(test)
+	local lvl = test.level - 1
+	if test:isSuite() then
+		Terminal.printStyle(
+			helpers.tab(lvl) .. test.description,
+			Terminal.style.bold
+		)
+	else
+		local tmStr = time.toString(test.execTime, " (%s)")
+		if test:isSkipped() then
+			Terminal.printSkipped(test.description, nil, lvl)
+		elseif test:isFailed() then
+			Terminal.printActual(test.description, tmStr, lvl)
+		elseif test:isPassed() then
+			Terminal.printExpected(test.description, tmStr, lvl)
 		end
-		self:reportTests(test)
 	end
 end
 

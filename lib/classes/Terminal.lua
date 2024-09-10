@@ -91,6 +91,16 @@ local function printStyle(msg, ...)
 	io.write(setStyle(msg .. "\n", ...))
 end
 
+---Toggle the terminal cursor
+---@param flag boolean
+local function toggleCursor(flag)
+	if flag then
+		io.write("\027[?25l")
+	else
+		io.write("\027[?25h")
+	end
+end
+
 ---@param message string
 ---@param status Status
 ---@param suffix? string
@@ -139,6 +149,12 @@ local function printSkipped(msg, suffix, level)
 	printResult(msg, Status.skipped, suffix, level)
 end
 
+---Restores terminal, if was changed.
+local function restore()
+	toggleCursor(false)
+	resetColor()
+end
+
 ---@enum Terminal
 local Terminal = {
 	color = colors,
@@ -151,6 +167,8 @@ local Terminal = {
 	resetColor = resetColor,
 	setColor = setColor,
 	style = style,
+	restore = restore,
+	toggleCursor = toggleCursor,
 }
 
 return Terminal

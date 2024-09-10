@@ -3,24 +3,33 @@
 local Context = require("lib.classes.Context")
 local labels = require("lib.labels")
 local Runnable = require("lib.classes.Runnable")
+local Terminal = require("lib.classes.Terminal")
 
 local ctx = Context.global()
 
 ---@class Runner
----@field private totalCount number
+---@field private total number
 ---@field private passing Runnable[]
 ---@field private failing Runnable[]
 ---@field private skipping Runnable[]
+---@field private reporters Reporter[]
 local Runner = {}
 
 ---@return Runner
 function Runner:new()
 	local t = {
-		totalCount = 0,
+		total = 0,
 		passing = {},
 		failing = {},
 		skipping = {},
+		reporters = {},
 	}
+
+	-- load reporters
+	for _, id in ipairs(ctx.config.reporters) do
+		t.reporters[#t.reporters + 1] = require("lib.reporters." .. id):new({})
+	end
+
 	return setmetatable(t, {
 		__index = self,
 	})
@@ -34,22 +43,30 @@ function Runner:runTests()
 		Runnable.filterOnly(ctx.root)
 	end
 
-	self.totalCount = 0
 	Runnable.traverse(ctx.root, function(test)
-		test:run()
+		if test:isSuite() then
+			for _, reporter in ipairs(self.reporters) do
+				reporter:printSuiteTitle(test)
+			end
+		else
+			test:run()
 
-		if test:isFailed() then
-			self.failing[#self.failing + 1] = test
-		end
+			if test:isFailed() then
+				self.failing[#self.failing + 1] = test
+			end
 
-		if test:isPassed() then
-			self.passing[#self.passing + 1] = test
-		end
+			if test:isPassed() then
+				self.passing[#self.passing + 1] = test
+			end
 
-		if test:isSkipped() then
-			self.skipping[#self.skipping + 1] = test
+			if test:isSkipped() then
+				self.skipping[#self.skipping + 1] = test
+			end
+			self.total = self.total + 1
+			for _, reporter in ipairs(self.reporters) do
+				reporter:reportTest(test)
+			end
 		end
-		self.totalCount = self.totalCount + 1
 	end)
 
 	return {
@@ -59,7 +76,7 @@ function Runner:runTests()
 		memory = collectgarbage("count"),
 		passing = self.passing,
 		skipping = self.skipping,
-		total = self.totalCount,
+		total = self.total,
 	}
 end
 
@@ -67,6 +84,7 @@ end
 --- * ctx.config._exitFailed (1) There are the failures.
 --- * ctx.config._exitOK (0) All tests are passed.
 function Runner:done()
+	Terminal.restore()
 	if #self.failing > 0 then
 		print(labels.resultFailed)
 		os.exit(ctx.config._exitFailed)

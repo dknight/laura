@@ -2,6 +2,7 @@
 ---| '"text"'  # Reports as text in the terminal (default).
 ---| '"dots"'  # Prints a dot for every test (very compact).
 ---| '"blank"' # Do not report any test information, doesnt affect on summary.
+---| '"count"' # Prints tests counters.
 
 local errorx = require("lib.ext.errorx")
 local labels = require("lib.labels")
@@ -82,9 +83,9 @@ function Reporter:reportErrors()
 	end
 end
 
----Report the tests
----@param suite? Runnable
-function Reporter:reportTests(suite) end
+---Report the single test
+---@param test Runnable
+function Reporter:reportTest(test) end
 
 ---Print suite title.
 ---@param suite Runnable
@@ -110,9 +111,8 @@ function Reporter:printSkipped(test)
 	-- to implement
 end
 
----Reports everything
+---Reports all summary information.
 function Reporter:report()
-	self:reportTests()
 	self:reportErrors()
 	self:reportSummary()
 	self:reportPerformance()

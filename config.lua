@@ -8,7 +8,7 @@ local Config = {
 	filePattern = "*_test.lua",
 	tab = "\t",
 	traceback = false,
-	reporters = { "text" },
+	reporters = { "count" },
 	reportSummary = true,
 
 	-- Internally configurable, do not meant to be change externally.

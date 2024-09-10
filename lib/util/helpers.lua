@@ -63,6 +63,7 @@ local function usage()
 		"\t\t" .. "text - Reports as text in the terminal (default).",
 		"\t\t" .. "dots - Prints a dot for every test (very compact)",
 		"\t\t" .. "blank - Do not report any test information.",
+		"\t\t" .. "count - Prints tests counters.",
 		"",
 		"\t" .. "-S\tDo not report summary.",
 		"\t" .. "-h, -?, --help\tPrint this help message.",
