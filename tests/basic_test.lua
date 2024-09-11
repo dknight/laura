@@ -97,3 +97,10 @@ describe("basic tests", function()
 		expect(1).toEqual(1)
 	end)
 end)
+
+-- should fail
+-- describe("describe string failure", function()
+-- 	describe("inner describe string failure", function()
+-- 		describe("deeply inner describe string failure", "zzz")
+-- 	end)
+-- end)

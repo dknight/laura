@@ -42,25 +42,6 @@ end
 ---@param suite Runnable
 ---@param func fun(test: Runnable, i?: number)
 Runnable.traverse = function(suite, func)
-	-- if suite == nil then
-	-- 	return
-	-- end
-	-- local q = Queue:new()
-	-- q:enqueue(suite)
-	-- while q:size() > 0 do
-	-- 	local n = q:size()
-
-	-- 	while n > 0 do
-	-- 		local test = q:dequeue()
-	-- 		if test.parent ~= nil then
-	-- 			func(test)
-	-- 		end
-	-- 		for i = 1, #test.children do
-	-- 			q:enqueue(test.children[i])
-	-- 		end
-	-- 		n = n - 1
-	-- 	end
-	-- end
 	for i, test in ipairs(suite.children) do
 		func(test, i)
 		Runnable.traverse(test, func)

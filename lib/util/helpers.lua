@@ -55,7 +55,7 @@ end
 ---Prints usage in terminal.
 local function usage()
 	print(table.concat({
-		string.format("%s v%s", ctx.config._appKey, version()),
+		string.format("Laura %s", version()),
 		"Usage: laura [-chvrS?] <directory-with-tests>",
 		"\t" .. "-c,--config\tPath to config file.",
 		"\t" .. "-v,--version\tPrint program name and it's version.",
