@@ -2,7 +2,6 @@
 
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
-local Queue = require("lib.classes.Queue")
 
 local ctx = Context.global()
 
