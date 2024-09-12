@@ -4,15 +4,15 @@
 ---| "beforeAll"
 ---| "beforeEach"
 
-local Context = require("lib.classes.Context")
+local Context = require("lib.Context")
 local errorx = require("lib.ext.errorx")
-local labels = require("lib.labels")
+local Labels = require("lib.Labels")
 
 local ctx = Context.global()
 
 ---@class Hook
----@field name string
 ---@field func function
+---@field name string
 ---@field type HookType
 local Hook = {}
 
@@ -24,11 +24,11 @@ Hook.new = function(typ, name)
 	return function(func)
 		if type(func) ~= "function" then
 			error(
-				errorx.new(labels.errorHookNotFunction, type(func), "function")
+				errorx.new(Labels.ErrorHookNotFunction, type(func), "function")
 			)
 		end
 		if not ctx.current then
-			error(errorx.new(labels.unknownContext))
+			error(errorx.new(Labels.unknownContext))
 		end
 		table.insert(ctx.current.hooks[typ], {
 			name = localName,

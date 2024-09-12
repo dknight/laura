@@ -1,1 +1,1 @@
-return require("lib.classes.Test")
+return require("lib.Test")

@@ -5,9 +5,9 @@
 ---| '"count"' # Prints tests counters.
 
 local errorx = require("lib.ext.errorx")
-local labels = require("lib.labels")
+local Labels = require("lib.Labels")
 local memory = require("lib.util.memory")
-local Terminal = require("lib.classes.Terminal")
+local Terminal = require("lib.Terminal")
 local time = require("lib.util.time")
 
 ---@class Reporter
@@ -31,23 +31,23 @@ end
 ---Print report summary.
 function Reporter:reportSummary()
 	Terminal.printStyle(
-		labels.summary.title,
-		Terminal.style.bold,
-		Terminal.style.underlined
+		Labels.Summary.Title,
+		Terminal.style.Bold,
+		Terminal.style.Underlined
 	)
 
 	local successMsg = string.format(
-		labels.summary.passing,
+		Labels.Summary.Passing,
 		#self.passing,
 		self.total - #self.skipping
 	)
 	io.write(successMsg)
 
-	local failedMessage = string.format(labels.summary.failing, #self.failing)
+	local failedMessage = string.format(Labels.Summary.Failing, #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(labels.summary.skipping, #self.skipping)
+		string.format(Labels.Summary.Skipping, #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -57,7 +57,7 @@ function Reporter:reportPerformance()
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			labels.performance,
+			Labels.Performance,
 			formatedTime,
 			formattedMemory,
 			os.date()
@@ -72,9 +72,9 @@ function Reporter:reportErrors()
 	end
 	io.write("\n")
 	Terminal.printStyle(
-		labels.failedTests,
-		Terminal.style.bold,
-		Terminal.style.underlined
+		Labels.FailedTests,
+		Terminal.style.Bold,
+		Terminal.style.Underlined
 	)
 
 	for i, test in ipairs(self.failing) do

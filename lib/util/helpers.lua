@@ -1,6 +1,6 @@
-local Context = require("lib.classes.Context")
+local Context = require("lib.Context")
 local fs = require("lib.util.fs")
-local labels = require("lib.labels")
+local Labels = require("lib.Labels")
 local stringx = require("lib.ext.stringx")
 
 local ctx = Context.global()
@@ -36,7 +36,7 @@ end
 ---@param n number
 ---@string
 local function tab(n)
-	return string.rep(ctx.config.tab, n)
+	return string.rep(ctx.config.Tab, n)
 end
 
 ---Read version number from file VERSION.
@@ -86,7 +86,7 @@ local function processFlags()
 		if v == "-c" or v == "--config" then
 			local path = arg[k + 1]
 			if path == nil then
-				error(labels.errorConfigFilePath)
+				error(Labels.ErrorConfigFilePath)
 			end
 			fs.mergeFromConfigFile(path)
 		end
@@ -94,18 +94,18 @@ local function processFlags()
 		if v == "-r" or v == "--reporters" then
 			local reportersStr = arg[k + 1]
 			if reportersStr == nil then
-				warn(labels.warningNoReporters)
-				ctx.config.reporters = {}
+				warn(Labels.warningNoReporters)
+				ctx.config.Reporters = {}
 			else
 				local rs = stringx.split(reportersStr, ",;")
 				for i in ipairs(rs) do
 					rs[i] = stringx.trim(rs[i])
 				end
-				ctx.config.reporters = rs
+				ctx.config.Reporters = rs
 			end
 		end
 		if v == "-S" then
-			ctx.config.reportSummary = false
+			ctx.config.ReportSummary = false
 		end
 	end
 end

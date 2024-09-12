@@ -1,8 +1,8 @@
 ---@alias SearchFilter {status: Status, isSuite: boolean}
 
-local Context = require("lib.classes.Context")
-local Status = require("lib.classes.Status")
-local labels = require("lib.labels")
+local Context = require("lib.Context")
+local Status = require("lib.Status")
+local Labels = require("lib.Labels")
 
 local ctx = Context.global()
 
@@ -119,7 +119,7 @@ function Runnable:run()
 		self.err = {
 			message = string.format(
 				"Runnable.it: %s",
-				labels.errorCallbackNotFunction
+				Labels.ErrorCallbackNotFunction
 			),
 			expected = "function",
 			actual = type(self.func),

@@ -1,6 +1,6 @@
 local Reporter = require("lib.reporters.Reporter")
-local Terminal = require("lib.classes.Terminal")
-local Status = require("lib.classes.Status")
+local Terminal = require("lib.Terminal")
+local Status = require("lib.Status")
 
 local dot = "."
 

@@ -1,7 +1,7 @@
-local labels = require("lib.labels")
+local Labels = require("lib.Labels")
 local Reporter = require("lib.reporters.Reporter")
-local Status = require("lib.classes.Status")
-local Terminal = require("lib.classes.Terminal")
+local Status = require("lib.Status")
+local Terminal = require("lib.Terminal")
 
 ---@class CountReporter : Reporter
 local CountReporter = {}
@@ -35,17 +35,17 @@ function CountReporter:reportTest(test)
 
 	local out = {}
 	out[#out + 1] = Terminal.toggleCursor(true)
-	out[#out + 1] = labels.total
+	out[#out + 1] = Labels.total
 	out[#out + 1] = total
 	out[#out + 1] = Terminal.setColor(Status.passed)
-	out[#out + 1] = labels.statuses[Status.passed]
+	out[#out + 1] = Labels.Statuses[Status.passed]
 	out[#out + 1] = passed
 	out[#out + 1] = Terminal.resetColor()
 	out[#out + 1] = Terminal.setColor(Status.failed)
-	out[#out + 1] = labels.statuses[Status.failed]
+	out[#out + 1] = Labels.Statuses[Status.failed]
 	out[#out + 1] = failed
 	out[#out + 1] = Terminal.setColor(Status.skipped)
-	out[#out + 1] = labels.statuses[Status.skipped]
+	out[#out + 1] = Labels.Statuses[Status.skipped]
 	out[#out + 1] = skipped
 	out[#out + 1] = Terminal.resetColor()
 	io.write(table.concat(out, " ") .. "\r")

@@ -2,9 +2,9 @@
 ---@alias DiffCount table{added: number, remove: number}
 
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
-local Status = require("lib.classes.Status")
-local Terminal = require("lib.classes.Terminal")
+local Labels = require("lib.Labels")
+local Status = require("lib.Status")
+local Terminal = require("lib.Terminal")
 
 local spairs = helpers.spairs
 local tab = helpers.tab
@@ -166,18 +166,18 @@ local function printDiff(t, d, i)
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
 			out[#out + 1] =
-				printValue(t[k], k, labels.addedSymbol, Status.failed, i)
+				printValue(t[k], k, Labels.AddedSymbol, Status.failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out[#out + 1] =
-				printValue(d.mod[k], k, labels.removedSymbol, Status.passed, i)
+				printValue(d.mod[k], k, Labels.RemovedSymbol, Status.passed, i)
 
 			if t[k] ~= nil then
 				out[#out + 1] =
-					printValue(t[k], k, labels.addedSymbol, Status.failed, i)
+					printValue(t[k], k, Labels.AddedSymbol, Status.failed, i)
 			end
 			isKeyChanged = true
 		end
@@ -192,7 +192,7 @@ local function printDiff(t, d, i)
 		-- Not changed
 		if not isKeyChanged then
 			out[#out + 1] =
-				printValue(t[k], k, labels.unchangedSymbol, Status.unchanged, i)
+				printValue(t[k], k, Labels.unchangedSymbol, Status.unchanged, i)
 		end
 	end
 	i = i - 1

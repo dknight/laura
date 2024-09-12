@@ -1,31 +1,43 @@
-local Context = require("lib.classes.Context")
+local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
+local Labels = require("lib.Labels")
 local osx = require("lib.ext.osx")
-local Status = require("lib.classes.Status")
+local Status = require("lib.Status")
 
 local ctx = Context.global()
 
----@enum style
-local style = {
-	normal = 0,
-	bold = 1,
-	dim = 2,
-	italic = 3,
-	underlined = 4,
-	blinking = 5,
-	reverse = 7,
-	invisible = 8,
+---@enum Style
+local Style = {
+	Normal = 0,
+	Bold = 1,
+	Dim = 2,
+	Italic = 3,
+	Underlined = 4,
+	Blinking = 5,
+	Reverse = 7,
+	Invisible = 8,
 }
 
----@enum colors
-local colors = {
+setmetatable(Style, {
+	__index = function(_, key)
+		error(string.format(Labels.ErrorEnumKey, tostring(key), "Style"), 2)
+	end,
+})
+
+---@enum Color
+local Color = {
 	[Status.passed] = "32",
 	[Status.failed] = "31",
 	[Status.skipped] = "2;36",
 	[Status.common] = "1;1",
 	[Status.unchanged] = "90",
 }
+
+setmetatable(Color, {
+	__index = function(_, key)
+		error(string.format(Labels.ErrorEnumKey, tostring(key), "Color"), 2)
+	end,
+})
 
 ---Runs `tput colors` command and get color count
 ---@return boolean
@@ -45,7 +57,7 @@ local colorsNum = testTputColors()
 ---the function ignores all checks and return false immideatly.
 ---@return boolean
 local function isColorSupported()
-	if not ctx.config.color then
+	if not ctx.config.Color then
 		return false
 	end
 	if osx.isWindows() then
@@ -68,14 +80,14 @@ end
 ---@return string
 local function setColor(status)
 	if isColorSupported() then
-		return string.format("\27[%sm", colors[status])
+		return string.format("\27[%sm", Color[status])
 	end
 	return ""
 end
 
 ---Sets terminal styles.
 ---@param msg string
----@param ... style
+---@param ... Style
 local function setStyle(msg, ...)
 	if isColorSupported() then
 		local styles = table.concat({ ... }, ";")
@@ -86,7 +98,7 @@ end
 
 ---Prints out styles in the terminal.
 ---@param msg string
----@param ... style
+---@param ... Style
 local function printStyle(msg, ...)
 	io.write(setStyle(msg .. "\n", ...))
 end
@@ -114,14 +126,14 @@ local function printResult(message, status, suffix, level)
 	end
 	if status == Status.skipped then
 		tpl = "%s"
-			.. setStyle("[", style.dim)
+			.. setStyle("[", Style.Dim)
 			.. "%s"
-			.. setStyle("] %s%s\n", style.dim)
+			.. setStyle("] %s%s\n", Style.Dim)
 	end
 	local str = string.format(
 		tpl,
 		helpers.tab(level),
-		setColor(status) .. labels.statuses[status] .. resetColor(),
+		setColor(status) .. Labels.Statuses[status] .. resetColor(),
 		message,
 		suffix
 	)
@@ -157,7 +169,7 @@ end
 
 ---@enum Terminal
 local Terminal = {
-	color = colors,
+	color = Color,
 	isColorSupported = isColorSupported,
 	printActual = printActual,
 	printExpected = printExpected,
@@ -166,7 +178,7 @@ local Terminal = {
 	printStyle = printStyle,
 	resetColor = resetColor,
 	setColor = setColor,
-	style = style,
+	style = Style,
 	restore = restore,
 	toggleCursor = toggleCursor,
 }

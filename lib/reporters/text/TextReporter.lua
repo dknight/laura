@@ -1,7 +1,7 @@
-local Context = require("lib.classes.Context")
+local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
 local Reporter = require("lib.reporters.Reporter")
-local Terminal = require("lib.classes.Terminal")
+local Terminal = require("lib.Terminal")
 local time = require("lib.util.time")
 
 local ctx = Context.global()
@@ -23,7 +23,7 @@ end
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
 		helpers.tab(suite.level - 1) .. suite.description,
-		Terminal.style.bold
+		Terminal.style.Bold
 	)
 end
 
@@ -55,7 +55,7 @@ function TextReporter:reportTest(test)
 	if test:isSuite() then
 		Terminal.printStyle(
 			helpers.tab(lvl) .. test.description,
-			Terminal.style.bold
+			Terminal.style.Bold
 		)
 	else
 		local tmStr = time.toString(test.execTime, " (%s)")

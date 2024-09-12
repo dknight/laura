@@ -1,32 +1,32 @@
 local key = require("key")
 
----@type {[string]: ReporterType[] | HookType | boolean | number | string}
+---@enum Config
 local Config = {
 	-- Externally configurable.
 	---------------------------------------------------------------------------
 	-- Change this
 	---------------------------------------------------------------------------
 	-- Enables colors in terminal if possible. true by default.
-	color = true,
+	Color = true,
 
 	-- Directory where tests are located. Current directory by default.
-	dir = ".",
+	Dir = ".",
 
 	-- Pattern for tests files.
-	filePattern = "*_test.lua",
+	FilePattern = "*_test.lua",
 
 	-- Tabulation string, "\t" by default.
-	tab = "\t",
+	Tab = "\t",
 
 	-- Print full traceback from debug library on test failure.
 	-- false by default.
-	traceback = false,
+	Traceback = false,
 
 	-- List of reporters. Check reporter section for possible values.
-	reporters = { "text" },
+	Reporters = { "text" },
 
 	-- Print tests summary if reporter support it. true by default.
-	reportSummary = true,
+	ReportSummary = true,
 
 	-- Internally configurable, do not meant to be change externally.
 	---------------------------------------------------------------------------

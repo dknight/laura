@@ -1,9 +1,9 @@
 ---@alias RunResults {memory: any, datetime: string|osdate, duration: number, total: number, passing: Runnable[], failing: Runnable[], skipping: Runnable[]}
 
-local Context = require("lib.classes.Context")
-local labels = require("lib.labels")
-local Runnable = require("lib.classes.Runnable")
-local Terminal = require("lib.classes.Terminal")
+local Context = require("lib.Context")
+local Labels = require("lib.Labels")
+local Runnable = require("lib.Runnable")
+local Terminal = require("lib.Terminal")
 
 local ctx = Context.global()
 
@@ -26,7 +26,7 @@ function Runner:new()
 	}
 
 	-- load reporters
-	for _, id in ipairs(ctx.config.reporters) do
+	for _, id in ipairs(ctx.config.Reporters) do
 		t.reporters[#t.reporters + 1] = require("lib.reporters." .. id):new({})
 	end
 
@@ -39,7 +39,7 @@ end
 ---@return RunResults
 function Runner:runTests()
 	if not ctx.root then
-		print(labels.noTests)
+		print(Labels.noTests)
 		os.exit(ctx.config._exitOK)
 	end
 	local tstart = os.clock()
@@ -90,10 +90,10 @@ end
 function Runner:done()
 	Terminal.restore()
 	if #self.failing > 0 then
-		print(labels.resultFailed)
+		print(Labels.ResultFailed)
 		os.exit(ctx.config._exitFailed)
 	else
-		print(labels.resultPass)
+		print(Labels.ResultPass)
 		os.exit(ctx.config._exitOK)
 	end
 end

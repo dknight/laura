@@ -1,10 +1,10 @@
 ---@alias Error{message: string, expected: any, actual: any, description?: string, diffString?: string, debuginfo?: table, traceback?: string}
 
-local Context = require("lib.classes.Context")
+local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.labels")
-local Status = require("lib.classes.Status")
-local Terminal = require("lib.classes.Terminal")
+local labels = require("lib.Labels")
+local Status = require("lib.Status")
+local Terminal = require("lib.Terminal")
 
 local ctx = Context.global()
 
@@ -34,16 +34,16 @@ local function tostring(err)
 		err.description or "",
 		"\n\n",
 		helpers.tab(1),
-		labels.removedSymbol,
-		labels.errorExpected,
+		labels.RemovedSymbol,
+		labels.ErrorExpected,
 		Terminal.setColor(Status.passed),
 		string.format("%q", err.expected),
 		Terminal.resetColor(),
 		helpers.tab(ctx.level),
 		"\n",
 		helpers.tab(1),
-		labels.addedSymbol,
-		labels.errorActual,
+		labels.AddedSymbol,
+		labels.ErrorActual,
 		Terminal.setColor(Status.failed),
 		string.format("%q", err.actual),
 		Terminal.resetColor(),
@@ -58,7 +58,7 @@ local function tostring(err)
 			err.debuginfo.linedefined
 		)
 	end
-	if ctx.config.traceback then
+	if ctx.config.Traceback then
 		out[#out + 1] = err.traceback
 		out[#out + 1] = "\n"
 	end

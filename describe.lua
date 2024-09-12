@@ -1,1 +1,1 @@
-return require("lib.classes.Suite")
+return require("lib.Suite")

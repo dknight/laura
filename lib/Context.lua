@@ -3,7 +3,7 @@ local key = require("key")
 ---@class Context
 ---@field public children Runnable[]
 ---@field public config {[string]: any}
----@field public current Runnable
+---@field public current? Runnable
 ---@field public level number
 ---@field public parent? Runnable
 ---@field public root? Runnable
@@ -16,11 +16,11 @@ function Context.new()
 	return {
 		children = {},
 		config = {},
+		current = nil,
 		level = 0,
 		parent = nil,
 		root = nil,
 		suites = {},
-		current = nil,
 	}
 end
 

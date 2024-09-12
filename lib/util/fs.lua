@@ -1,5 +1,5 @@
-local Context = require("lib.classes.Context")
-local labels = require("lib.labels")
+local Context = require("lib.Context")
+local Labels = require("lib.Labels")
 local osx = require("lib.ext.osx")
 
 local ctx = Context.global()
@@ -16,7 +16,7 @@ local scandir = function(directory)
 	end
 	local t = {}
 	local fd =
-		assert(io.popen((cmd):format(directory, ctx.config.filePattern), "r"))
+		assert(io.popen((cmd):format(directory, ctx.config.FilePattern), "r"))
 	local list = fd:read("*a")
 	fd:close()
 
@@ -73,7 +73,7 @@ local function mergeFromConfigFile(path)
 			end
 		end
 	else
-		error(labels.errorConfigRead .. err)
+		error(Labels.ErrorConfigRead .. err)
 	end
 end
 

@@ -1,5 +1,5 @@
-local Context = require("lib.classes.Context")
-local Hook = require("lib.classes.Hook")
+local Context = require("lib.Context")
+local Hook = require("lib.Hook")
 
 local ctx = Context.global()
 
