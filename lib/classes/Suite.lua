@@ -1,5 +1,6 @@
 local Context = require("lib.classes.Context")
 local Runnable = require("lib.classes.Runnable")
+local labels = require("lib.labels")
 
 ---@type Context
 local ctx = Context.global()
@@ -11,7 +12,7 @@ function Suite:prepare()
 	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
 		error(
-			"Runnable : Suite: callback is not a function",
+			string.format("Suite: %s", labels.errorCallbackNotFunction),
 			ctx.config._suiteLevel
 		)
 	end

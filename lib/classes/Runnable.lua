@@ -2,6 +2,7 @@
 
 local Context = require("lib.classes.Context")
 local Status = require("lib.classes.Status")
+local labels = require("lib.labels")
 
 local ctx = Context.global()
 
@@ -116,7 +117,10 @@ function Runnable:run()
 	end
 	if type(self.func) ~= "function" then
 		self.err = {
-			message = "Runnable.it: callback is not a function",
+			message = string.format(
+				"Runnable.it: %s",
+				labels.errorCallbackNotFunction
+			),
 			expected = "function",
 			actual = type(self.func),
 			debuginfo = debug.getinfo(1),

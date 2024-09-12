@@ -9,6 +9,7 @@ return {
 	errorConfigRead = "cannot read config file\n",
 	errorExpected = "exptected: ",
 	errorHookNotFunction = "hook is not a function",
+	errorCallbackNotFunction = "callback is not a function",
 	errorNotADir = "is not a directory",
 	errorSyntax = "syntax error",
 	failedTests = "FAILED TESTS",
