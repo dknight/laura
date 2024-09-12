@@ -13,9 +13,12 @@ local function expect(a)
 
 	t.toEqual = bind(matchers.toEqual, t)
 	t.toDeepEqual = bind(matchers.toDeepEqual, t)
+	t.toBe = bind(matchers.toDeepEqual, t)
 	t.toBeTruthy = bind(matchers.toBeTruthy, t)
 	t.toBeFalsy = bind(matchers.toBeFalsy, t)
 	t.toBeNil = bind(matchers.toBeNil, t)
+	t.toBeFinite = bind(matchers.toBeFinite, t)
+	t.toBeInfinite = bind(matchers.toBeInfinite, t)
 
 	return setmetatable(t, {
 		__call = function()

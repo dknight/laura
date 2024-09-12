@@ -4,14 +4,12 @@ local errorx = require("lib.ext.errorx")
 local Labels = require("lib.Labels")
 local tablex = require("lib.ext.tablex")
 
-local matchers = {}
-
 ---Checks the equality of a and b. This don't use deep comparison for tables.
 ---For tables use toDeepEqual method.
 ---@param t table
 ---@param b any
 ---@return MatchResult
-matchers.toEqual = function(t, b)
+local function toEqual(t, b)
 	t.ok = t.a == b
 	if not t.ok then
 		t.err = errorx.new(Labels.ErrorAssertion, t.a, b)
@@ -23,7 +21,7 @@ end
 ---@param t table
 ---@param b any
 ---@return MatchResult
-matchers.toDeepEqual = function(t, b)
+local function toDeepEqual(t, b)
 	t.ok = true
 	if t.a == b then
 		t.ok = false
@@ -53,7 +51,7 @@ end
 ---Checks if value is truthy, in Lua everything is true expect false and nil.
 ---@param t table
 ---@return MatchResult
-matchers.toBeTruthy = function(t)
+local function toBeTruthy(t)
 	t.ok = not not t.a
 	if not t.ok then
 		t.err = errorx.new(Labels.ErrorAssertion, true, t.a)
@@ -64,7 +62,7 @@ end
 ---Checks if value is falsy, false and nil are false in Lua.
 ---@param t table
 ---@return MatchResult
-matchers.toBeFalsy = function(t)
+local function toBeFalsy(t)
 	t.ok = t.a == false or t.a == nil
 	if not t.ok then
 		t.err = errorx.new(Labels.ErrorAssertion, false, t.a)
@@ -75,7 +73,7 @@ end
 ---Checks if value is nil.
 ---@param t table
 ---@return MatchResult
-matchers.toBeNil = function(t)
+local function toBeNil(t)
 	t.ok = t.a == nil
 	if not t.ok then
 		t.err = errorx.new(Labels.ErrorAssertion, nil, t.a)
@@ -83,4 +81,35 @@ matchers.toBeNil = function(t)
 	return t()
 end
 
-return matchers
+---Checks if number is finite.
+---@param t table
+---@return MatchResult
+local function toBeFinite(t)
+	t.ok = not (t.a == math.huge or t.a == -math.huge)
+	if not t.ok then
+		t.err = errorx.new("number is infinite", true, math.huge)
+	end
+	return t()
+end
+
+---Checks if number is infinite.
+---@param t table
+---@return MatchResult
+local function toBeInfinite(t)
+	t.ok = t.a == math.huge or t.a == -math.huge
+	if not t.ok then
+		t.err = errorx.new("number is finite", true, math.huge)
+	end
+	return t()
+end
+
+return {
+	toBe = toDeepEqual, -- alias toDeepEqual
+	toBeNil = toBeNil,
+	toBeFalsy = toBeFalsy,
+	toBeTruthy = toBeTruthy,
+	toDeepEqual = toDeepEqual,
+	toEqual = toEqual,
+	toBeFinite = toBeFinite,
+	toBeInfinite = toBeInfinite,
+}
