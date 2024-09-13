@@ -26,4 +26,4 @@ uninstall:
 
 test:
 	@echo "Starting tests"
-	$(shell pwd)/bin/laura .
+	$(BIN)/laura $(shell pwd)
