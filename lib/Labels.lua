@@ -15,6 +15,7 @@ local Labels = {
 	ErrorSyntax = "syntax error",
 	FailedTests = "FAILED TESTS",
 	NoTests = "no tests found",
+	Not = "not",
 	Performance = "\ntime: ≈%s / mem: %s @ %s\n",
 	RemovedSymbol = "-",
 	ResultFailed = "failed",

@@ -1,30 +1,45 @@
 local bind = require("lib.util.bind")
 local matchers = require("lib.matchers.matchers")
+local errorx = require("lib.ext.errorx")
+local Labels = require("lib.Labels")
 
----Expects value to be tested with matcher.
----@param a any
----@return table
-local function expect(a)
+---@param actual any
+---@return MatchResult
+local createResult = function(actual)
 	local t = {
-		a = a,
+		actual = actual,
 		ok = false,
-		err = {},
+		err = errorx.new(
+			Labels.ErrorAssertion,
+			actual,
+			string.format("%s %s", Labels.Not, actual)
+		),
+		isNot = false,
 	}
-
-	t.toEqual = bind(matchers.toEqual, t)
-	t.toDeepEqual = bind(matchers.toDeepEqual, t)
-	t.toBe = bind(matchers.toDeepEqual, t)
-	t.toBeTruthy = bind(matchers.toBeTruthy, t)
-	t.toBeFalsy = bind(matchers.toBeFalsy, t)
-	t.toBeNil = bind(matchers.toBeNil, t)
-	t.toBeFinite = bind(matchers.toBeFinite, t)
-	t.toBeInfinite = bind(matchers.toBeInfinite, t)
-
 	return setmetatable(t, {
 		__call = function()
-			assert(t.ok, t.err)
+			assert(t.isNot ~= t.ok, t.err)
 		end,
 	})
+end
+
+---Expects value to be tested with matcher.
+---@param actual any
+---@return table
+local function expect(actual)
+	local ms = {}
+	for key, matcher in pairs(matchers) do
+		local t = createResult(actual)
+		t.isNot = key:sub(1, 3) == "not"
+		ms[key] = bind(matcher, t)
+	end
+
+	local t = createResult(actual)
+	for key in pairs(matchers) do
+		t[key] = ms[key]
+	end
+
+	return t
 end
 
 return expect

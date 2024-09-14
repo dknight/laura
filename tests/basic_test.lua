@@ -8,6 +8,10 @@ describe("basic tests", function()
 		expect(1).toEqual(1)
 	end)
 
+	it("strings not should be equal", function()
+		expect("foo").notToEqual("foo2")
+	end)
+
 	it("strings should be equal", function()
 		expect("foo").toEqual("foo")
 	end)
@@ -37,37 +41,37 @@ describe("basic tests", function()
 		expect(nil).toBeNil()
 	end)
 
-	-- it:skip("tables should be deeply equal", function()
-	-- 	expect({
-	-- 		["0"] = 0,
-	-- 		p = "r",
-	-- 		a = 11,
-	-- 		b = "boo",
-	-- 		z = "x",
-	-- 		c = { a = 42, d = "D" },
-	-- 		y = {},
-	-- 		w = { u = "X" },
-	-- 		zz = nil,
-	-- 	}).toDeepEqual({
-	-- 		["0"] = 0,
-	-- 		p = "r",
-	-- 		a = 11,
-	-- 		b = "zoo",
-	-- 		c = {
-	-- 			d = "E",
-	-- 			f = "F",
-	-- 			g = "H",
-	-- 		},
-	-- 		y = {
-	-- 			name = "dima",
-	-- 			last = "smirnov",
-	-- 			mid = {
-	-- 				[0] = 23,
-	-- 				[1] = 44,
-	-- 			},
-	-- 		},
-	-- 	})
-	-- end)
+	it:skip("tables should be deeply equal", function()
+		expect({
+			["0"] = 0,
+			p = "r",
+			a = 11,
+			b = "boo",
+			z = "x",
+			c = { a = 42, d = "D" },
+			y = {},
+			w = { u = "X" },
+			zz = nil,
+		}).toDeepEqual({
+			["0"] = 0,
+			p = "r",
+			a = 11,
+			b = "zoo",
+			c = {
+				d = "E",
+				f = "F",
+				g = "H",
+			},
+			y = {
+				name = "dima",
+				last = "smirnov",
+				mid = {
+					[0] = 23,
+					[1] = 44,
+				},
+			},
+		})
+	end)
 
 	describe("level 1 boo", function()
 		it("to equal level 1", function()
