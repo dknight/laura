@@ -1,3 +1,4 @@
 - Matchers and tests;
-- Make simpler interface for matchers;
-- mock functions
+  - try to do a simpler interface for matchers;
+  - better error if no matcher exists like NotTexists(3)
+  - TODO Matcher

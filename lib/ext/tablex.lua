@@ -1,5 +1,5 @@
----@alias DiffResults table{del?: table, mod?: table, sub?: table}
----@alias DiffCount table{added: number, remove: number}
+---@alias DiffResults {del?: table, mod?: table, sub?: table}
+---@alias DiffCount {added: number, removed: number}
 
 local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
@@ -153,7 +153,7 @@ end
 ---@param d table Table with difference
 ---@param i number Start indentation level
 ---@return string
-local function printDiff(t, d, i)
+local function diffToString(t, d, i)
 	i = i or 0
 	local out = { tab(i), "{\n" }
 	i = i + 1
@@ -185,14 +185,14 @@ local function printDiff(t, d, i)
 		-- Sub-tables
 		if d.sub ~= nil and d.sub[k] ~= nil then
 			out[#out + 1] = string.format("%s[%q] = \n", tab(i), k)
-			out[#out + 1] = printDiff(t[k], d.sub[k], i)
+			out[#out + 1] = diffToString(t[k], d.sub[k], i)
 			isKeyChanged = true
 		end
 
 		-- Not changed
 		if not isKeyChanged then
 			out[#out + 1] =
-				printValue(t[k], k, Labels.unchangedSymbol, Status.unchanged, i)
+				printValue(t[k], k, Labels.UnchangedSymbol, Status.unchanged, i)
 		end
 	end
 	i = i - 1
@@ -221,5 +221,5 @@ return {
 	equal = equal,
 	filter = filter,
 	patch = patch,
-	print = printDiff,
+	diffToString = diffToString,
 }

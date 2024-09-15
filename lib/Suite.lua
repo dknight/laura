@@ -6,13 +6,13 @@ local Labels = require("lib.Labels")
 local ctx = Context.global()
 
 ---@class Suite : Runnable
-local Suite = Runnable.new(Runnable)
+local Suite = Runnable:new()
 
 function Suite:prepare()
 	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
 		error(
-			string.format("Suite: %s", Labels.ErrorCallbackNotFunction),
+			string.format("Runnable.Suite: %s", Labels.ErrorCallbackNotFunction),
 			ctx.config._suiteLevel
 		)
 	end

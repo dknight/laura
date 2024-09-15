@@ -3,6 +3,7 @@
 local Context = require("lib.Context")
 local Status = require("lib.Status")
 local Labels = require("lib.Labels")
+local errorx = require("lib.ext.errorx")
 
 local ctx = Context.global()
 
@@ -21,9 +22,7 @@ local ctx = Context.global()
 ---@field private _suite boolean
 ---@field private _only boolean
 ---@field protected createRootSuiteMaybe function
-local Runnable = {
-	__debug__ = 0,
-}
+local Runnable = {}
 
 ---Filters only tests. This method modifies context in place.
 ---@oaram suite Runnable
@@ -84,8 +83,8 @@ function Runnable:new(description, func)
 	}
 	return setmetatable(t, {
 		__index = self,
-		__call = function(_, d, f)
-			self:new(d, f):prepare()
+		__call = function(class, d, f)
+			class.new(class, d, f):prepare()
 		end,
 	})
 end
@@ -100,7 +99,6 @@ end
 
 ---Runs the all tests.
 function Runnable:run()
-	Runnable.__debug__ = Runnable.__debug__ + 1
 	local tstart = os.clock()
 	local parentIsSkipped = false
 	self:traverseAncestors(function(parent)
@@ -116,16 +114,15 @@ function Runnable:run()
 		return
 	end
 	if type(self.func) ~= "function" then
-		self.err = {
-			message = string.format(
-				"Runnable.it: %s",
-				Labels.ErrorCallbackNotFunction
-			),
-			expected = "function",
-			actual = type(self.func),
-			debuginfo = debug.getinfo(1),
-			traceback = debug.traceback(),
-		}
+		self.err = errorx.new(
+			string.format("Runnable.Test: %s", Labels.ErrorCallbackNotFunction),
+			"function",
+			type(self.func),
+			"",
+			"",
+			debug.getinfo(1),
+			debug.traceback()
+		)
 		self.status = Status.failed
 		return
 	end

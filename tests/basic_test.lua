@@ -4,12 +4,12 @@ local it = require("it")
 
 describe("basic tests", function()
 	it("hello", "world")
-	it:skip("numbers should be equal", function()
+	it("numbers should be equal", function()
 		expect(1).toEqual(1)
 	end)
 
 	it("strings not should be equal", function()
-		expect("foo").notToEqual("foo2")
+		expect("foo").notToEqual("bar")
 	end)
 
 	it("strings should be equal", function()

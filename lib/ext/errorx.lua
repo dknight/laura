@@ -14,24 +14,36 @@ local ctx = Context.global()
 ---@param expected any Expected value.
 ---@param description? string Desctiption of the test case.
 ---@param diffString? string Used to print table diff.
+---@param debuginfo? debuginfo Used to print table diff.
+---@param traceback? string Used to print table diff.
 ---@return Error
-local function new(message, actual, expected, description, diffString)
+local function new(
+	message,
+	actual,
+	expected,
+	description,
+	diffString,
+	debuginfo,
+	traceback
+)
 	return {
 		message = message,
 		actual = actual,
 		expected = expected,
-		description = description,
-		diffString = diffString,
+		description = description or "",
+		diffString = diffString or "",
+		debuginfo = debuginfo,
+		traceback = traceback,
 	}
 end
 
 ---@param err Error
 ---@return string
-local function tostring(err)
+local function toString(err)
 	local out = {
 		helpers.tab(ctx.level),
 		err.message,
-		err.description or "",
+		err.description,
 		"\n\n",
 		helpers.tab(1),
 		labels.RemovedSymbol,
@@ -48,7 +60,7 @@ local function tostring(err)
 		string.format("%q", err.actual),
 		Terminal.resetColor(),
 		"\n",
-		err.diffString or "",
+		err.diffString,
 		"\n",
 	}
 	if err.debuginfo ~= nil then
@@ -67,11 +79,11 @@ end
 
 ---@param err Error
 local function printError(err)
-	io.write(tostring(err))
+	io.write(toString(err))
 end
 
 return {
 	new = new,
 	print = printError,
-	tostring = tostring,
+	toString = toString,
 }

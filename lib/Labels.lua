@@ -1,6 +1,6 @@
 local Status = require("lib.Status")
 
----@type table{[string]: string}
+---@type {[string]: any}
 local Labels = {
 	AddedSymbol = "+",
 	ErrorActual = "actual: ",

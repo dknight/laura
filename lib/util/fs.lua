@@ -6,7 +6,7 @@ local ctx = Context.global()
 
 -- TDOO checks for read failed
 ---@param directory string
----@return table{[number]: string}
+---@return {[number]: string}
 local scandir = function(directory)
 	local cmd
 	if osx.isWindows() then
