@@ -2,7 +2,7 @@ local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
 
-describe:only("lengths", function()
+describe("lengths", function()
 	it("should return length of the table", function()
 		expect({}).toHaveLength(0)
 	end)
@@ -38,7 +38,7 @@ describe:only("lengths", function()
 	end)
 end)
 
-describe:only("lengths keys", function()
+describe("lengths keys", function()
 	it("should return length of the table", function()
 		expect({}).toHaveKeysLength(0)
 	end)
@@ -68,7 +68,7 @@ describe:only("lengths keys", function()
 	end)
 end)
 
-describe:only("have key", function()
+describe("have key", function()
 	it("should return length of the table", function()
 		expect({ "a", "b" }).toHaveKey(1)
 	end)
@@ -79,7 +79,7 @@ describe:only("have key", function()
 
 	it("should return length of the table", function()
 		expect({ firstname = "John", lastname = "Doe" }).notToHaveKey(
-			"firstname"
+			"middlename"
 		)
 	end)
 end)
