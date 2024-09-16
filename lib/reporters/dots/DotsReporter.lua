@@ -26,11 +26,11 @@ end
 ---@param test Runnable
 function DotsReporter:reportTest(test)
 	if test:isSkipped() then
-		self:printDot(Status.skipped)
+		self:printDot(Status.Skipped)
 	elseif test:isFailed() then
-		self:printDot(Status.failed)
+		self:printDot(Status.Failed)
 	elseif test:isPassed() then
-		self:printDot(Status.passed)
+		self:printDot(Status.Passed)
 	end
 	io.write(Terminal.resetColor())
 end

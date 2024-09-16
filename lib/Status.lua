@@ -1,11 +1,11 @@
 --TODO capitalize
 ---@enum Status
 local Status = {
-	common = 0,
-	failed = 1,
-	passed = 2,
-	skipped = 4,
-	unchanged = 8,
+	Common = 0,
+	Failed = 1,
+	Passed = 2,
+	Skipped = 4,
+	Unchanged = 8,
 }
 
 return Status

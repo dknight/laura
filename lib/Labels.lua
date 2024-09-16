@@ -22,11 +22,11 @@ local Labels = {
 	ResultPass = "pass",
 	WarningNoReporters = "no reporters given",
 	Statuses = {
-		[Status.passed] = "passing",
-		[Status.unchanged] = "",
-		[Status.failed] = "failing",
-		[Status.skipped] = "skipping",
-		[Status.common] = "",
+		[Status.Passed] = "passing",
+		[Status.Unchanged] = "",
+		[Status.Failed] = "failing",
+		[Status.Skipped] = "skipping",
+		[Status.Common] = "",
 	},
 	Summary = {
 		Title = "\nSUMMARY",

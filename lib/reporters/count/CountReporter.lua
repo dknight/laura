@@ -37,15 +37,15 @@ function CountReporter:reportTest(test)
 	out[#out + 1] = Terminal.toggleCursor(true)
 	out[#out + 1] = Labels.total
 	out[#out + 1] = total
-	out[#out + 1] = Terminal.setColor(Status.passed)
-	out[#out + 1] = Labels.Statuses[Status.passed]
+	out[#out + 1] = Terminal.setColor(Status.Passed)
+	out[#out + 1] = Labels.Statuses[Status.Passed]
 	out[#out + 1] = passed
 	out[#out + 1] = Terminal.resetColor()
-	out[#out + 1] = Terminal.setColor(Status.failed)
-	out[#out + 1] = Labels.Statuses[Status.failed]
+	out[#out + 1] = Terminal.setColor(Status.Failed)
+	out[#out + 1] = Labels.Statuses[Status.Failed]
 	out[#out + 1] = failed
-	out[#out + 1] = Terminal.setColor(Status.skipped)
-	out[#out + 1] = Labels.Statuses[Status.skipped]
+	out[#out + 1] = Terminal.setColor(Status.Skipped)
+	out[#out + 1] = Labels.Statuses[Status.Skipped]
 	out[#out + 1] = skipped
 	out[#out + 1] = Terminal.resetColor()
 	io.write(table.concat(out, " ") .. "\r")

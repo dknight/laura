@@ -33,7 +33,7 @@ function Suite:prepare()
 		-- TODO better error reporting
 		error(err.message, ctx.config._suiteLevel)
 		self.err = err
-		self.status = Status.failed
+		self.status = Status.Failed
 	end
 	ctx.level = ctx.level - 1
 end

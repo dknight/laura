@@ -166,18 +166,18 @@ local function diffToString(t, d, i)
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
 			out[#out + 1] =
-				printValue(t[k], k, Labels.AddedSymbol, Status.failed, i)
+				printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
 			out[#out + 1] =
-				printValue(d.mod[k], k, Labels.RemovedSymbol, Status.passed, i)
+				printValue(d.mod[k], k, Labels.RemovedSymbol, Status.Passed, i)
 
 			if t[k] ~= nil then
 				out[#out + 1] =
-					printValue(t[k], k, Labels.AddedSymbol, Status.failed, i)
+					printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i)
 			end
 			isKeyChanged = true
 		end
@@ -192,7 +192,7 @@ local function diffToString(t, d, i)
 		-- Not changed
 		if not isKeyChanged then
 			out[#out + 1] =
-				printValue(t[k], k, Labels.UnchangedSymbol, Status.unchanged, i)
+				printValue(t[k], k, Labels.UnchangedSymbol, Status.Unchanged, i)
 		end
 	end
 	i = i - 1

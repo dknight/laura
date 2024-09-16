@@ -26,11 +26,11 @@ setmetatable(Style, {
 
 ---@enum Color
 local Color = {
-	[Status.passed] = "32",
-	[Status.failed] = "31",
-	[Status.skipped] = "2;36",
-	[Status.common] = "1;1",
-	[Status.unchanged] = "90",
+	[Status.Passed] = "32",
+	[Status.Failed] = "31",
+	[Status.Skipped] = "2;36",
+	[Status.Common] = "1;1",
+	[Status.Unchanged] = "90",
 }
 
 setmetatable(Color, {
@@ -121,10 +121,10 @@ local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
 	local tpl = "%s%s%s\n"
-	if status ~= Status.common then
+	if status ~= Status.Common then
 		tpl = "%s[%s] %s%s\n"
 	end
-	if status == Status.skipped then
+	if status == Status.Skipped then
 		tpl = "%s"
 			.. setStyle("[", Style.Dim)
 			.. "%s"
@@ -144,21 +144,21 @@ end
 ---@param suffix? string
 ---@param level? number
 local function printExpected(msg, suffix, level)
-	printResult(msg, Status.passed, suffix, level)
+	printResult(msg, Status.Passed, suffix, level)
 end
 
 ---@param msg string
 ---@param suffix? string
 ---@param level? number
 local function printActual(msg, suffix, level)
-	printResult(msg, Status.failed, suffix, level)
+	printResult(msg, Status.Failed, suffix, level)
 end
 
 ---@param msg string
 ---@param suffix? string
 ---@param level? number
 local function printSkipped(msg, suffix, level)
-	printResult(msg, Status.skipped, suffix, level)
+	printResult(msg, Status.Skipped, suffix, level)
 end
 
 ---Restores terminal, if was changed.
