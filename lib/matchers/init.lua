@@ -102,6 +102,54 @@ local function toBeInfinite(t, expected)
 end
 
 -- ---------------------------------------------------------------------------
+-- Length and keys -----------------------------------------------------------
+-- ---------------------------------------------------------------------------
+
+---Checks length of a table. It uses # operator,
+---so beware if table is not a sequence.
+---@type Assertion
+local function toHaveLength(t, expected)
+	return compare(t, expected, function(a)
+		local res = #a == expected
+		if not res then
+			t.err = errorx.new(Labels.ErrorAssertion, #a, expected)
+		end
+		return res, t.err
+	end)
+end
+
+---Count keys in the table, where key is not nil.
+---@type Assertion
+local function toHaveKeysLength(t, expected)
+	return compare(t, expected, function(a)
+		local i = 0
+		for _ in pairs(a) do
+			i = i + 1
+		end
+
+		local res = i == expected
+		if not res then
+			t.err = errorx.new(Labels.ErrorAssertion, i, expected)
+		end
+		return res, t.err
+	end)
+end
+
+---Checks a key in the table, where key is not nil.
+---@type Assertion
+local function toHaveKey(t, expected)
+	return compare(t, true, function(a, b)
+		local res = a[expected] ~= nil
+		local act, exp = true, false
+		if not res then
+			act, exp = exp, act
+		end
+		t.err = errorx.new(Labels.ErrorAssertion, act, exp)
+		return res, t.err
+	end)
+end
+
+-- ---------------------------------------------------------------------------
 -- Spies ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------------
 
@@ -369,6 +417,9 @@ local matchers = {
 	toBeTruthy = toBeTruthy,
 	toDeepEqual = toDeepEqual,
 	toEqual = toEqual,
+	toHaveLength = toHaveLength,
+	toHaveKeysLength = toHaveKeysLength,
+	toHaveKey = toHaveKey,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,
 	toHaveBeenCalledOnce = toHaveBeenCalledOnce,

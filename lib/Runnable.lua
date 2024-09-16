@@ -137,6 +137,7 @@ function Runnable:run()
 	self.parent:runHooks(ctx.config._beforeEachName)
 
 	local ok, err = pcall(self.func)
+	-- print(err) --FIXME if err is a tring
 	if not ok then
 		self.err = err
 		self.err.debuginfo = debug.getinfo(self.func, "S")
