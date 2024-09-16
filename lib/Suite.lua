@@ -1,4 +1,5 @@
 local Context = require("lib.Context")
+local errorx = require("lib.ext.errorx")
 local Runnable = require("lib.Runnable")
 local Labels = require("lib.Labels")
 local Status = require("lib.Status")
@@ -12,10 +13,13 @@ local Suite = Runnable:new()
 function Suite:prepare()
 	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
-		error(
+		self.err = errorx.new(
 			string.format("Runnable.Suite: %s", Labels.ErrorCallbackNotFunction),
-			ctx.config._suiteLevel
+			self.func,
+			"function"
 		)
+		errorx.print(self.err)
+		return
 	end
 
 	self.level = ctx.level
@@ -30,10 +34,13 @@ function Suite:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
-		-- TODO better error reporting
-		error(err.message, ctx.config._suiteLevel)
-		self.err = err
-		self.status = Status.Failed
+		local errMsg = err
+		if type(err) == "table" and err.message then
+			errMsg = err.message
+		end
+		self.err = errorx.new(errMsg, self.func, "function")
+		errorx.print(self.err)
+		return
 	end
 	ctx.level = ctx.level - 1
 end

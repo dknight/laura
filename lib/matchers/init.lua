@@ -1,5 +1,5 @@
 ---@alias MatchResult {actual: any, expected: any, err: Error, ok: boolean, isNot: boolean, [string]: function}
----@alias Assertion fun(t: table, expected: any, cmp: fun(a: any, b?: any): boolean): boolean
+---@alias Assertion fun(t: table, expected: any, cmp: fun(a: any, b?: any): boolean, Error?): boolean, Assertion
 
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
@@ -8,9 +8,11 @@ local tablex = require("lib.ext.tablex")
 
 ---@type Assertion
 local function compare(t, expected, cmp)
+	local err
 	t.expected = expected
-	t.ok = cmp(t.actual, t.expected)
-	if not t.ok then
+	-- not very elegant to return error extra error here
+	t.ok, err = cmp(t.actual, t.expected)
+	if not t.ok and not err then
 		t.err = errorx.new(Labels.ErrorAssertion, t.actual, t.expected)
 	end
 	return t(expected)
@@ -29,30 +31,33 @@ end
 ---@type Assertion
 local function toDeepEqual(t, expected)
 	return compare(t, expected, function(a, b)
-		local res = true
-		if a == b then
-			return true
-		end
-
+		local areBothTables = type(a) == "table" and type(b) == "table"
+		t.ok = true
 		if type(a) ~= type(b) then
-			res = false
+			t.ok = false
 		end
 
-		if type(a) == "table" and not tablex.equal(a, b) then
-			res = false
+		if areBothTables then
+			t.ok = tablex.equal(a, b)
+		else
+			t.ok = a == b
 		end
 
-		if not res then
-			local diff, count = tablex.diff(a, b)
-			t.err = errorx.new(
-				Labels.ErrorAssertion,
-				count.added,
-				count.removed,
-				nil,
-				tablex.diffToString(a, diff, 1)
-			)
+		if not t.ok then
+			if areBothTables then
+				local diff, count = tablex.diff(a, b)
+				t.err = errorx.new(
+					Labels.ErrorAssertion,
+					count.added,
+					count.removed,
+					"",
+					tablex.diffToString(a, diff, 1)
+				)
+			else
+				t.err = errorx.new(Labels.ErrorAssertion, a, b)
+			end
 		end
-		return res
+		return t.ok, t.err
 	end)
 end
 

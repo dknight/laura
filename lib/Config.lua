@@ -37,10 +37,6 @@ local Config = {
 	-- Application name. "Laura" is default.
 	_appKey = key,
 
-	-- Suite error level, used to report more pricise error call
-	-- stack
-	_suiteLevel = 3,
-
 	-- Failure exit code, usually non-zero by *nix convention.
 	_exitFailed = 1,
 

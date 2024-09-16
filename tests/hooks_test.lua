@@ -57,12 +57,9 @@ describe("direct call hooks", function()
 	end)
 	it("should call hook", function()
 		expect(1).notToEqual(2)
-		-- expect(true).notToBe(false) -- FIXME err
-		-- expect(1).notToBe(2) -- FIXME err
 	end)
 end)
 
--- describe("") -- FIXME error reporting or todo
 describe("call hooks tests", function()
 	it("should call beforeAll once", function()
 		expect(beforeAllSpy).toHaveBeenCalledOnce()
