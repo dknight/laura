@@ -1,6 +1,7 @@
 local Context = require("lib.Context")
 local Runnable = require("lib.Runnable")
 local Labels = require("lib.Labels")
+local Status = require("lib.Status")
 
 ---@type Context
 local ctx = Context.global()
@@ -29,7 +30,10 @@ function Suite:prepare()
 	ctx.level = ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
-		error(err, ctx.config._suiteLevel)
+		-- TODO better error reporting
+		error(err.message, ctx.config._suiteLevel)
+		self.err = err
+		self.status = Status.failed
 	end
 	ctx.level = ctx.level - 1
 end

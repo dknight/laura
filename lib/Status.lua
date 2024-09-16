@@ -1,3 +1,4 @@
+--TODO capitalize
 ---@enum Status
 local Status = {
 	common = 0,
