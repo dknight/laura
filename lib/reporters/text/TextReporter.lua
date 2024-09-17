@@ -4,8 +4,6 @@ local Reporter = require("lib.reporters.Reporter")
 local Terminal = require("lib.Terminal")
 local time = require("lib.util.time")
 
-local ctx = Context.global()
-
 ---@class TextReporter : Reporter
 ---@field printSuiteTitle fun(reporter: Reporter, suite: Runnable)
 local TextReporter = {}
