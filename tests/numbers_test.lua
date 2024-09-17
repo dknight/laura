@@ -2,10 +2,12 @@ local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
 
---- dirty rounding tp integerr
-local function round(number)
+---Dirty rounding to integer
+---@param x number
+---@return number
+local function round(x)
 	local c = 2 ^ 52 + 2 ^ 51 -- TODO math.pow() compatible
-	return ((number + c) - c)
+	return ((x + c) - c)
 end
 
 describe("numbers", function()
