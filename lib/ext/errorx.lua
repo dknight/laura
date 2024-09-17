@@ -9,11 +9,13 @@ local Terminal = require("lib.Terminal")
 ---@field actual any Actual value.
 ---@field expected any Expected value.
 ---@field description? string Desctiption of the test case.
----@field diffString? string Used to print table diff.
+---@field diffString? string Used to print extra diff and error output
+---information.
 ---@field debuginfo? debuginfo Used to print table diff.
 ---@field traceback? string Used to print table diff.
 ---@field actualOperator? string Actual comparison operator.
 ---@field expectedOperator? string Expected comparison operator.
+---@field precision? number Prcision for floats number in the output.
 
 local ctx = Context.global()
 
@@ -45,24 +47,29 @@ local function new(
 		traceback = traceback,
 		actualOperator = "", -- not in use
 		expectedOperator = "", -- not in use
+		precision = 0,
 	}
 end
 
 ---@param v any
+---@param precision? number
 ---@return string
-local function resolveQualifier(v)
+local function resolveQualifier(v, precision)
+	precision = precision or 2
+	local q = "%q"
 	if type(v) == "number" then
 		if math.type(v) == "float" then
-			return "%&.f"
+			q = "%." .. precision .. "f"
 		else
-			return "%d"
+			q = "%d"
 		end
 	elseif type(v) == "string" then
-		return "%s"
+		q = "%s"
 	end
-	return "%q"
+	return q
 end
 
+-- FIXME tabulation with operators
 ---@param err Error
 ---@return string
 local function toString(err)
@@ -73,7 +80,7 @@ local function toString(err)
 		"\n\n",
 		helpers.tab(1),
 		labels.RemovedSymbol,
-		labels.ErrorExpected .. err.expectedOperator,
+		labels.ErrorExpected .. err.expectedOperator .. " ",
 		Terminal.setColor(Status.Passed),
 		string.format(resolveQualifier(err.expected), err.expected),
 		Terminal.resetColor(),
@@ -81,7 +88,7 @@ local function toString(err)
 		"\n",
 		helpers.tab(1),
 		labels.AddedSymbol,
-		labels.ErrorActual .. string.rep(" ", 3) .. err.expectedOperator,
+		labels.ErrorActual .. err.actualOperator .. " ",
 		Terminal.setColor(Status.Failed),
 		string.format(resolveQualifier(err.actual), err.actual),
 		Terminal.resetColor(),
@@ -112,4 +119,5 @@ return {
 	new = new,
 	print = printError,
 	toString = toString,
+	resolveQualifier = resolveQualifier,
 }

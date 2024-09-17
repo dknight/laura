@@ -29,13 +29,15 @@ end
 local function expect(actual)
 	local ms = {}
 	for key, matcher in pairs(matchers) do
+		local fmt = errorx.resolveQualifier(actual)
 		local t2 = createResult(actual)
 		t2.isNot = key:sub(1, 3) == ctx.config._negationPrefix
 		t2.err = errorx.new(
 			Labels.ErrorAssertion,
-			actual,
-			string.format("%s %s", Labels.Not, actual)
+			string.format(fmt, actual),
+			string.format(fmt, actual)
 		)
+		t2.err.expectedOperator = Labels.Not
 		ms[key] = bind(matcher, t2)
 	end
 
