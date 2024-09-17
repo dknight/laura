@@ -1,5 +1,3 @@
--- toBeCloseTo
-
 local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
