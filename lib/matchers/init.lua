@@ -7,6 +7,7 @@ local Labels = require("lib.Labels")
 local tablex = require("lib.ext.tablex")
 local Terminal = require("lib.Terminal")
 local Status = require("lib.Status")
+local mathx = require("lib.ext.mathx")
 
 ---@type Assertion
 local function compare(t, expected, cmp)
@@ -169,7 +170,7 @@ local function toBeCloseTo(t, expected)
 	end
 	return compare(t, n, function(a)
 		local fmt = "%." .. (decs + 1) .. "f"
-		local d = (10 ^ -decs) / 2
+		local d = mathx.pow(10, -decs) / 2
 		local x = math.abs(a - n)
 		t.err = errorx.new(
 			Labels.ErrorAssertion,

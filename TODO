@@ -1,4 +1,3 @@
 - Matchers and tests;
   - try to do a simpler interface for matchers;
   - better error if no matcher exists like NotTexists(3)
-  - TODO Matcher

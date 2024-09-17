@@ -1,12 +1,13 @@
 local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
+local mathx = require("lib.ext.mathx")
 
 ---Dirty rounding to integer
 ---@param x number
 ---@return number
 local function round(x)
-	local c = 2 ^ 52 + 2 ^ 51 -- TODO math.pow() compatible
+	local c = mathx.pow(2, 52) + mathx.pow(2, 51)
 	return ((x + c) - c)
 end
 
