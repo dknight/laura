@@ -5,22 +5,28 @@ local Labels = {
 	AddedSymbol = "+",
 	ErrorActual = "actual: ",
 	ErrorAssertion = "assertion error: ",
+	ErrorCallbackNotFunction = "callback is not a function",
 	ErrorConfigFilePath = "no config path diven",
 	ErrorConfigRead = "cannot read config file\n",
+	ErrorEnumKey = "%q is not a valid member of %s",
 	ErrorExpected = "exptected: ",
 	ErrorHookNotFunction = "hook is not a function",
-	ErrorCallbackNotFunction = "callback is not a function",
-	ErrorEnumKey = "%q is not a valid member of %s",
 	ErrorNotADir = "is not a directory",
 	ErrorSyntax = "syntax error",
 	FailedTests = "FAILED TESTS",
-	NoTests = "no tests found",
 	Not = "not",
+	NoTests = "no tests found",
 	Performance = "\ntime: ≈%s / mem: %s @ %s\n",
 	RemovedSymbol = "-",
 	ResultFailed = "failed",
 	ResultPass = "pass",
-	WarningNoReporters = "no reporters given",
+	Expected = {
+		Precision = "\texpected precision:    %d",
+		Difference = "\texpected difference: < %s%s%s",
+	},
+	Actual = {
+		Difference = "\tactual difference:     %s%s%s",
+	},
 	Statuses = {
 		[Status.Passed] = "passing",
 		[Status.Unchanged] = "",
@@ -37,6 +43,7 @@ local Labels = {
 	Total = "Total",
 	UnchangedSymbol = "",
 	UnknownContext = "unknown context",
+	WarningNoReporters = "no reporters given",
 }
 
 return setmetatable(Labels, {

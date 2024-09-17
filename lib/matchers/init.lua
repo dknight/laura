@@ -5,6 +5,8 @@ local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
 local tablex = require("lib.ext.tablex")
+local Terminal = require("lib.Terminal")
+local Status = require("lib.Status")
 
 ---@type Assertion
 local function compare(t, expected, cmp)
@@ -145,6 +147,54 @@ local function toHaveKey(t, expected)
 			act, exp = exp, act
 		end
 		t.err = errorx.new(Labels.ErrorAssertion, act, exp)
+		return res, t.err
+	end)
+end
+
+-- ---------------------------------------------------------------------------
+-- Numbers -------------------------------------------------------------------
+-- ---------------------------------------------------------------------------
+
+---Checks number is close to another number, useful to compare floats.
+---default 2.
+---@type Assertion
+local function toBeCloseTo(t, expected)
+	local n
+	local decs = 2
+	if type(expected) == "number" then
+		n = expected
+	else
+		n = expected[1]
+		decs = expected[2]
+	end
+	return compare(t, n, function(a)
+		local fmt = "%." .. (decs + 1) .. "f"
+		local d = (10 ^ -decs) / 2
+		local x = math.abs(a - n)
+		local res = x < d
+		if not res then
+			t.err = errorx.new(
+				Labels.ErrorAssertion,
+				string.format(fmt, t.actual),
+				string.format(fmt, t.expected)
+			)
+			t.err.diffString = table.concat({
+				"\t",
+				string.format(Labels.Expected.Precision, decs),
+				string.format(
+					Labels.Expected.Difference,
+					Terminal.setColor(Status.Passed),
+					string.format(fmt, d),
+					Terminal.resetColor()
+				),
+				string.format(
+					Labels.Actual.Difference,
+					Terminal.setColor(Status.Failed),
+					x,
+					Terminal.resetColor()
+				),
+			}, "\n")
+		end
 		return res, t.err
 	end)
 end
@@ -420,6 +470,7 @@ local matchers = {
 	toHaveLength = toHaveLength,
 	toHaveKeysLength = toHaveKeysLength,
 	toHaveKey = toHaveKey,
+	toBeCloseTo = toBeCloseTo,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,
 	toHaveBeenCalledOnce = toHaveBeenCalledOnce,
