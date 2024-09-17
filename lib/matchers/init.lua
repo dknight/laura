@@ -171,31 +171,68 @@ local function toBeCloseTo(t, expected)
 		local fmt = "%." .. (decs + 1) .. "f"
 		local d = (10 ^ -decs) / 2
 		local x = math.abs(a - n)
-		local res = x < d
-		if not res then
-			t.err = errorx.new(
-				Labels.ErrorAssertion,
-				string.format(fmt, t.actual),
-				string.format(fmt, t.expected)
-			)
-			t.err.diffString = table.concat({
-				"\t",
-				string.format(Labels.Expected.Precision, decs),
-				string.format(
-					Labels.Expected.Difference,
-					Terminal.setColor(Status.Passed),
-					string.format(fmt, d),
-					Terminal.resetColor()
-				),
-				string.format(
-					Labels.Actual.Difference,
-					Terminal.setColor(Status.Failed),
-					x,
-					Terminal.resetColor()
-				),
-			}, "\n")
-		end
-		return res, t.err
+		t.err = errorx.new(
+			Labels.ErrorAssertion,
+			string.format(fmt, t.actual),
+			string.format(fmt, t.expected)
+		)
+		t.err.diffString = table.concat({
+			"\t",
+			string.format(Labels.Expected.Precision, decs),
+			string.format(
+				Labels.Expected.Difference,
+				Terminal.setColor(Status.Passed),
+				string.format(fmt, d),
+				Terminal.resetColor()
+			),
+			string.format(
+				Labels.Actual.Difference,
+				Terminal.setColor(Status.Failed),
+				x,
+				Terminal.resetColor()
+			),
+		}, "\n")
+		return x < d, t.err
+	end)
+end
+
+---Checks number is greater than expected number.
+---@type Assertion
+local function toBeGreaterThan(t, expected)
+	return compare(t, expected, function(a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		t.err.expectedOperator = ">"
+		return a > b, t.err
+	end)
+end
+
+---Checks number is greater than or equal expected number.
+---@type Assertion
+local function toBeGreaterThanOrEqual(t, expected)
+	return compare(t, expected, function(a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		t.err.expectedOperator = ">="
+		return a >= b, t.err
+	end)
+end
+
+---Checks number is less than expected number.
+---@type Assertion
+local function toBeLessThan(t, expected)
+	return compare(t, expected, function(a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		t.err.expectedOperator = "<"
+		return a < b, t.err
+	end)
+end
+
+---Checks number is less or equal than expected number.
+---@type Assertion
+local function toBeLessThanOrEqual(t, expected)
+	return compare(t, expected, function(a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		t.err.expectedOperator = "=<"
+		return a <= b, t.err
 	end)
 end
 
@@ -471,6 +508,10 @@ local matchers = {
 	toHaveKeysLength = toHaveKeysLength,
 	toHaveKey = toHaveKey,
 	toBeCloseTo = toBeCloseTo,
+	toBeGreaterThan = toBeGreaterThan,
+	toBeGreaterThanOrEqual = toBeGreaterThanOrEqual,
+	toBeLessThan = toBeLessThan,
+	toBeLessThanOrEqual = toBeLessThanOrEqual,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,
 	toHaveBeenCalledOnce = toHaveBeenCalledOnce,

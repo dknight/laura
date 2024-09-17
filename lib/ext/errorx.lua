@@ -63,7 +63,7 @@ local function resolveQualifier(v, precision)
 		else
 			q = "%d"
 		end
-	elseif type(v) == "string" then
+	elseif type(v) == "string" or type(v) == "table" then
 		q = "%s"
 	end
 	return q
