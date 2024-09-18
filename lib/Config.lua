@@ -29,6 +29,9 @@ local Config = {
 	-- Print tests summary if reporter support it. true by default.
 	ReportSummary = true,
 
+	--- Use UTF-8 for strings comparison.
+	UTF8 = true,
+
 	--
 	-- Internally configurable, do not meant to be change externally.
 	---------------------------------------------------------------------------

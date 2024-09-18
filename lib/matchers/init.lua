@@ -1,13 +1,16 @@
 ---@alias MatchResult {actual: any, expected: any, err: Error, ok: boolean, isNot: boolean, [string]: function}
 ---@alias Assertion fun(t: table, expected: any, cmp: fun(a: any, b?: any): boolean, Error?): boolean, Assertion
 
+local Context = require("lib.Context")
 local errorx = require("lib.ext.errorx")
 local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
+local mathx = require("lib.ext.mathx")
+local Status = require("lib.Status")
 local tablex = require("lib.ext.tablex")
 local Terminal = require("lib.Terminal")
-local Status = require("lib.Status")
-local mathx = require("lib.ext.mathx")
+
+local ctx = Context.global()
 
 ---@type Assertion
 local function compare(t, expected, cmp)
@@ -108,16 +111,23 @@ end
 -- Length and keys -----------------------------------------------------------
 -- ---------------------------------------------------------------------------
 
----Checks length of a table. It uses # operator,
----so beware if table is not a sequence.
+---Checks length of a table. It uses # operator, so beware if table is not a sequence.
+---For UTF-8 comparison sring, check for config UTF8 flag.
 ---@type Assertion
 local function toHaveLength(t, expected)
 	return compare(t, expected, function(a)
-		local res = #a == expected
-		if not res then
-			t.err = errorx.new(Labels.ErrorAssertion, #a, expected)
+		local res
+		if type(a) == "string" then
+			if ctx.config.UTF8 then
+				res = utf8.len(a)
+			else
+				res = string.len(a)
+			end
+		else
+			res = #a
 		end
-		return res, t.err
+		t.err = errorx.new(Labels.ErrorAssertion, res, expected)
+		return res == expected, t.err
 	end)
 end
 
@@ -234,6 +244,68 @@ local function toBeLessThanOrEqual(t, expected)
 		t.err = errorx.new(Labels.ErrorAssertion, a, b)
 		t.err.expectedOperator = "=<"
 		return a <= b, t.err
+	end)
+end
+
+-- ---------------------------------------------------------------------------
+-- String --------------------------------------------------------------------
+-- ---------------------------------------------------------------------------
+
+---Checks string matches another string with pattern (simplified regexp).
+---https://www.lua.org/manual/5.4/manual.html#6.4.1
+---@type Assertion
+local function toMatch(t, expected)
+	return compare(t, expected, function(a, b)
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		return string.match(a, b), t.err
+	end)
+end
+
+---Checks that string or array contains an element or substring.
+---@type Assertion
+local function toContain(t, expected)
+	return compare(t, expected, function(a, b)
+		local ok
+		local isTable = type(a) == "table"
+		local isString = type(a) == "string"
+		if isTable then
+			-- TODO binary search is faster
+			for _, elem in ipairs(a) do
+				if expected == elem then
+					ok = true
+					break
+				end
+			end
+		elseif isString then
+			ok = string.match(a, b)
+		end
+		t.err = errorx.new(Labels.ErrorAssertion, a, b)
+		if isString then
+			t.err.expectedOperator = "~"
+		end
+		return not not ok, t.err
+	end)
+end
+
+-- ---------------------------------------------------------------------------
+-- Errors --------------------------------------------------------------------
+-- ---------------------------------------------------------------------------
+
+-- TODO check types for all matchers
+---Checks that function is failed, in other words 'throws error'.
+---@type Assertion
+local function toFail(t, expected)
+	return compare(t, expected, function(a, b)
+		local ok, err = pcall(a)
+		local act = Labels.Actual.Error
+		local exp = Labels.Expected.Error
+		if b ~= nil and type(err) == "string" and not string.match(err, b) then
+			ok = true
+			act = b
+			exp = err
+		end
+		t.err = errorx.new(err or Labels.ErrorAssertion, act, exp)
+		return not ok, t.err
 	end)
 end
 
@@ -513,6 +585,9 @@ local matchers = {
 	toBeGreaterThanOrEqual = toBeGreaterThanOrEqual,
 	toBeLessThan = toBeLessThan,
 	toBeLessThanOrEqual = toBeLessThanOrEqual,
+	toMatch = toMatch,
+	toContain = toContain,
+	toFail = toFail,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,
 	toHaveBeenCalledOnce = toHaveBeenCalledOnce,

@@ -23,9 +23,11 @@ local Labels = {
 	Expected = {
 		Precision = "\texpected precision:    %d",
 		Difference = "\texpected difference: < %s%s%s",
+		Error = "function should fail",
 	},
 	Actual = {
 		Difference = "\tactual difference:     %s%s%s",
+		Error = "function did not fail",
 	},
 	Statuses = {
 		[Status.Passed] = "passing",

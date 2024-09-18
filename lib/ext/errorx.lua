@@ -56,14 +56,15 @@ end
 ---@return string
 local function resolveQualifier(v, precision)
 	precision = precision or 2
+	local typ = type(v)
 	local q = "%q"
-	if type(v) == "number" then
+	if typ == "number" then
 		if math.type(v) == "float" then
 			q = "%." .. precision .. "f"
 		else
 			q = "%d"
 		end
-	elseif type(v) == "string" or type(v) == "table" then
+	elseif typ == "table" or typ == "function" then
 		q = "%s"
 	end
 	return q
