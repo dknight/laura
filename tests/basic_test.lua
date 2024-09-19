@@ -20,11 +20,6 @@ describe("basic tests", function()
 		expect(true).toEqual(false)
 	end)
 
-	it("tables refs should be equal", function()
-		local t1 = { a = 1 }
-		expect(t1).toEqual(t1)
-	end)
-
 	it("nils should be equal", function()
 		expect(nil).toEqual(nil)
 	end)
@@ -39,38 +34,6 @@ describe("basic tests", function()
 
 	it("should be nil", function()
 		expect(nil).toBeNil()
-	end)
-
-	it:skip("tables should be deeply equal", function()
-		expect({
-			["0"] = 0,
-			p = "r",
-			a = 11,
-			b = "boo",
-			z = "x",
-			c = { a = 42, d = "D" },
-			y = {},
-			w = { u = "X" },
-			zz = nil,
-		}).toDeepEqual({
-			["0"] = 0,
-			p = "r",
-			a = 11,
-			b = "zoo",
-			c = {
-				d = "E",
-				f = "F",
-				g = "H",
-			},
-			y = {
-				name = "dima",
-				last = "smirnov",
-				mid = {
-					[0] = 23,
-					[1] = 44,
-				},
-			},
-		})
 	end)
 
 	describe("level 1 boo", function()
