@@ -311,12 +311,7 @@ local function toContain(t, expected)
 			t.ok = string.match(a, b)
 		end
 
-		local act = a
-		if isTable then
-			act = table.concat(a, ", ") -- TODO better output
-		end
-
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
+		t.error = errorx.new(Labels.ErrorAssertion, a, b)
 		if isString then
 			t.error.expectedOperator =
 				string.format("%s%s", t.isNot and "not " or "", "~")
@@ -416,7 +411,7 @@ end
 ---Checks that spy has been called with given arguments.
 ---@type Assertion
 local function toHaveBeenCalledWith(t, expected)
-	return compare(t, true, function(a, b)
+	return compare(t, expected, function(a, b)
 		t.ok = false
 		local calls = a:getCalls()
 		for _, call in ipairs(calls) do
@@ -434,8 +429,7 @@ local function toHaveBeenCalledWith(t, expected)
 				tmp[#tmp + 1] = tostring(args)
 			end
 		end
-		local act = table.concat(tmp, ", ") -- FIXME better output
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
+		t.error = errorx.new(Labels.ErrorAssertion, tmp, b)
 
 		return t.ok, t.error
 	end)
@@ -581,8 +575,7 @@ local function toHaveReturnedWith(t, expected)
 				tmp[#tmp + 1] = tostring(args)
 			end
 		end
-		local act = table.concat(tmp, ", ") -- FIXME better output
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
+		t.error = errorx.new(Labels.ErrorAssertion, tmp, b)
 
 		return t.ok, t.error
 	end)

@@ -9,7 +9,6 @@ local successFn = function()
 	return true
 end
 
---- FIXME if no errors then all test are running??
 describe("errors", function()
 	describe("toFail", function()
 		it("should fail", function()

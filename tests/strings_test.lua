@@ -46,7 +46,7 @@ describe("strings", function()
 		end)
 
 		it("should contain element in array", function()
-			expect({ "hello", "world" }).toContain("world")
+			expect({ "hello", "world" }).toContain("moon")
 		end)
 
 		it("should not to contain element in array", function()

@@ -69,6 +69,13 @@ describe("spies", function()
 		expect(spy).toHaveBeenCalledWith(3)
 	end)
 
+	it("should be called with arguments", function()
+		for i, v in ipairs({ "foo", "bar", "cow" }) do
+			spy(v)
+		end
+		expect(spy).toHaveBeenCalledWith("bar")
+	end)
+
 	it("should not be called with arguments", function()
 		for i in ipairs({ 1, 2, 3 }) do
 			spy(i)

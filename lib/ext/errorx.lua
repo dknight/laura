@@ -45,8 +45,8 @@ local function new(
 		diffString = diffString or "",
 		debuginfo = debuginfo,
 		traceback = traceback,
-		actualOperator = "", -- not in use
-		expectedOperator = "", -- not in use
+		actualOperator = "",
+		expectedOperator = "",
 		precision = 0,
 	}
 end
@@ -92,6 +92,17 @@ local function toString(err)
 	local fmt = "%-" .. space .. "s"
 	act = string.format(fmt, act)
 	exp = string.format(fmt, exp)
+
+	local actualValue = err.actual
+	if type(err.actual) == "table" then
+		local tmp = {}
+		for i in ipairs(err.actual) do
+			tmp[#tmp + 1] =
+				string.format(resolveQualifier(err.actual[i]), err.actual[i])
+		end
+		actualValue = "{" .. table.concat(tmp, ", ") .. "}"
+	end
+
 	local out = {
 		helpers.tab(ctx.level),
 		err.message,
@@ -107,7 +118,7 @@ local function toString(err)
 		helpers.tab(1),
 		act,
 		Terminal.setColor(Status.Failed),
-		string.format(resolveQualifier(err.actual), err.actual),
+		string.format(resolveQualifier(err.actual), actualValue),
 		Terminal.resetColor(),
 		"\n",
 		err.diffString,
