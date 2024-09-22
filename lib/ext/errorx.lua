@@ -1,6 +1,6 @@
 local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
-local labels = require("lib.Labels")
+local Labels = require("lib.Labels")
 local Status = require("lib.Status")
 local Terminal = require("lib.Terminal")
 
@@ -66,30 +66,46 @@ local function resolveQualifier(v, precision)
 		end
 	elseif typ == "table" or typ == "function" then
 		q = "%s"
+	elseif typ == "string" then
+		q = '"%s"'
 	end
 	return q
 end
 
--- FIXME tabulation with operators
+---TODO pass extra labels instead of default
 ---@param err Error
 ---@return string
 local function toString(err)
+	local act = string.format(
+		"%s%s%s",
+		Labels.AddedSymbol,
+		Labels.ErrorActual,
+		err.actualOperator
+	)
+	local exp = string.format(
+		"%s%s%s",
+		Labels.RemovedSymbol,
+		Labels.ErrorExpected,
+		err.expectedOperator
+	)
+	local space = math.max(#act, #exp)
+	local fmt = "%-" .. space .. "s"
+	act = string.format(fmt, act)
+	exp = string.format(fmt, exp)
 	local out = {
 		helpers.tab(ctx.level),
 		err.message,
 		err.description,
 		"\n\n",
 		helpers.tab(1),
-		labels.RemovedSymbol,
-		labels.ErrorExpected .. err.expectedOperator .. " ",
+		exp,
 		Terminal.setColor(Status.Passed),
 		string.format(resolveQualifier(err.expected), err.expected),
 		Terminal.resetColor(),
 		helpers.tab(ctx.level),
 		"\n",
 		helpers.tab(1),
-		labels.AddedSymbol,
-		labels.ErrorActual .. err.actualOperator .. " ",
+		act,
 		Terminal.setColor(Status.Failed),
 		string.format(resolveQualifier(err.actual), err.actual),
 		Terminal.resetColor(),

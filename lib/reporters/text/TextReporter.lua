@@ -21,7 +21,7 @@ end
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
 		helpers.tab(suite.level - 1) .. suite.description,
-		Terminal.style.Bold
+		Terminal.Style.Bold
 	)
 end
 
@@ -53,7 +53,7 @@ function TextReporter:reportTest(test)
 	if test:isSuite() then
 		Terminal.printStyle(
 			helpers.tab(lvl) .. test.description,
-			Terminal.style.Bold
+			Terminal.Style.Bold
 		)
 	else
 		local tmStr = time.toString(test.execTime, " (%s)")

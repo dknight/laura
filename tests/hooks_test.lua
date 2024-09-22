@@ -11,7 +11,7 @@ describe("before", function()
 	hooks.beforeAll(beforeAllSpy)
 	hooks.beforeEach(beforeEachSpy)
 
-	it("before all should be called", function()
+	it("before all should be called once", function()
 		expect(beforeAllSpy).toHaveBeenCalledOnce()
 	end)
 
@@ -47,11 +47,13 @@ local beforeAllSpy = Spy:new()
 local beforeEachSpy = Spy:new()
 local afterAllSpy = Spy:new()
 local afterEachSpy = Spy:new()
+
 describe("direct call hooks", function()
 	hooks.beforeAll(beforeAllSpy)
 	hooks.beforeEach(beforeEachSpy)
 	hooks.afterAll(afterAllSpy)
 	hooks.afterEach(afterEachSpy)
+
 	it("should call hook", function()
 		expect(true).toBe(true)
 	end)

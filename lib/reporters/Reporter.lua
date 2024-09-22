@@ -32,8 +32,8 @@ end
 function Reporter:reportSummary()
 	Terminal.printStyle(
 		Labels.Summary.Title,
-		Terminal.style.Bold,
-		Terminal.style.Underlined
+		Terminal.Style.Bold,
+		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
@@ -73,13 +73,13 @@ function Reporter:reportErrors()
 	io.write("\n")
 	Terminal.printStyle(
 		Labels.FailedTests,
-		Terminal.style.Bold,
-		Terminal.style.Underlined
+		Terminal.Style.Bold,
+		Terminal.Style.Underlined
 	)
 
-	for i, test in ipairs(self.failing) do
+	for i in ipairs(self.failing) do
 		io.write(string.format("%d. ", i))
-		errorx.print(test.err)
+		errorx.print(self.failing[i].error)
 	end
 end
 

@@ -24,6 +24,7 @@ local Labels = {
 		Precision = "\texpected precision:    %d",
 		Difference = "\texpected difference: < %s%s%s",
 		Error = "function should fail",
+		Pattern = "Expected pattern",
 	},
 	Actual = {
 		Difference = "\tactual difference:     %s%s%s",

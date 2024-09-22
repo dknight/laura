@@ -11,9 +11,9 @@ local function split(str, sep)
 end
 
 ---@param str string
----@return string
+---@return string, number
 local function trim(str)
-	return (str:gsub("^%s*(.-)%s*$", "%1"))
+	return str:gsub("^%s*(.-)%s*$", "%1")
 end
 
 return {

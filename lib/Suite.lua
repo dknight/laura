@@ -2,7 +2,6 @@ local Context = require("lib.Context")
 local errorx = require("lib.ext.errorx")
 local Runnable = require("lib.Runnable")
 local Labels = require("lib.Labels")
-local Status = require("lib.Status")
 
 ---@type Context
 local ctx = Context.global()
@@ -13,12 +12,12 @@ local Suite = Runnable:new()
 function Suite:prepare()
 	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
-		self.err = errorx.new(
+		self.error = errorx.new(
 			string.format("Runnable.Suite: %s", Labels.ErrorCallbackNotFunction),
 			self.func,
 			"function"
 		)
-		errorx.print(self.err)
+		errorx.print(self.error)
 		return
 	end
 
@@ -38,8 +37,8 @@ function Suite:prepare()
 		if type(err) == "table" and err.message then
 			errMsg = err.message
 		end
-		self.err = errorx.new(errMsg, self.func, "function")
-		errorx.print(self.err)
+		self.error = errorx.new(errMsg, self.func, "function")
+		errorx.print(self.error)
 		return
 	end
 	ctx.level = ctx.level - 1

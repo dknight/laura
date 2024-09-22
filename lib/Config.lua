@@ -56,7 +56,7 @@ local Config = {
 	_afterAllName = "afterAll",
 
 	-- Negation markers prefix, use to negate matcher.
-	_negationPrefix = "not",
+	_negationPrefix = "not ",
 }
 
 return setmetatable(Config, {

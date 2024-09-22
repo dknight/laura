@@ -67,9 +67,7 @@ describe("numbers", function()
 			expect(4.1).toBeCloseTo({ 4.14999, 1 })
 		end)
 
-		it("should  not to be close with precision 1", function()
-			-- expect(4.1).toBeCloseTo({ 4.15, 1 }) -- FIXME no twice report
-			-- expect(4.1).notToBeCloseTo({ 4.14999, 1 })
+		it("should not to be close with precision 1", function()
 			expect(4.1).notToBeCloseTo({ 4.15, 1 })
 		end)
 

@@ -10,7 +10,7 @@ local ctx = Context.global()
 ---@class Runnable
 ---@field public children Runnable[]
 ---@field public description string
----@field public err? Error
+---@field public error? Error
 ---@field public execTime number
 ---@field public filterOnly fun(root: Runnable)
 ---@field public func function
@@ -64,13 +64,13 @@ end
 ---@return Runnable
 function Runnable:new(description, func)
 	local t = {
-		children = {},
-		description = description,
-		err = nil,
-		execTime = 0,
-		func = func,
 		_only = false,
 		_suite = false,
+		children = {},
+		description = description,
+		error = nil,
+		execTime = 0,
+		func = func,
 		level = 0,
 		parent = nil,
 		status = nil,
@@ -114,7 +114,7 @@ function Runnable:run()
 		return
 	end
 	if type(self.func) ~= "function" then
-		self.err = errorx.new(
+		self.error = errorx.new(
 			string.format("Runnable.Test: %s", Labels.ErrorCallbackNotFunction),
 			"function",
 			type(self.func),
@@ -138,9 +138,10 @@ function Runnable:run()
 
 	local ok, err = pcall(self.func)
 	if not ok then
-		self.err = err
-		self.err.debuginfo = debug.getinfo(self.func, "S")
-		self.err.traceback = debug.traceback()
+		err.message = self.description
+		self.error = err
+		self.error.debuginfo = debug.getinfo(self.func, "S")
+		self.error.traceback = debug.traceback()
 		self.status = Status.Failed
 	else
 		self.status = Status.Passed
@@ -221,7 +222,7 @@ function Runnable:runHooks(typ)
 	for _, hook in ipairs(self.hooks[typ]) do
 		local ok, err = pcall(hook.func)
 		if not ok then
-			self.err = {
+			self.error = {
 				message = err,
 			}
 			self.status = Status.Failed

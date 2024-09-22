@@ -2,7 +2,7 @@ local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
 
-describe("lengths", function()
+describe("length", function()
 	it("should return length of the table", function()
 		expect({}).toHaveLength(0)
 	end)
@@ -38,48 +38,32 @@ describe("lengths", function()
 	end)
 end)
 
-describe("lengths keys", function()
-	it("should return length of the table", function()
+describe("length keys", function()
+	it("should return length of the table 1", function()
 		expect({}).toHaveKeysLength(0)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 2", function()
 		expect({ "a", "b", "c" }).toHaveKeysLength(3)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 3", function()
 		expect({ "a", nil, "c" }).toHaveKeysLength(2)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 4", function()
 		expect({ "a", nil, "c", nil, "e" }).toHaveKeysLength(3)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 5", function()
 		expect({ nil, "a", false }).toHaveKeysLength(2)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 6", function()
 		expect({ nil, nil, nil }).toHaveKeysLength(0)
 	end)
 
-	it("should return length of the table", function()
+	it("should return length of the table 7", function()
 		expect({ true, false }).toHaveKeysLength(2)
-	end)
-end)
-
-describe("have key", function()
-	it("should return length of the table", function()
-		expect({ "a", "b" }).toHaveKey(1)
-	end)
-
-	it("should return length of the table", function()
-		expect({ firstname = "John", lastname = "Doe" }).toHaveKey("firstname")
-	end)
-
-	it("should return length of the table", function()
-		expect({ firstname = "John", lastname = "Doe" }).notToHaveKey(
-			"middlename"
-		)
 	end)
 end)

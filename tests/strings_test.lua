@@ -9,7 +9,7 @@ describe("strings", function()
 		end)
 
 		it("should not to match substring", function()
-			expect("Hello world").notToMatch("world")
+			expect("Hello world").notToMatch("moon")
 		end)
 
 		it("should match numbers", function()

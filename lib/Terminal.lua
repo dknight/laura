@@ -178,7 +178,8 @@ local Terminal = {
 	printStyle = printStyle,
 	resetColor = resetColor,
 	setColor = setColor,
-	style = Style,
+	setStyle = setStyle,
+	Style = Style,
 	restore = restore,
 	toggleCursor = toggleCursor,
 }

@@ -82,3 +82,19 @@ describe("tables", function()
 		end)
 	end)
 end)
+
+describe("have key", function()
+	it("should return length of the table", function()
+		expect({ "a", "b" }).toHaveKey(1)
+	end)
+
+	it("should return length of the table", function()
+		expect({ firstname = "John", lastname = "Doe" }).toHaveKey("firstname")
+	end)
+
+	it("should return length of the table", function()
+		expect({ firstname = "John", lastname = "Doe" }).notToHaveKey(
+			"middlename"
+		)
+	end)
+end)
