@@ -11,7 +11,7 @@ describe("tables", function()
 	it("tables refs not should be equal", function()
 		local t1 = { a = 1 }
 		local t2 = { a = 1 }
-		expect(t1).notToEqual(t1)
+		expect(t1).notToEqual(t2)
 	end)
 
 	it("should be deeply equal", function()
