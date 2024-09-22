@@ -15,7 +15,8 @@ local Terminal = require("lib.Terminal")
 ---@field traceback? string Used to print table diff.
 ---@field actualOperator? string Actual comparison operator.
 ---@field expectedOperator? string Expected comparison operator.
----@field precision? number Prcision for floats number in the output.
+---@field precision? number Precision for floats number in the output.
+---@field currentLine? number Current line of a call
 
 local ctx = Context.global()
 
@@ -48,9 +49,9 @@ local function new(
 		actualOperator = "",
 		expectedOperator = "",
 		precision = 0,
+		currentLine = debug.getinfo(3, "l").currentline,
 	}
 end
-
 ---@param v any
 ---@param precision? number
 ---@return string
@@ -94,7 +95,7 @@ local function toString(err)
 	exp = string.format(fmt, exp)
 
 	local actualValue = err.actual
-	if type(err.actual) == "table" then
+	if type(err.actual) == "table" and #err.actual > 0 then
 		local tmp = {}
 		for i in ipairs(err.actual) do
 			tmp[#tmp + 1] =
@@ -128,8 +129,25 @@ local function toString(err)
 		out[#out + 1] = string.format(
 			"%s:%d\n\n",
 			err.debuginfo.source,
-			err.debuginfo.linedefined
+			err.currentLine or err.debuginfo.linedefined
 		)
+
+		local lineno = 0
+		for line in io.lines(err.debuginfo.short_src) do
+			lineno = lineno + 1
+			if
+				lineno >= err.debuginfo.linedefined
+				and lineno <= err.debuginfo.lastlinedefined
+			then
+				local l = line
+				local f = "%4d. %10s\n"
+				if err.currentLine ~= lineno then
+					l = Terminal.setStyle(line, Terminal.Style.Dim)
+					f = "%4d. %s\n"
+				end
+				out[#out + 1] = string.format(f, lineno, l)
+			end
+		end
 	end
 	if ctx.config.Traceback then
 		out[#out + 1] = err.traceback
