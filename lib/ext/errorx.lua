@@ -3,13 +3,15 @@ local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
 local Status = require("lib.Status")
 local Terminal = require("lib.Terminal")
+local tablex = require("lib.ext.tablex")
 
 ---@class Error
----@field message string Extra messgef for the error.
+---@field title? string Title for the error.
 ---@field actual any Actual value.
 ---@field expected any Expected value.
----@field description? string Desctiption of the test case.
----@field diffString? string Used to print extra diff and error output
+---@field actualLabel? string Actual label.
+---@field expectedLabel? string Expected label.
+---@field message? string Used to print extra diff and error output
 ---information.
 ---@field debuginfo? debuginfo Used to print table diff.
 ---@field traceback? string Used to print table diff.
@@ -21,37 +23,31 @@ local Terminal = require("lib.Terminal")
 local ctx = Context.global()
 
 ---Creates a new error instance.
----@param message string
----@param actual any
----@param expected any
----@param description? string
----@param diffString? string
----@param debuginfo? debuginfo
----@param traceback? string
+---@param err? Error
 ---@return Error
-local function new(
-	message,
-	actual,
-	expected,
-	description,
-	diffString,
-	debuginfo,
-	traceback
-)
-	return {
-		message = message,
-		actual = actual,
-		expected = expected,
-		description = description or "",
-		diffString = diffString or "",
-		debuginfo = debuginfo,
-		traceback = traceback,
+local function new(err)
+	local opts = {
+		actual = nil,
 		actualOperator = "",
+		currentLine = -1,
+		debuginfo = nil,
+		expected = nil,
 		expectedOperator = "",
+		message = "",
+		title = "",
 		precision = 0,
-		currentLine = debug.getinfo(3, "l").currentline,
+		traceback = nil,
 	}
+
+	if type(err) == "table" then
+		for k, v in pairs(err) do
+			opts[k] = v
+		end
+	end
+
+	return opts
 end
+
 ---@param v any
 ---@param precision? number
 ---@return string
@@ -68,25 +64,27 @@ local function resolveQualifier(v, precision)
 	elseif typ == "table" or typ == "function" then
 		q = "%s"
 	elseif typ == "string" then
-		q = '"%s"'
+		-- edge cases
+		if v == ctx.config._rationalSet then -- Rational number
+			q = "%s"
+		else
+			q = '"%s"'
+		end
 	end
 	return q
 end
 
----TODO pass extra labels instead of default
 ---@param err Error
 ---@return string
 local function toString(err)
 	local act = string.format(
-		"%s%s%s",
-		Labels.AddedSymbol,
-		Labels.ErrorActual,
+		"%s%s",
+		err.actualLabel or Labels.ErrorActual,
 		err.actualOperator
 	)
 	local exp = string.format(
-		"%s%s%s",
-		Labels.RemovedSymbol,
-		Labels.ErrorExpected,
+		"%s%s",
+		err.expectedLabel or Labels.ErrorExpected,
 		err.expectedOperator
 	)
 	local space = math.max(#act, #exp)
@@ -96,40 +94,41 @@ local function toString(err)
 
 	local actualValue = err.actual
 	if type(err.actual) == "table" and #err.actual > 0 then
-		local tmp = {}
-		for i in ipairs(err.actual) do
-			tmp[#tmp + 1] =
-				string.format(resolveQualifier(err.actual[i]), err.actual[i])
-		end
-		actualValue = "{" .. table.concat(tmp, ", ") .. "}"
+		actualValue = tablex.inline(err.actual, true)
 	end
 
 	local out = {
 		helpers.tab(ctx.level),
-		err.message,
-		err.description,
+		err.title,
 		"\n\n",
 		helpers.tab(1),
 		exp,
 		Terminal.setColor(Status.Passed),
 		string.format(resolveQualifier(err.expected), err.expected),
-		Terminal.resetColor(),
+		Terminal.reset(),
 		helpers.tab(ctx.level),
 		"\n",
 		helpers.tab(1),
 		act,
 		Terminal.setColor(Status.Failed),
 		string.format(resolveQualifier(err.actual), actualValue),
-		Terminal.resetColor(),
+		Terminal.reset(),
 		"\n",
-		err.diffString,
+		err.message,
 		"\n",
 	}
 	if err.debuginfo ~= nil then
+		-- might be better?
+		local activeLine = math.huge
+		for i in pairs(err.debuginfo.activelines) do
+			activeLine = math.min(i, activeLine)
+		end
+		-- end --
+
 		out[#out + 1] = string.format(
 			"%s:%d\n\n",
 			err.debuginfo.source,
-			err.currentLine or err.debuginfo.linedefined
+			err.currentLine > 0 and err.currentLine or activeLine
 		)
 
 		local lineno = 0
@@ -139,15 +138,30 @@ local function toString(err)
 				lineno >= err.debuginfo.linedefined
 				and lineno <= err.debuginfo.lastlinedefined
 			then
+				local decs = math.log(err.debuginfo.lastlinedefined, 10) + 1
 				local l = line
-				local f = "%4d. %10s\n"
-				if err.currentLine ~= lineno then
+				local f = "%" .. math.ceil(decs) .. "d. %s\n"
+				if err.debuginfo.activelines[lineno] then
+					local match = l:gsub(
+						"%((.*)%)(.*)%((.*)%)",
+						"("
+							.. Terminal.setColor(Status.Failed)
+							.. "%1"
+							.. Terminal.reset()
+							.. ")%2("
+							.. Terminal.setColor(Status.Passed)
+							.. "%3"
+							.. Terminal.reset()
+							.. ")"
+					)
+					l = Terminal.setStyle(match, Terminal.Style.Normal)
+				else
 					l = Terminal.setStyle(line, Terminal.Style.Dim)
-					f = "%4d. %s\n"
 				end
 				out[#out + 1] = string.format(f, lineno, l)
 			end
 		end
+		out[#out + 1] = "\n"
 	end
 	if ctx.config.Traceback then
 		out[#out + 1] = err.traceback

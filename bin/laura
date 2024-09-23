@@ -27,7 +27,7 @@ end
 
 local files, fcount = fs.getFiles(dir)
 if fcount == 0 then
-	print(Labels.noTests)
+	print(Labels.NoTests)
 	os.exit(ctx.config._exitOK)
 end
 

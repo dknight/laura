@@ -12,11 +12,14 @@ local Suite = Runnable:new()
 function Suite:prepare()
 	Suite.createRootSuiteMaybe()
 	if type(self.func) ~= "function" then
-		self.error = errorx.new(
-			string.format("Runnable.Suite: %s", Labels.ErrorCallbackNotFunction),
-			self.func,
-			"function"
-		)
+		self.error = errorx.new({
+			title = string.format(
+				"Runnable.Suite: %s",
+				Labels.ErrorCallbackNotFunction
+			),
+			actual = type(self.func),
+			expected = "function",
+		})
 		errorx.print(self.error)
 		return
 	end
@@ -34,10 +37,14 @@ function Suite:prepare()
 	local ok, err = pcall(self.func)
 	if not ok then
 		local errMsg = err
-		if type(err) == "table" and err.message then
-			errMsg = err.message
+		if type(err) == "table" and err.title then
+			errMsg = err.title
 		end
-		self.error = errorx.new(errMsg, self.func, "function")
+		self.error = errorx.new({
+			title = errMsg,
+			actual = type(self.func),
+			expected = "function",
+		})
 		errorx.print(self.error)
 		return
 	end

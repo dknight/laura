@@ -1,9 +1,7 @@
 local bind = require("lib.util.bind")
 local Context = require("lib.Context")
 local errorx = require("lib.ext.errorx")
-local Labels = require("lib.Labels")
 local matchers = require("lib.matchers")
-local stringx = require("lib.ext.stringx")
 
 local ctx = Context.global()
 
@@ -31,9 +29,12 @@ local function expect(actual)
 	local ms = {}
 	for key, matcher in pairs(matchers) do
 		local t2 = createResult(actual)
-		t2.isNot = key:sub(1, 3) == stringx.trim(ctx.config._negationPrefix)
-		t2.error = errorx.new(Labels.ErrorAssertion, actual, actual)
-		t2.error.expectedOperator = ctx.config._negationPrefix
+		t2.isNot = key:sub(1, 3) == ctx.config._negationPrefix
+		t2.error = errorx.new({
+			actual = actual,
+			expected = actual,
+			expectedOperator = ctx.config._negationPrefix .. " ",
+		})
 		ms[key] = bind(matcher, t2)
 	end
 

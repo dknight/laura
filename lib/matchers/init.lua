@@ -22,16 +22,19 @@ local ctx = Context.global()
 
 ---@type Assertion
 local function compare(t, expected, cmp)
-	local err
 	t.expected = expected
-	-- not very elegant to return error extra error here
-	t.ok, err = cmp(t.actual, t.expected)
-	if not t.ok and not err then
-		t.error = errorx.new(
-			t.error.message or Labels.ErrorAssertion,
-			t.actual,
-			t.expected
-		)
+	t.ok, t.error = cmp(t.actual, t.expected)
+
+	-- default error
+	if not t.error then
+		t.error = errorx.new({ actual = t.actual, expected = expected })
+	end
+
+	-- create negation
+	if t.isNot then
+		t.error.expectedOperator = ctx.config._negationPrefix
+			.. " "
+			.. t.error.expectedOperator
 	end
 	return t(expected)
 end
@@ -50,32 +53,31 @@ end
 local function toDeepEqual(t, expected)
 	return compare(t, expected, function(a, b)
 		local areBothTables = type(a) == "table" and type(b) == "table"
-		t.ok = true
+		local ok = true
+		local err
 		if type(a) ~= type(b) then
-			t.ok = false
+			ok = false
 		end
 
 		if areBothTables then
-			t.ok = tablex.equal(a, b)
+			ok = tablex.equal(a, b)
 		else
-			t.ok = a == b
+			ok = a == b
 		end
 
-		if not t.ok then
+		if not ok then
 			if areBothTables then
 				local diff, count = tablex.diff(a, b)
-				t.error = errorx.new(
-					Labels.ErrorAssertion,
-					count.added,
-					count.removed,
-					"",
-					tablex.diffToString(a, diff, 1)
-				)
+				err = errorx.new({
+					added = count.added,
+					expected = count.removed,
+					message = tablex.diffToString(a, diff, 1),
+				})
 			else
-				t.error = errorx.new(Labels.ErrorAssertion, a, b)
+				err = errorx.new({ actual = a, expected = b })
 			end
 		end
-		return t.ok, t.error
+		return ok, err
 	end)
 end
 
@@ -106,7 +108,7 @@ end
 ---Checks if number is finite.
 ---@type Assertion
 local function toBeFinite(t)
-	return compare(t, true, function(a)
+	return compare(t, ctx.config._rationalSet, function(a)
 		return not (a == math.huge or a == -math.huge)
 	end)
 end
@@ -123,10 +125,7 @@ end
 ---@type Assertion
 local function toHaveTypeOf(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(Labels.ErrorAssertion, type(a), b)
-		t.error.expectedOperator = t.isNot and ctx.config._negationPrefix or ""
-		t.ok = type(a) == b
-		return t.ok, t.error
+		return type(a) == b, errorx.new({ actual = type(a), expected = b })
 	end)
 end
 
@@ -140,13 +139,25 @@ end
 local function toHaveLength(t, expected)
 	return compare(t, expected, function(a, b)
 		local len
-		if type(a) == "string" then
-			len = ctx.config.UTF8 and utf8.len(a) or string.len(a)
+		local isString = type(a) == "string"
+		if isString then
+			len = stringx.len(a, ctx.config.UTF8)
 		else
 			len = #a
 		end
-		t.error = errorx.new(Labels.ErrorAssertion, len, b)
-		return len == expected, t.error
+		return len == expected,
+			errorx.new({
+				actual = len,
+				expected = b,
+				message = string.format(
+					"\n%s%s%s%s%s\n",
+					helpers.tab(1),
+					isString and Labels.Actual.String or Labels.Actual.Table,
+					Terminal.setColor(Status.Failed),
+					isString and a or tablex.inline(a),
+					Terminal.reset()
+				),
+			})
 	end)
 end
 
@@ -158,26 +169,33 @@ local function toHaveKeysLength(t, expected)
 		for _ in pairs(a) do
 			i = i + 1
 		end
-
-		t.ok = i == b
-		if not t.ok then
-			t.error = errorx.new(Labels.ErrorAssertion, i, b)
-		end
-		return t.ok, t.error
+		return i == b,
+			errorx.new({
+				actual = i,
+				expected = b,
+				message = string.format(
+					"\n%s%s%s%s%s\n",
+					helpers.tab(1),
+					Labels.Actual.Table,
+					Terminal.setColor(Status.Failed),
+					tablex.inline(a, true),
+					Terminal.reset()
+				),
+			})
 	end)
 end
 
 ---Checks a key in the table, where key is not nil.
 ---@type Assertion
 local function toHaveKey(t, expected)
-	return compare(t, true, function(a)
-		t.ok = a[expected] ~= nil
-		local act, exp = true, false
-		if not t.ok then
-			act, exp = exp, act
-		end
-		t.error = errorx.new(Labels.ErrorAssertion, act, exp)
-		return t.ok, t.error
+	return compare(t, expected, function(a, b)
+		return a[expected] ~= nil,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedLabel = Labels.Expected.Key,
+				actualLabel = Labels.Actual.Table,
+			})
 	end)
 end
 
@@ -197,27 +215,31 @@ local function toBeCloseTo(t, expected)
 		n = expected[1]
 		decs = expected[2]
 	end
-	return compare(t, n, function(a)
+	return compare(t, n, function(a, b)
 		local d = mathx.pow(10, -decs) / 2
 		local x = math.abs(a - n)
-		t.error = errorx.new(Labels.ErrorAssertion, t.actual, t.expected)
-		t.error.diffString = table.concat({
-			"\t",
-			string.format(Labels.Expected.Precision, decs),
-			string.format(
-				Labels.Expected.Difference,
-				Terminal.setColor(Status.Passed),
-				d,
-				Terminal.resetColor()
-			),
-			string.format(
-				Labels.Actual.Difference,
-				Terminal.setColor(Status.Failed),
-				x,
-				Terminal.resetColor()
-			),
-		}, "\n")
-		return x < d, t.error
+		return x < d,
+			errorx.new({
+				actual = a,
+				expected = b,
+				message = table.concat({
+					helpers.tab(1),
+					string.format(Labels.Expected.Precision, decs),
+					string.format(
+						Labels.Expected.Difference,
+						Terminal.setColor(Status.Passed),
+						d,
+						Terminal.reset()
+					),
+					string.format(
+						Labels.Actual.Difference,
+						Terminal.setColor(Status.Failed),
+						x,
+						Terminal.reset()
+					),
+					"",
+				}, "\n"),
+			})
 	end)
 end
 
@@ -225,13 +247,12 @@ end
 ---@type Assertion
 local function toBeGreaterThan(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(Labels.ErrorAssertion, a, b)
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			"> "
-		)
-		return a > b, t.error
+		return a > b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "> ",
+			})
 	end)
 end
 
@@ -239,14 +260,12 @@ end
 ---@type Assertion
 local function toBeGreaterThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(t.error.message, a, b)
-		t.ErrorExpected = "boo"
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			">= s"
-		)
-		return a >= b, t.error
+		return a >= b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = ">= ",
+			})
 	end)
 end
 
@@ -254,13 +273,12 @@ end
 ---@type Assertion
 local function toBeLessThan(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(Labels.ErrorAssertion, a, b)
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			"< "
-		)
-		return a < b, t.error
+		return a < b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "< ",
+			})
 	end)
 end
 
@@ -268,13 +286,12 @@ end
 ---@type Assertion
 local function toBeLessThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(Labels.ErrorAssertion, a, b)
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			"=< "
-		)
-		return a <= b, t.error
+		return a <= b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "=< ",
+			})
 	end)
 end
 
@@ -287,9 +304,13 @@ end
 ---@type Assertion
 local function toMatch(t, expected)
 	return compare(t, expected, function(a, b)
-		t.error = errorx.new(Labels.ErrorAssertion, a, b)
-		t.ok = string.match(a, b)
-		return t.ok ~= nil, t.error
+		return string.match(a, b) ~= nil,
+			errorx.new({
+				actual = a,
+				expected = b,
+				actualLabel = Labels.Actual.Pattern,
+				expectedLabel = Labels.Expected.Pattern,
+			})
 	end)
 end
 
@@ -299,24 +320,28 @@ local function toContain(t, expected)
 	return compare(t, expected, function(a, b)
 		local isTable = type(a) == "table"
 		local isString = type(a) == "string"
+		local ok = false
 		if isTable then
 			-- TODO binary search is faster
 			for _, elem in ipairs(a) do
 				if expected == elem then
-					t.ok = true
+					ok = true
 					break
 				end
 			end
 		elseif isString then
-			t.ok = string.match(a, b)
+			ok = not not string.match(a, b)
 		end
 
-		t.error = errorx.new(Labels.ErrorAssertion, a, b)
-		if isString then
-			t.error.expectedOperator =
-				string.format("%s%s", t.isNot and "not " or "", "~")
-		end
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = a,
+				expected = b,
+				actualLabel = isString and Labels.Actual.Pattern
+					or Labels.ErrorActual,
+				expectedLabel = isString and Labels.Expected.Pattern
+					or Labels.ErrorExpected,
+			})
 	end)
 end
 
@@ -334,35 +359,24 @@ local function toFail(t, expected)
 			ok = true
 		end
 		local actual = a
-		local isPatternMatch = type(b) == "string"
+		local e = errorx.new({
+			actual = string.format("%s %s", actual, Labels.Actual.FnFail),
+			expected = string.format("%s %s", actual, Labels.Expected.FnFail),
+		})
 
+		--- TODO not only string probably
 		if type(err) == "string" then
+			local act = err
 			local matches = stringx.split(err, ":")
 			if #matches > 0 then
-				local act = stringx.trim(matches[#matches])
-				if b ~= nil then
-					local s = act:find(b) or 1
-					local e = #b
-					if s ~= nil and e ~= nil then
-						act = string.format(
-							"%s%s%s%s",
-							act:sub(1, s - 1),
-							Terminal.setStyle(
-								act:sub(s, s + e - 1),
-								Terminal.Style.Reverse
-							),
-							Terminal.setColor(Status.Failed),
-							act:sub(s + e, #act)
-						)
-					end
-				end
-				actual = isPatternMatch and act or a
+				act = stringx.trim(matches[#matches])
 			end
+			e.actualLabel = Labels.Actual.Pattern
+			e.expectedLabel = Labels.Expected.Pattern
+			e.actual = act
+			e.expected = b
 		end
-
-		t.error = errorx.new(err, actual, b)
-		t.error.expectedOperator = t.isNot and "not "
-		return not ok, t.error
+		return not ok, e
 	end)
 end
 
@@ -375,14 +389,14 @@ end
 local function toHaveBeenCalled(t)
 	return compare(t, 1, function(a)
 		local calls = a:getCallsCount()
-		t.ok = calls >= 1
-		t.error = errorx.new(Labels.ErrorAssertion, calls, 1)
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			">= "
-		)
-		return t.ok, t.error
+		return calls >= 1,
+			errorx.new({
+				actual = calls,
+				expected = 1,
+				expectedOperator = ">= ",
+				actualLabel = Labels.Actual.Calls,
+				expectedLabel = Labels.Expected.Calls,
+			})
 	end)
 end
 
@@ -391,9 +405,13 @@ end
 local function toHaveBeenCalledOnce(t)
 	return compare(t, 1, function(a)
 		local calls = a:getCallsCount()
-		t.ok = calls == 1
-		t.error = errorx.new(Labels.ErrorAssertion, calls, 1)
-		return t.ok, t.error
+		return calls == 1,
+			errorx.new({
+				actual = calls,
+				expected = 1,
+				actualLabel = Labels.Actual.Calls,
+				expectedLabel = Labels.Expected.Calls,
+			})
 	end)
 end
 
@@ -402,9 +420,13 @@ end
 local function toHaveBeenCalledTimes(t, expected)
 	return compare(t, expected, function(a, b)
 		local calls = a:getCallsCount()
-		t.ok = calls == expected
-		t.error = errorx.new(Labels.ErrorAssertion, calls, b)
-		return t.ok, t.error
+		return calls == expected,
+			errorx.new({
+				actual = calls,
+				expected = b,
+				actualLabel = Labels.Actual.Calls,
+				expectedLabel = Labels.Expected.Calls,
+			})
 	end)
 end
 
@@ -412,12 +434,12 @@ end
 ---@type Assertion
 local function toHaveBeenCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
+		local ok = false
 		local calls = a:getCalls()
 		for _, call in ipairs(calls) do
 			for _, x in ipairs(call) do
 				if x == expected then
-					t.ok = true
+					ok = true
 					break
 				end
 			end
@@ -425,13 +447,25 @@ local function toHaveBeenCalledWith(t, expected)
 
 		local tmp = {}
 		for _, call in ipairs(calls) do
-			for _, args in ipairs(call) do
-				tmp[#tmp + 1] = tostring(args)
+			for _, x in ipairs(call) do
+				tmp[#tmp + 1] = x
 			end
 		end
-		t.error = errorx.new(Labels.ErrorAssertion, tmp, b)
+		if #tmp == 1 then
+			tmp = tmp[1]
+		end
 
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = tmp,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfCalls,
+					#calls
+				),
+			})
 	end)
 end
 
@@ -439,11 +473,11 @@ end
 ---@type Assertion
 local function toHaveBeenLastCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
+		local ok = false
 		local call = a:getLastCall()
 		for _, x in ipairs(call) do
 			if x == expected then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
@@ -453,9 +487,17 @@ local function toHaveBeenLastCalledWith(t, expected)
 			tmp[#tmp + 1] = call[i]
 		end
 		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
-
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = act,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfCalls,
+					a:getCallsCount()
+				),
+			})
 	end)
 end
 
@@ -463,11 +505,11 @@ end
 ---@type Assertion
 local function toHaveBeenFirstCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
+		local ok = false
 		local call = a:getFirstCall()
 		for _, x in ipairs(call) do
 			if x == expected then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
@@ -477,9 +519,17 @@ local function toHaveBeenFirstCalledWith(t, expected)
 			tmp[#tmp + 1] = call[i]
 		end
 		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
-
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = act,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfCalls,
+					a:getCallsCount()
+				),
+			})
 	end)
 end
 
@@ -489,11 +539,11 @@ end
 ---@type Assertion
 local function toHaveBeenNthCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
+		local ok = false
 		local call = a:getCall(expected[1])
 		for _, x in ipairs(call) do
 			if x == expected[2] then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
@@ -503,9 +553,18 @@ local function toHaveBeenNthCalledWith(t, expected)
 			tmp[#tmp + 1] = call[i]
 		end
 		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
 
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = act,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfCalls,
+					a:getCallsCount()
+				),
+			})
 	end)
 end
 
@@ -513,25 +572,20 @@ end
 ---@type Assertion
 local function toHaveReturned(t, expected)
 	return compare(t, expected, function(a)
-		t.ok = false
-		local calls = a:getCalls()
-		for _, call in ipairs(calls) do
-			for _, x in ipairs(call) do
-				t.ok = type(x) == "function" and x() ~= nil
-				if t.ok then
-					break
-				end
-			end
-		end
-
-		t.error = errorx.new(Labels.ErrorAssertion, #calls, 1)
-		t.error.expectedOperator = string.format(
-			"%s%s",
-			t.isNot and ctx.config._negationPrefix or "",
-			">= "
-		)
-
-		return t.ok, t.error
+		return #a:getReturns() > 0,
+			errorx.new({
+				actual = a:getReturnsCount(),
+				expected = 1,
+				expectedOperator = ">= ",
+				actualLabel = Labels.Actual.Returns,
+				expectedLabel = Labels.Expected.Returns,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					a:getReturnsCount()
+				),
+			})
 	end)
 end
 
@@ -539,18 +593,20 @@ end
 ---@type Assertion
 local function toHaveReturnedTimes(t, expected)
 	return compare(t, expected, function(a, b)
-		local i = 0
-		local calls = a:getCalls()
-		for _, call in ipairs(calls) do
-			for _, x in ipairs(call) do
-				if type(x) == "function" and x() ~= nil then
-					i = i + 1
-				end
-			end
-		end
-		t.ok = i == expected
-		t.error = errorx.new(Labels.ErrorAssertion, #calls, b)
-		return t.ok, t.error
+		local count = a:getReturnsCount()
+		return count == expected,
+			errorx.new({
+				actual = count,
+				expected = b,
+				actualLabel = Labels.Actual.Returns,
+				expectedLabel = Labels.Expected.Returns,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					count
+				),
+			})
 	end)
 end
 
@@ -558,26 +614,38 @@ end
 ---@type Assertion
 local function toHaveReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
-		local calls = a:getCalls()
-		for _, call in ipairs(calls) do
-			for _, x in ipairs(call) do
+		local ok = false
+		local rets = a:getReturns()
+		for _, ret in ipairs(rets) do
+			for _, x in ipairs(ret) do
 				if x == expected then
-					t.ok = true
+					ok = true
 					break
 				end
 			end
 		end
 
 		local tmp = {}
-		for _, call in ipairs(calls) do
-			for _, args in ipairs(call) do
-				tmp[#tmp + 1] = tostring(args)
+		for i in ipairs(rets) do
+			for j in ipairs(rets[i]) do
+				tmp[#tmp + 1] = rets[i][j]
 			end
 		end
-		t.error = errorx.new(Labels.ErrorAssertion, tmp, b)
+		if #tmp == 1 then
+			tmp = tmp[1]
+		end
 
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = tmp,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					a:getReturnsCount()
+				),
+			})
 	end)
 end
 
@@ -585,23 +653,34 @@ end
 ---@type Assertion
 local function toHaveLastReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
-		local call = a:getLastCall(expected)
-		for _, x in ipairs(call) do
+		local ok = false
+		local ret = a:getLastReturn(expected)
+		for _, x in ipairs(ret) do
 			if x == expected then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
 
 		local tmp = {}
-		for i in ipairs(call) do
-			tmp[#tmp + 1] = call[i]
+		for i in ipairs(ret) do
+			tmp[#tmp + 1] = ret[i]
 		end
-		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
+		if #tmp == 1 then
+			tmp = tmp[1]
+		end
 
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = tmp,
+				sexpected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					a:getReturnsCount()
+				),
+			})
 	end)
 end
 
@@ -609,23 +688,33 @@ end
 ---@type Assertion
 local function toHaveFirstReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
-		local call = a:getFirstCall(expected)
-		for _, x in ipairs(call) do
+		local ok = false
+		local ret = a:getFirstReturn(expected)
+		for _, x in ipairs(ret) do
 			if x == expected then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
 
 		local tmp = {}
-		for i in ipairs(call) do
-			tmp[#tmp + 1] = call[i]
+		for i in ipairs(ret) do
+			tmp[#tmp + 1] = ret[i]
 		end
-		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b)
-
-		return t.ok, t.error
+		if #tmp == 1 then
+			tmp = tmp[1]
+		end
+		return ok,
+			errorx.new({
+				actual = tmp,
+				expected = b,
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					a:getReturnsCount()
+				),
+			})
 	end)
 end
 
@@ -633,23 +722,34 @@ end
 ---@type Assertion
 local function toHaveNthReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		t.ok = false
-		local call = a:getCall(expected[1])
-		for _, x in ipairs(call) do
+		local ok = false
+		local ret = a:getReturn(expected[1])
+		for _, x in ipairs(ret) do
 			if x == expected[2] then
-				t.ok = true
+				ok = true
 				break
 			end
 		end
 
 		local tmp = {}
-		for i in ipairs(call) do
-			tmp[#tmp + 1] = call[i]
+		for i in ipairs(ret) do
+			tmp[#tmp + 1] = ret[i]
 		end
-		local act = table.concat(tmp)
-		t.error = errorx.new(Labels.ErrorAssertion, act, b[2])
+		if #tmp == 1 then
+			tmp = tmp[1]
+		end
 
-		return t.ok, t.error
+		return ok,
+			errorx.new({
+				actual = tmp,
+				expected = b[2],
+				message = string.format(
+					"\n%s%s%d\n",
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					a:getReturnsCount()
+				),
+			})
 	end)
 end
 

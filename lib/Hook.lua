@@ -23,7 +23,7 @@ Hook.new = function(typ, name)
 	local localName = name or typ
 	return function(func)
 		if not ctx.current then
-			error(errorx.new(Labels.UnknownContext))
+			error(errorx.new({ title = Labels.UnknownContext }))
 		end
 		table.insert(ctx.current.hooks[typ], {
 			name = localName,

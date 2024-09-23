@@ -12,7 +12,7 @@ describe("length", function()
 	end)
 
 	it("should return length of the table", function()
-		expect({ "a", "b", "c" }).notToHaveLength(4)
+		expect({ "a", false, "c" }).notToHaveLength(4)
 	end)
 
 	it("should return length of the table", function()

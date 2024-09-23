@@ -167,55 +167,71 @@ describe("spies", function()
 	end)
 
 	it("should be return with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).toHaveReturnedWith("middle")
 	end)
 
-	it("should not be return with argument", function()
-		spy("first")
+	it("should not be returned with argument", function()
+		spy(function()
+			return "first"
+		end)
 		expect(spy).notToHaveReturnedWith("second")
 	end)
 
 	it("should be first returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).toHaveFirstReturnedWith("first")
 	end)
 
 	it("should not be first returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).notToHaveFirstReturnedWith("middle")
 	end)
 
 	it("should be last returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).toHaveLastReturnedWith("last")
 	end)
 
 	it("should be last returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).notToHaveLastReturnedWith("middle")
 	end)
 
 	it("should be last returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).toHaveNthReturnedWith({ 2, "middle" })
 	end)
 
 	it("should be last returned with argument", function()
-		for _, t in ipairs({ "first", "middle", "last" }) do
-			spy(t)
+		for _, v in ipairs({ "first", "middle", "last" }) do
+			spy(function()
+				return v
+			end)
 		end
 		expect(spy).notToHaveNthReturnedWith({ 1, "middle" })
 	end)

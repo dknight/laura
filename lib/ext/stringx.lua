@@ -16,7 +16,15 @@ local function trim(str)
 	return str:gsub("^%s*(.-)%s*$", "%1")
 end
 
+---@param str string
+---@param useUTF8? boolean
+---@return number
+local function len(str, useUTF8)
+	return useUTF8 and utf8.len(str) or string.len(str)
+end
+
 return {
+	len = len,
 	split = split,
 	trim = trim,
 }

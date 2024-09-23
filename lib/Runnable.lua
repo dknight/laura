@@ -114,15 +114,16 @@ function Runnable:run()
 		return
 	end
 	if type(self.func) ~= "function" then
-		self.error = errorx.new(
-			string.format("Runnable.Test: %s", Labels.ErrorCallbackNotFunction),
-			"function",
-			type(self.func),
-			"",
-			"",
-			debug.getinfo(1),
-			debug.traceback()
-		)
+		self.error = errorx.new({
+			title = string.format(
+				"Runnable.Test: %s",
+				Labels.ErrorCallbackNotFunction
+			),
+			actual = "function",
+			expected = type(self.func),
+			getinfo = debug.getinfo(1),
+			traceback = debug.traceback(),
+		})
 		self.status = Status.Failed
 		return
 	end
@@ -138,9 +139,9 @@ function Runnable:run()
 
 	local ok, err = pcall(self.func)
 	if not ok then
-		err.message = self.description
 		self.error = err
-		self.error.debuginfo = debug.getinfo(self.func, "S")
+		self.error.title = self.description
+		self.error.debuginfo = debug.getinfo(self.func, "SL")
 		self.error.traceback = debug.traceback()
 		self.status = Status.Failed
 	else
@@ -223,7 +224,7 @@ function Runnable:runHooks(typ)
 		local ok, err = pcall(hook.func)
 		if not ok then
 			self.error = {
-				message = err,
+				title = err,
 			}
 			self.status = Status.Failed
 		end

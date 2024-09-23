@@ -32,7 +32,7 @@ function DotsReporter:reportTest(test)
 	elseif test:isPassed() then
 		self:printDot(Status.Passed)
 	end
-	io.write(Terminal.resetColor())
+	io.write(Terminal.reset())
 end
 
 return DotsReporter

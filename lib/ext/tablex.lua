@@ -146,7 +146,7 @@ local function printValue(val, key, sign, status, i)
 			key,
 			table.concat(out)
 		)
-		.. Terminal.resetColor()
+		.. Terminal.reset()
 end
 
 ---@param t table Table to print
@@ -216,10 +216,28 @@ local function filter(t, predicate)
 	return newt
 end
 
+---@param t table
+---@param keys? boolean
+---@return string
+local function inline(t, keys)
+	local out = {}
+	for i = 1, #t do
+		if type(t[i]) == "string" then
+			out[#out + 1] =
+				string.format('%s"%s"', keys and (i .. " = ") or "", t[i])
+		else
+			out[#out + 1] =
+				string.format("%s%s", keys and (i .. " = ") or "", t[i])
+		end
+	end
+	return "{ " .. table.concat(out, ", ") .. " }"
+end
+
 return {
 	diff = diff,
 	equal = equal,
 	filter = filter,
 	patch = patch,
 	diffToString = diffToString,
+	inline = inline,
 }

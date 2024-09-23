@@ -19,11 +19,7 @@ describe("errors", function()
 			expect(successFn).notToFail()
 		end)
 
-		it("should fail and do not match error", function()
-			expect(errorFn).toFail("wrong")
-		end)
-
-		it("should fail and do not match error", function()
+		it("should fail and match error", function()
 			expect(errorFn).toFail("wrong")
 		end)
 

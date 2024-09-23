@@ -69,7 +69,7 @@ local function isColorSupported()
 end
 
 ---@return string
-local function resetColor()
+local function reset()
 	if isColorSupported() then
 		return "\27[0m"
 	end
@@ -133,7 +133,7 @@ local function printResult(message, status, suffix, level)
 	local str = string.format(
 		tpl,
 		helpers.tab(level),
-		setColor(status) .. Labels.Statuses[status] .. resetColor(),
+		setColor(status) .. Labels.Statuses[status] .. reset(),
 		message,
 		suffix
 	)
@@ -164,7 +164,7 @@ end
 ---Restores terminal, if was changed.
 local function restore()
 	toggleCursor(false)
-	resetColor()
+	reset()
 end
 
 ---@enum Terminal
@@ -176,7 +176,7 @@ local Terminal = {
 	printResult = printResult,
 	printSkipped = printSkipped,
 	printStyle = printStyle,
-	resetColor = resetColor,
+	reset = reset,
 	setColor = setColor,
 	setStyle = setStyle,
 	Style = Style,

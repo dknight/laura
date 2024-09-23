@@ -39,7 +39,7 @@ end
 ---@return RunResults
 function Runner:runTests()
 	if not ctx.root then
-		print(Labels.noTests)
+		print(Labels.NoTests)
 		os.exit(ctx.config._exitOK)
 	end
 	local tstart = os.clock()
@@ -77,7 +77,7 @@ function Runner:runTests()
 		datetime = os.date(),
 		duration = os.clock() - tstart,
 		failing = self.failing,
-		memory = collectgarbage("count"),
+		memory = collectgarbage("count"), -- TODO check "incremental?"
 		passing = self.passing,
 		skipping = self.skipping,
 		total = self.total,
