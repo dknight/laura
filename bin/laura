@@ -1,5 +1,12 @@
 #!/usr/bin/env lua
 
+local Version = require("lib.Version")
+
+--COMPAT include path fix for lua 5.1 and lua 5.2
+if Version[_VERSION] <= Version["Lua 5.2"] then
+	package.path = package.path .. ";./?/init.lua"
+end
+
 local Context = require("lib.Context")
 local fs = require("lib.util.fs")
 local helpers = require("lib.util.helpers")

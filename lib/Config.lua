@@ -29,7 +29,9 @@ local Config = {
 	-- Print tests summary if reporter support it. true by default.
 	ReportSummary = true,
 
-	--- Use UTF-8 for strings comparison.
+	-- Use UTF-8 for strings comparison.
+	-- Compatibility note: Before lua 5.3 there is no UTF8 support.
+	-- Install extra module for UTF8 support https://github.com/starwing/luautf8
 	UTF8 = true,
 
 	--

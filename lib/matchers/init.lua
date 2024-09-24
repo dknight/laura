@@ -17,6 +17,7 @@ local Status = require("lib.Status")
 local tablex = require("lib.ext.tablex")
 local Terminal = require("lib.Terminal")
 local stringx = require("lib.ext.stringx")
+local Version = require("lib.Version")
 
 local ctx = Context.global()
 
@@ -138,13 +139,8 @@ end
 ---@type Assertion
 local function toHaveLength(t, expected)
 	return compare(t, expected, function(a, b)
-		local len
 		local isString = type(a) == "string"
-		if isString then
-			len = stringx.len(a, ctx.config.UTF8)
-		else
-			len = #a
-		end
+		local len = isString and stringx.len(a, ctx.config.UTF8) or #a
 		return len == expected,
 			errorx.new({
 				actual = len,
@@ -358,7 +354,12 @@ local function toFail(t, expected)
 		if b ~= nil and type(err) == "string" and not string.match(err, b) then
 			ok = true
 		end
+
 		local actual = a
+		--COMPAT %s in string.format() requires tostring(v)
+		if Version[_VERSION] <= Version["Lua 5.2"] then
+			actual = tostring(actual)
+		end
 		local e = errorx.new({
 			actual = string.format("%s %s", actual, Labels.Actual.FnFail),
 			expected = string.format("%s %s", actual, Labels.Expected.FnFail),

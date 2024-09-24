@@ -1,10 +1,11 @@
 local Context = require("lib.Context")
 local Labels = require("lib.Labels")
 local osx = require("lib.ext.osx")
+local stringx = require("lib.ext.stringx")
 
 local ctx = Context.global()
 
--- TDOO checks for read failed
+-- TODO checks file listing for windows
 ---@param directory string
 ---@return {[number]: string}
 local scandir = function(directory)
@@ -12,7 +13,7 @@ local scandir = function(directory)
 	if osx.isWindows() then
 		cmd = "DIR /S/B/O:n %s\\%s"
 	else
-		cmd = "find '%s' -type f -name '%s' -print0 | sort"
+		cmd = "find '%s' -type f -name '%s' -print | sort"
 	end
 	local t = {}
 	local fd =
@@ -20,8 +21,7 @@ local scandir = function(directory)
 	local list = fd:read("*a")
 	fd:close()
 
-	-- [^\n\0]+ carefully for new lines
-	for fname in list:gmatch("[^\n\0]+") do
+	for _, fname in pairs(stringx.split(list, "\n")) do
 		t[fname] = true
 	end
 	return t

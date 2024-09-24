@@ -5,6 +5,7 @@ local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
 local Status = require("lib.Status")
 local Terminal = require("lib.Terminal")
+local Version = require("lib.Version")
 
 local spairs = helpers.spairs
 local tab = helpers.tab
@@ -222,13 +223,14 @@ end
 local function inline(t, keys)
 	local out = {}
 	for i = 1, #t do
+		local fmt = "%s%s"
 		if type(t[i]) == "string" then
-			out[#out + 1] =
-				string.format('%s"%s"', keys and (i .. " = ") or "", t[i])
-		else
-			out[#out + 1] =
-				string.format("%s%s", keys and (i .. " = ") or "", t[i])
+			fmt = '%s"%s"'
 		end
+		if Version[_VERSION] == Version["Lua 5.1"] then
+			t[i] = tostring(t[i])
+		end
+		out[#out + 1] = string.format(fmt, keys and (i .. " = ") or "", t[i])
 	end
 	return "{ " .. table.concat(out, ", ") .. " }"
 end

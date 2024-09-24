@@ -3,7 +3,7 @@
 ---@param ... any
 ---@return function
 return function(func, ...)
-	local args = table.unpack({ ... })
+	local args = ...
 	return function(b)
 		return func(args, b)
 	end

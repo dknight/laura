@@ -1,9 +1,10 @@
 local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
 local Labels = require("lib.Labels")
+local mathx = require("lib.ext.mathx")
 local Status = require("lib.Status")
-local Terminal = require("lib.Terminal")
 local tablex = require("lib.ext.tablex")
+local Terminal = require("lib.Terminal")
 
 ---@class Error
 ---@field title? string Title for the error.
@@ -56,7 +57,7 @@ local function resolveQualifier(v, precision)
 	local typ = type(v)
 	local q = "%q"
 	if typ == "number" then
-		if math.type(v) == "float" then
+		if mathx.type(v) == "float" then
 			q = "%." .. precision .. "f"
 		else
 			q = "%d"
@@ -65,7 +66,8 @@ local function resolveQualifier(v, precision)
 		q = "%s"
 	elseif typ == "string" then
 		-- edge cases
-		if v == ctx.config._rationalSet then -- Rational number
+		-- Rational numbers
+		if v == ctx.config._rationalSet then
 			q = "%s"
 		else
 			q = '"%s"'
