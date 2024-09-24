@@ -42,7 +42,7 @@ setmetatable(Color, {
 ---Runs `tput colors` command and get color count
 ---@return boolean
 local function testTputColors()
-	-- vt100 should return -1 for colors
+	-- vt100 should return 8 for colors as the last fallback.
 	local term = os.getenv("TERM") or "vt100"
 	local fd = io.popen(string.format("tput -T %s colors", term), "r")
 	local colorsNum = -1
@@ -67,7 +67,7 @@ local function isColorSupported()
 	end
 
 	local term = os.getenv("TERM") or ""
-	return term:match("color") or hasTermColors
+	return term:match("color") or term:match("xterm") or hasTermColors
 end
 
 ---@return string
