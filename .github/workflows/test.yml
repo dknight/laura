@@ -5,6 +5,7 @@ jobs:
     strategy:
       matrix:
         luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1.0-beta3']
+        luajit-openresty: ['luajit-2.1.0']
     runs-on: ubuntu-latest
     env:
       TERM: xterm
@@ -13,5 +14,6 @@ jobs:
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: ${{ matrix.luaVersion }}
+          luajit-openresty: ${{matrix.luajit-openresty}}
       - name: test
         run: make test
