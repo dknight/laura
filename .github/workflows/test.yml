@@ -2,6 +2,9 @@ name: Laura Test
 on: [push]
 jobs:
   test:
+    strategy:
+      matrix:
+        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1']
     runs-on: ubuntu-latest
     env:
       TERM: xterm
@@ -9,6 +12,6 @@ jobs:
       - uses: actions/checkout@master
       - uses: leafo/gh-actions-lua@v10
         with:
-          luaVersion: '5.4'
+          luaVersion: ${{ matrix.luaVersion }}
       - name: test
         run: make test

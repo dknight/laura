@@ -46,5 +46,6 @@ uninstall:
 		@echo "Done"
 
 test:
-		@echo "Running test"
-		lua ./bin/laura .
+		@echo "Running tests"
+		$(LUA_EXEC) -v
+		$(LUA_EXEC) ./bin/laura .
