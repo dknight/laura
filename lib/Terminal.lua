@@ -42,16 +42,18 @@ setmetatable(Color, {
 ---Runs `tput colors` command and get color count
 ---@return boolean
 local function testTputColors()
-	local fd = io.popen("tput colors", "r")
-	local colorsNum = 0
+	-- vt100 should return -1 for colors
+	local term = os.getenv("TERM") or "vt100"
+	local fd = io.popen(string.format("tput -T %s colors", term), "r")
+	local colorsNum = -1
 	if fd ~= nil then
 		colorsNum = fd:read("*n")
 		fd:close()
 	end
-	return colorsNum > 0
+	return colorsNum > 1
 end
 
-local colorsNum = testTputColors()
+local hasTermColors = testTputColors()
 
 ---Checks that termianl supports colors. If in config file 'color' set to false
 ---the function ignores all checks and return false immideatly.
@@ -65,7 +67,7 @@ local function isColorSupported()
 	end
 
 	local term = os.getenv("TERM") or ""
-	return term:match("color") or os.getenv("LS_COLORS") or colorsNum
+	return term:match("color") or hasTermColors
 end
 
 ---@return string
