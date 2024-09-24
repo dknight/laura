@@ -26,7 +26,7 @@ all:
 
 sym-install:
 		@echo "Symlinking Laura"
-		ln -s $(shell pwd)/bin/laura $(BIN)/laura
+		ln -s $(shell pwd)/bin/laura $push](BIN)/laura
 
 install:
 		@echo "Installing Laura exec file"
@@ -44,3 +44,7 @@ uninstall:
 		@echo "Uninstalling Laura exec file and shared files"
 		rm -rf $(BIN)/laura $(SHARE)/laura
 		@echo "Done"
+
+test:
+		@echo "Running test"
+		lua ./bin/laura .

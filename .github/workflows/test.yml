@@ -10,7 +10,5 @@ jobs:
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: '5.4'
-      - name: install
-        run: make install
       - name: test
         run: make test
