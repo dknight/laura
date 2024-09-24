@@ -1,7 +1,6 @@
 ## CI/CD
 
-- Setup Github Action
-- LuaRock!
+- LuaRock
 
 ## Docs
 
@@ -11,4 +10,4 @@
 
 ## Testing
 
-- Test with Lua 5.1
+- Test with Windows and MacOS
