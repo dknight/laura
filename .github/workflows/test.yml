@@ -4,12 +4,14 @@ jobs:
   test:
     strategy:
       matrix:
-        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-latest']
+        # TODO check merge for https://github.com/leafo/gh-actions-lua/pull/44
+        # and use luajit-2.1
+        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-openresty']
     runs-on: ubuntu-latest
     env:
       TERM: xterm
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: ${{ matrix.luaVersion }}
