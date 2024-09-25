@@ -2,7 +2,7 @@ local describe = require("describe")
 local expect = require("expect")
 local hooks = require("hooks")
 local it = require("it")
-local Spy = require("lib.Spy")
+local Spy = require("src.Spy")
 
 describe("before", function()
 	local beforeAllSpy = Spy:new()

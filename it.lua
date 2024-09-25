@@ -1,1 +1,1 @@
-return require("lib.Test")
+return require("src.Test")

@@ -1,6 +1,6 @@
 return {
-	describe = require("lib.Suite"),
-	expect = require("lib.expect"),
-	hooks = require("lib.hooks"),
-	it = require("lib.Test"),
+	describe = require("src.Suite"),
+	expect = require("src.expect"),
+	hooks = require("src.hooks"),
+	it = require("src.Test"),
 }

@@ -1,1 +1,1 @@
-return require("lib.Suite")
+return require("src.Suite")

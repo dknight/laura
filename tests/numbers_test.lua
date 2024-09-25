@@ -1,7 +1,7 @@
 local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
-local mathx = require("lib.ext.mathx")
+local mathx = require("src.ext.mathx")
 
 ---Dirty rounding to integer
 ---@param x number

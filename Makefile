@@ -34,8 +34,8 @@ install:
 		chmod 0755 $(BIN_PATH)/laura
 
 		@echo "Installing Laura shared files"
-		mkdir -pv $(LUA_SHARE_PATH)/laura/lib
-		cp -r $(shell pwd)/lib $(LUA_SHARE_PATH)/laura
+		mkdir -pv $(LUA_SHARE_PATH)/laura/src
+		cp -r $(shell pwd)/src $(LUA_SHARE_PATH)/laura
 		cp -r $(shell pwd)/*.lua $(LUA_SHARE_PATH)/laura
 		find $(LUA_SHARE_PATH)/laura -type f -exec chmod 644 {} \;
 		@echo "Done"
@@ -48,7 +48,7 @@ uninstall:
 test:
 		@echo "Running tests"
 		$(LUA_EXEC) -v
-		$(LUA_EXEC) ./bin/laura .
+		$(LUA_EXEC) ./bin/laura tests
 
 lint:
 		luacheck --no-self .

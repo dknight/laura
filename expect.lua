@@ -1,7 +1,7 @@
-local bind = require("lib.util.bind")
-local Context = require("lib.Context")
-local errorx = require("lib.ext.errorx")
-local matchers = require("lib.matchers")
+local bind = require("src.util.bind")
+local Context = require("src.Context")
+local errorx = require("src.ext.errorx")
+local matchers = require("src.matchers")
 
 local ctx = Context.global()
 

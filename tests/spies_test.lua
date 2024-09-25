@@ -2,7 +2,7 @@ local describe = require("describe")
 local expect = require("expect")
 local it = require("it")
 local hooks = require("hooks")
-local Spy = require("lib.Spy")
+local Spy = require("src.Spy")
 
 describe("spies", function()
 	local spy
