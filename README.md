@@ -1,7 +1,7 @@
 # Laura
 
 [![Tests](https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg)](https://github.com/dknight/laura/actions/workflows/tests.yml)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![License: ISC](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 TODO LuaRocks shield https://shields.io/badges/lua-rocks
 TODO description
