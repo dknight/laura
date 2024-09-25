@@ -1,4 +1,4 @@
-# Laura - lightweight unit-testing framework for Lua
+# Laura - unit-testing framework for Lua
 
 <p align="center">
 <a href="https://github.com/dknight/laura/actions/workflows/tests.yml"><img src="https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
@@ -36,8 +36,8 @@ Read complete manual on the [external web-site](https://www.whoop.ee/laura/).
 
 ## Compatibility Notes
 
-No UTF8 support in Lua before 5.3, to add support of UTF8 install
-[extra UTF8 module](https://github.com/starwing/luautf8).
+No UTF-8 support in Lua before 5.3, to add support of UTF8 please install
+[extra UTF-8 module](https://github.com/starwing/luautf8).
 
 ## Contribution
 
