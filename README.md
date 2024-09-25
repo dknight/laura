@@ -2,9 +2,17 @@
 
 [![Tests](https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg)](https://github.com/dknight/laura/actions/workflows/tests.yml)
 [![License: ISC](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![LuaRocks](https://img.shields.io/luarocks/v/dknight/laura)](https://luarocks.org/modules/dknight/laura)
 
-TODO LuaRocks shield https://shields.io/badges/lua-rocks
-TODO description
+Laura is a lightweight unit-testing framework to test Lua with simplicity.
+The framework has no dependencies and works with Lua versions 5.1—5.4 and
+LuaJIT.
+
+🪶 **Lightweight**
+🚀 **Easy to install and launch**
+🚂 **No Dependencies**
+🏃🏽 **Understandable Feedback**
+⚡ **Fast**
 
 ## Compatibility Notes
 
