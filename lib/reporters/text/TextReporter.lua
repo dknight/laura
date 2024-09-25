@@ -1,4 +1,3 @@
-local Context = require("lib.Context")
 local helpers = require("lib.util.helpers")
 local Reporter = require("lib.reporters.Reporter")
 local Terminal = require("lib.Terminal")
@@ -9,7 +8,7 @@ local time = require("lib.util.time")
 local TextReporter = {}
 
 ---@param results RunResults
----@return TextReporter
+---@return RunResults
 function TextReporter:new(results)
 	setmetatable(results, { __index = TextReporter })
 	setmetatable(TextReporter, { __index = Reporter })

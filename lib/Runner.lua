@@ -1,4 +1,11 @@
----@alias RunResults {memory: any, datetime: string|osdate, duration: number, total: number, passing: Runnable[], failing: Runnable[], skipping: Runnable[]}
+---@class RunResults
+---@field memory any
+---@field datetime string|osdate
+---@field duration number
+---@field total number
+---@field passing Runnable[]
+---@field failing Runnable[]
+---@field skipping Runnable[]
 
 local Context = require("lib.Context")
 local Labels = require("lib.Labels")

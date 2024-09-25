@@ -49,3 +49,6 @@ test:
 		@echo "Running tests"
 		$(LUA_EXEC) -v
 		$(LUA_EXEC) ./bin/laura .
+
+lint:
+		luacheck --no-self .

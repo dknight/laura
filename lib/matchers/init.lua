@@ -54,17 +54,9 @@ end
 local function toDeepEqual(t, expected)
 	return compare(t, expected, function(a, b)
 		local areBothTables = type(a) == "table" and type(b) == "table"
-		local ok = true
 		local err
-		if type(a) ~= type(b) then
-			ok = false
-		end
-
-		if areBothTables then
-			ok = tablex.equal(a, b)
-		else
-			ok = a == b
-		end
+		local ok = (areBothTables and tablex.equal(a, b) or a == b)
+			and type(a) == type(b)
 
 		if not ok then
 			if areBothTables then

@@ -4,7 +4,7 @@ local Reporter = require("lib.reporters.Reporter")
 local BlankReporter = {}
 
 ---@param results RunResults
----@return BlankReporter
+---@return RunResults
 function BlankReporter:new(results)
 	setmetatable(results, { __index = BlankReporter })
 	setmetatable(BlankReporter, { __index = Reporter })
@@ -12,8 +12,7 @@ function BlankReporter:new(results)
 end
 
 ---Prints a single test report.
----@param test Runnable
-function BlankReporter:reportTest(test)
+function BlankReporter:reportTest()
 	-- noop
 end
 

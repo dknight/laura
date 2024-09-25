@@ -23,7 +23,7 @@ local Reporter = {}
 Reporter.__index = Reporter
 
 ---@param results RunResults
----@return Reporter
+---@return Reporter|RunResults
 function Reporter:new(results)
 	return setmetatable(results, self)
 end
@@ -84,32 +84,30 @@ function Reporter:reportErrors()
 end
 
 ---Report the single test
----@param test Runnable
-function Reporter:reportTest(test) end
+---@param _? Runnable
+function Reporter:reportTest(_) end
 
 ---Print suite title.
----@param suite Runnable
-function Reporter:printSuiteTitle(suite)
+---@param _? Runnable
+function Reporter:printSuiteTitle(_)
 	-- to implement
 end
 
 ---Print failed test message.
----@param test Runnable
-function Reporter:printFailed(test)
+---@param _? Runnable
+function Reporter:printFailed(_)
 	-- to implement
 end
 
 ---Print passed test message.
----@param test Runnable
-function Reporter:printPassed(test)
+---@param _? Runnable
+function Reporter:printPassed(_)
 	-- to implement
 end
 
 ---Print skipped test message.
----@param test Runnable
-function Reporter:printSkipped(test)
-	-- to implement
-end
+---@param _? Runnable
+function Reporter:printSkipped(_) end
 
 ---Reports all summary information.
 function Reporter:report()

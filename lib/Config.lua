@@ -65,7 +65,7 @@ local Config = {
 }
 
 return setmetatable(Config, {
-	__index = function(_, key)
-		error(string.format(Labels.ErrorEnumKey, tostring(key), "Config"), 2)
+	__index = function(_, k)
+		error(string.format(Labels.ErrorEnumKey, tostring(k), "Config"), 2)
 	end,
 })
