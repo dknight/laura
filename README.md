@@ -22,7 +22,7 @@ LuaJIT.
 
 ### Install
 
-There are several ways to install.
+There are several ways to install: as LuaRock, Makefile
 
 #### LuaRocks
 
@@ -61,6 +61,10 @@ There are variables that can be set with `make`.
 ```sh
 PREFIX=/opt/lua/libs BINDIR=/opt/bin LIBDIR=/opt/share make install
 ```
+
+#### Manual
+
+Just clone the repository and add location to `LUA_PATH`.
 
 ## Writing tests
 
