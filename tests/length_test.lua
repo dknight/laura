@@ -1,6 +1,6 @@
-local describe = require("describe")
-local expect = require("expect")
-local it = require("it")
+local describe = require("laura.describe")
+local expect = require("laura.expect")
+local it = require("laura.it")
 
 describe("length", function()
 	it("should return length of the table", function()

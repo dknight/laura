@@ -1,8 +1,8 @@
-local describe = require("describe")
-local expect = require("expect")
-local hooks = require("hooks")
-local it = require("it")
-local Spy = require("src.Spy")
+local describe = require("laura.describe")
+local expect = require("laura.expect")
+local hooks = require("laura.hooks")
+local it = require("laura.it")
+local Spy = require("laura.Spy")
 
 describe("before", function()
 	local beforeAllSpy = Spy:new()

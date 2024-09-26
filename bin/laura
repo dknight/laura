@@ -1,22 +1,24 @@
 #!/usr/bin/env lua
 
-local Version = require("src.Version")
+package.path = package.path .. ";./src/?.lua;./src/?/init.lua"
+
+local Version = require("laura.Version")
 
 --COMPAT include path fix for lua 5.1 and lua 5.2
 if Version[_VERSION] <= Version["Lua 5.2"] then
 	package.path = package.path .. ";./?/init.lua"
 end
 
-local Context = require("src.Context")
-local fs = require("src.util.fs")
-local helpers = require("src.util.helpers")
-local Labels = require("src.Labels")
-local Reporter = require("src.reporters.Reporter")
-local Runner = require("src.Runner")
-local Terminal = require("src.Terminal")
+local Context = require("laura.Context")
+local fs = require("laura.util.fs")
+local helpers = require("laura.util.helpers")
+local Labels = require("laura.Labels")
+local Reporter = require("laura.reporters.Reporter")
+local Runner = require("laura.Runner")
+local Terminal = require("laura.Terminal")
 
 local ctx = Context.global()
-ctx.config = require("src.Config")
+ctx.config = require("laura.Config")
 
 helpers.processFlags()
 
