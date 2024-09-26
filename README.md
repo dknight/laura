@@ -40,13 +40,13 @@ luarocks --local install laura
 
 Using the `make` utility to install.
 
-1. Clone the source code.
+Clone the source code.
 
 ```sh
 git clone https://github.com/dknight/laura.git
 ```
 
-2. Run `make`
+Run `make`
 
 ```sh
 make install
@@ -103,7 +103,7 @@ Read the complete documentation on the [external website](https://www.whoop.ee/l
 
 ## What is not included yet
 
-- Code coverage (will be asap).
+- Code coverage.
 
 ## Compatibility Notes
 
@@ -119,7 +119,3 @@ not hesitate and make a pull request or issue.
 ## License
 
 MIT 2024
-
-```
-
-```
