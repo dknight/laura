@@ -22,11 +22,7 @@ BINDIR ?= ${PREFIX}/bin
 LIBDIR ?= ${PREFIX}/share/lua/${LUA_VERSION}
 
 default:
-		@echo "Possible make targets are: test, install, uninstall, sym-install"
-
-symlink:
-		@echo "Symlinking Laura for development"
-		ln -s src laura
+		@echo "Possible make targets are: test, install, uninstall"
 
 install:
 		@echo "Installing Laura executable file"
