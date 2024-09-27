@@ -84,10 +84,38 @@ end)
 
 ## Running tests
 
+### Using Command Line Client
+
 By default, Laura looks for files with pattern `*_test.lua` in the given directory. Current directory is the default value.
 
 ```sh
 laura [test_dir]
+```
+
+### Using API
+
+Consider example:
+
+```lua
+local laura = require("laura")
+local TextReporter = require("laura.reporters.text")
+
+local it = laura.it
+local describe = laura.describe
+local expect = laura.expect
+local Runner = laura.Runner
+
+describe("my test case", function()
+	it("should be euqal to three", function()
+		expect(1 + 2).toEqual(3)
+	end)
+end)
+
+local runner = Runner:new()
+local results = runner:runTests()
+local reporter = TextReporter:new(results)
+reporter:report()
+runner:done()
 ```
 
 ## Configuration

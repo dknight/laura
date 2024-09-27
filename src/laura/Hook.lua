@@ -8,13 +8,14 @@ local Context = require("laura.Context")
 local errorx = require("laura.ext.errorx")
 local Labels = require("laura.Labels")
 
-local ctx = Context.global()
-
 ---@class Hook
 ---@field func function | Hook
 ---@field name string
 ---@field type HookType
-local Hook = {}
+---@field protected _ctx Context
+local Hook = {
+	_ctx = Context.global(),
+}
 
 ---@param name? string
 ---@param typ HookType
@@ -22,13 +23,14 @@ local Hook = {}
 Hook.new = function(typ, name)
 	local localName = name or typ
 	return function(func)
-		if not ctx.current then
+		if not Hook._ctx.current then
 			error(errorx.new({ title = Labels.UnknownContext }))
 		end
-		table.insert(ctx.current.hooks[typ], {
+		table.insert(Hook._ctx.current.hooks[typ], {
 			name = localName,
 			func = func,
 			type = typ,
+			_ctx = Hook._ctx,
 		} --[[@as Hook]])
 	end
 end

@@ -1,10 +1,6 @@
-local Context = require("laura.Context")
 local errorx = require("laura.ext.errorx")
 local Runnable = require("laura.Runnable")
 local Labels = require("laura.Labels")
-
----@type Context
-local ctx = Context.global()
 
 ---@class Suite : Runnable
 local Suite = Runnable:new()
@@ -24,16 +20,16 @@ function Suite:prepare()
 		return
 	end
 
-	self.level = ctx.level
+	self.level = self._ctx.level
 	self._suite = true
 
-	ctx.suites[ctx.level] = self
-	ctx.current = self
+	self._ctx.suites[self._ctx.level] = self
+	self._ctx.current = self
 
-	self.parent = ctx.suites[ctx.level - 1]
+	self.parent = self._ctx.suites[self._ctx.level - 1]
 	table.insert(self.parent.children, self)
 
-	ctx.level = ctx.level + 1
+	self._ctx.level = self._ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
 		local errMsg = err
@@ -48,7 +44,7 @@ function Suite:prepare()
 		errorx.print(self.error)
 		return
 	end
-	ctx.level = ctx.level - 1
+	self._ctx.level = self._ctx.level - 1
 end
 
 return Suite.new(Suite)

@@ -9,20 +9,15 @@ if Version[_VERSION] <= Version["Lua 5.2"] then
 	package.path = package.path .. ";./?/init.lua"
 end
 
-local Context = require("laura.Context")
 local fs = require("laura.util.fs")
 local helpers = require("laura.util.helpers")
-local Labels = require("laura.Labels")
 local Reporter = require("laura.reporters.Reporter")
-local Runner = require("laura.Runner")
-local Terminal = require("laura.Terminal")
+local laura = require("laura")
+local ctx = laura.Context.global()
 
-local ctx = Context.global()
-ctx.config = require("laura.Config")
+local runner = laura.Runner:new()
 
 helpers.processFlags()
-
-local runner = Runner:new()
 
 -- last argument should be directory with tests
 local dir = arg[#arg]
@@ -31,12 +26,12 @@ if not fs.isDir(dir) then
 end
 
 if not fs.isDir(dir) and dir ~= "." and dir ~= "./" and dir ~= ".\\" then
-	error(dir .. " " .. Labels.ErrorNotADir)
+	error(dir .. " " .. laura.Labels.ErrorNotADir)
 end
 
 local files, fcount = fs.getFiles(dir)
 if fcount == 0 then
-	print(Labels.NoTests)
+	print(laura.Labels.NoTests)
 	os.exit(ctx.config._exitOK)
 end
 
@@ -46,7 +41,7 @@ for fname in helpers.spairs(files) do
 	if chunk ~= nil then
 		chunk()
 	else
-		Terminal.printActual(err or Labels.errorSyntax)
+		laura.Terminal.printActual(err or laura.Labels.errorSyntax)
 		os.exit(ctx.config._exitFailed)
 	end
 end

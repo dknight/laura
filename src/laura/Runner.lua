@@ -12,15 +12,16 @@ local Labels = require("laura.Labels")
 local Runnable = require("laura.Runnable")
 local Terminal = require("laura.Terminal")
 
-local ctx = Context.global()
-
 ---@class Runner
 ---@field private total number
 ---@field private passing Runnable[]
 ---@field private failing Runnable[]
 ---@field private skipping Runnable[]
 ---@field private reporters Reporter[]
-local Runner = {}
+---@field protected _ctx Context
+local Runner = {
+	_ctx = Context.global(),
+}
 
 ---@return Runner
 function Runner:new()
@@ -33,7 +34,7 @@ function Runner:new()
 	}
 
 	-- load reporters
-	for _, id in ipairs(ctx.config.Reporters) do
+	for _, id in ipairs(self._ctx.config.Reporters) do
 		t.reporters[#t.reporters + 1] =
 			require("laura.reporters." .. id):new({})
 	end
@@ -46,16 +47,16 @@ end
 ---Runs all test cases.
 ---@return RunResults
 function Runner:runTests()
-	if not ctx.root then
+	if not self._ctx.root then
 		print(Labels.NoTests)
-		os.exit(ctx.config._exitOK)
+		os.exit(self._ctx.config._exitOK)
 	end
 	local tstart = os.clock()
-	if ctx.root:hasOnly() then
-		Runnable.filterOnly(ctx.root)
+	if self._ctx.root:hasOnly() then
+		Runnable.filterOnly(self._ctx.root)
 	end
 
-	Runnable.traverse(ctx.root, function(test)
+	Runnable.traverse(self._ctx.root, function(test)
 		if test:isSuite() then
 			for _, reporter in ipairs(self.reporters) do
 				reporter:printSuiteTitle(test)
@@ -99,10 +100,10 @@ function Runner:done()
 	Terminal.restore()
 	if #self.failing > 0 then
 		print(Labels.ResultFailed)
-		os.exit(ctx.config._exitFailed)
+		os.exit(self._ctx.config._exitFailed)
 	else
 		print(Labels.ResultPass)
-		os.exit(ctx.config._exitOK)
+		os.exit(self._ctx.config._exitOK)
 	end
 end
 
