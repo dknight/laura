@@ -1,6 +1,6 @@
-local describe = require("laura.describe")
+local describe = require("laura.Suite")
 local expect = require("laura.expect")
-local it = require("laura.it")
+local it = require("laura.Test")
 
 describe("types", function()
 	it("should have nil type", function()

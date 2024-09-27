@@ -71,9 +71,9 @@ Just clone the repository and add location to `LUA_PATH`.
 Writing test is pretty simple and straightforward.
 
 ```lua
-local describe = require("laura.describe")
-local it = require("laura.it") --
-local expect = require("laura.expect") --
+local describe = require("laura.Suite")
+local it = require("laura.Test")
+local expect = require("laura.expect")
 
 describe("my test case", function()
 	it("should be equal to three", function()
@@ -106,7 +106,7 @@ local expect = laura.expect
 local Runner = laura.Runner
 
 describe("my test case", function()
-	it("should be euqal to three", function()
+	it("should be equal to three", function()
 		expect(1 + 2).toEqual(3)
 	end)
 end)

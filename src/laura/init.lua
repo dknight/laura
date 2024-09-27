@@ -14,17 +14,6 @@ local function setup(ctx, cfg)
 	end
 end
 
----@param ctx Context
----@return {[string]: Hook}
-local function hooks(ctx)
-	return {
-		[ctx.config._afterAllName] = Hook.new(ctx.config._afterAllName),
-		[ctx.config._afterEachName] = Hook.new(ctx.config._afterEachName),
-		[ctx.config._beforeAllName] = Hook.new(ctx.config._beforeAllName),
-		[ctx.config._beforeEachName] = Hook.new(ctx.config._beforeEachName),
-	}
-end
-
 setup(Context.global())
 
 return {
@@ -33,7 +22,7 @@ return {
 	describe = require("laura.Suite"),
 	expect = require("laura.expect"),
 	Hook = require("laura.Hook"),
-	hooks = hooks,
+	hooks = require("laura.hooks"),
 	it = require("laura.Test"),
 	Labels = require("laura.Labels"),
 	Runnable = require("laura.Runnable"),

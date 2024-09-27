@@ -1,6 +1,6 @@
-local describe = require("laura.describe")
+local describe = require("laura.Suite")
 local expect = require("laura.expect")
-local it = require("laura.it")
+local it = require("laura.Test")
 
 describe("tables", function()
 	it("tables refs should be equal", function()

@@ -1,6 +1,6 @@
-local describe = require("laura.describe")
+local describe = require("laura.Suite")
 local expect = require("laura.expect")
-local it = require("laura.it")
+local it = require("laura.Test")
 
 local errorFn = function()
 	error("something went wrong")
