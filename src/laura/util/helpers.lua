@@ -5,6 +5,12 @@ local stringx = require("laura.ext.stringx")
 
 local ctx = Context.global()
 
+---Get the version.
+---@return string
+local function version()
+	return "1.0.0-1"
+end
+
 ---Sort table by keys in alphabetical order.
 ---@param t table
 ---@param sortFunc? fun(t:table, a: any, b: any): boolean
@@ -37,12 +43,6 @@ end
 ---@string
 local function tab(n)
 	return string.rep(ctx.config.Tab, n)
-end
-
----Gets app version.
----@return string
-local function version()
-	return "0.1.0"
 end
 
 ---Prints usage in terminal.
