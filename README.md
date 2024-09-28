@@ -1,10 +1,8 @@
 # Laura - unit-testing framework for Lua
 
-<p align="center">
 <a href="https://github.com/dknight/laura/actions/workflows/tests.yml"><img src="https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: ISC"></a>
 <a href="https://luarocks.org/modules/dknight/laura"><img src="https://img.shields.io/luarocks/v/dknight/laura" alt="LuaRocks"></a>
-</p>
 
 Laura is a lightweight unit-testing framework for Lua with simplicity in mind.
 The framework has no dependencies and works with Lua versions 5.1—5.4 and
@@ -22,7 +20,7 @@ LuaJIT.
 
 ### Install
 
-There are several ways to install: as LuaRock, Makefile
+There are several ways to install: LuaRocks, Makefile and manual.
 
 #### LuaRocks
 
@@ -57,6 +55,8 @@ There are variables that can be set with `make`.
 - `PREFIX` - basic installation prefix for the module (default `/usr/local`);
 - `BINDIR` - use the binary path in the file system tree (default `${PREFIX}/bin`);
 - `LIBDIR` - where to put the shared libraries (default `${PREFIX}/share/lua/${LUA_VERSION}`)
+
+Consider:
 
 ```sh
 PREFIX=/opt/lua/libs BINDIR=/opt/bin LIBDIR=/opt/share make install
@@ -126,8 +126,10 @@ Check more options on the [documentation page](https://www.whoop.ee/laura/).
 Options can be set in any \*.lua file that returned a module and specified with flag.
 
 ```sh
-luara -c <path_to_config.lua> [test_dir]
+laura -c <path_to_config.lua> [test_dir]
 ```
+
+Also, there are ["private" configuration fields](https://github.com/dknight/laura/blob/main/src/laura/Config.lua), which is not recommended to change, unless you know that you know what you are doing.
 
 ## Documentation
 
@@ -139,14 +141,12 @@ Read the complete documentation on the [external website](https://www.whoop.ee/l
 
 ## Compatibility Notes
 
-No UTF-8 support in Lua before 5.3; to add support for UTF8, please install
-
-[an extra UTF-8 module](https://github.com/starwing/luautf8).
+No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an extra UTF-8 module](https://github.com/starwing/luautf8).
 
 ## Contribution
 
 Any help is appreciated. Found a bug, typo, inaccuracy, etc.? Please do
-not hesitate and make a pull request or issue.
+not hesitate to create [a pull request](https://github.com/dknight/laura/pulls) or submit an [issue](https://github.com/dknight/laura/issues).
 
 ## License
 

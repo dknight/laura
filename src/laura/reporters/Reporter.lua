@@ -4,11 +4,14 @@
 ---| '"blank"' # Do not report any test information, doesnt affect on summary.
 ---| '"count"' # Prints tests counters.
 
+local Context = require("laura.Context")
 local errorx = require("laura.ext.errorx")
 local Labels = require("laura.Labels")
 local memory = require("laura.util.memory")
 local Terminal = require("laura.Terminal")
 local time = require("laura.util.time")
+
+local ctx = Context.global()
 
 ---@class Reporter
 ---@field protected duration number
@@ -112,8 +115,10 @@ function Reporter:printSkipped(_) end
 ---Reports all summary information.
 function Reporter:report()
 	self:reportErrors()
-	self:reportSummary()
-	self:reportPerformance()
+	if ctx.config.ReportSummary then
+		self:reportSummary()
+		self:reportPerformance()
+	end
 end
 
 return Reporter

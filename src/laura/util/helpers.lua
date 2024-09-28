@@ -51,41 +51,41 @@ local function usage()
 		string.format("Laura %s", version()),
 		"Usage: laura [-chvrS?] <directory-with-tests>",
 		"\t" .. "-c,--config\tPath to config file.",
-		"\t" .. "-v,--version\tPrint program name and it's version.",
 		"\t" .. "-r,--reporters\tComma-separated reporters:",
 		"\t\t" .. "- text : Reports as text in the terminal (default).",
 		"\t\t" .. "- dots : Prints a dot for every test (very compact)",
 		"\t\t" .. "- blank : Do not report any test information.",
 		"\t\t" .. "- count : Prints tests counters.",
 		"",
-		"\t" .. "-S\tDo not report summary.",
-		"\t" .. "-h, -?, --help\tPrint this help message.",
+		"\t" .. "-S,--nosummary\tDo not report summary.",
+		"\t" .. "-v,--version\tPrint program name and it's version.",
+		"\t" .. "-h,-?,--help\tPrint this help message.",
 	}, "\n"))
 end
 
 local function processFlags()
 	-- Very dirty and primitive arguments parsing.
-	for k, v in ipairs(arg) do
-		if v == "-h" or v == "-?" or v == "--help" then
+	for i, flag in ipairs(arg) do
+		if flag == "-h" or flag == "-?" or flag == "--help" then
 			usage()
 			os.exit(ctx.config._exitOK)
 		end
 
-		if v == "-v" or v == "--version" then
+		if flag == "-v" or flag == "--version" then
 			print(string.format("%s v%s", ctx.config._appKey, version()))
 			os.exit(ctx.config._exitOK)
 		end
 
-		if v == "-c" or v == "--config" then
-			local path = arg[k + 1]
+		if flag == "-c" or flag == "--config" then
+			local path = arg[i + 1]
 			if path == nil then
 				error(Labels.ErrorConfigFilePath)
 			end
 			fs.mergeFromConfigFile(path)
 		end
 
-		if v == "-r" or v == "--reporters" then
-			local reportersStr = arg[k + 1]
+		if flag == "-r" or flag == "--reporters" then
+			local reportersStr = arg[i + 1]
 			if reportersStr == nil then
 				warn(Labels.warningNoReporters)
 				ctx.config.Reporters = {}
@@ -97,7 +97,7 @@ local function processFlags()
 				ctx.config.Reporters = rs
 			end
 		end
-		if v == "-S" then
+		if flag == "-S" or flag == "--nosummary" then
 			ctx.config.ReportSummary = false
 		end
 	end

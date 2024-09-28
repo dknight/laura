@@ -8,6 +8,7 @@ local key = require("laura.key")
 ---@field public parent? Runnable
 ---@field public root? Runnable
 ---@field public suites Runnable[]
+---@field public coverage table
 local Context = {}
 
 ---Creates new app context.
@@ -21,6 +22,7 @@ function Context.new()
 		parent = nil,
 		root = nil,
 		suites = {},
+		coverage = {},
 	}
 end
 

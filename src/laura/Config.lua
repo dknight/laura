@@ -34,6 +34,9 @@ local Config = {
 	-- Install extra module for UTF8 support https://github.com/starwing/luautf8
 	UTF8 = true,
 
+	-- Collect code coverage.
+	Coverage = true,
+
 	--
 	-- Internally configurable, do not meant to be change externally.
 	---------------------------------------------------------------------------

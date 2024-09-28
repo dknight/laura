@@ -1,24 +1,10 @@
 ## Bugs
 
-Config and context problem
-
-:!lua tt_test.lua  
-lua: /usr/local/share/lua/5.4/laura/Runnable.lua:79: table index is nil  
-stack traceback:  
- /usr/local/share/lua/5.4/laura/Runnable.lua:79: in function 'laura.Runnable.
-new'  
- /usr/local/share/lua/5.4/laura/Suite.lua:10: in main chunk  
- [C]: in function 'require'  
- /usr/local/share/lua/5.4/laura/describe.lua:1: in main chunk  
- [C]: in function 'require'  
- tt_test.lua:1: in main chunk  
- [C]: in ?
-
-shell returned 1
+- Add --nocolor flag
 
 ## CI/CD
 
-LuaRock
+- LuaRock
 
 ## Docs
 

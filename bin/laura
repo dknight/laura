@@ -49,8 +49,14 @@ end
 local results = runner:runTests()
 local genericReporter = Reporter:new(results)
 
-if ctx.config.ReportSummary and #ctx.config.Reporters > 0 then
-	genericReporter:report()
-end
+genericReporter:report(ctx.config.ReportSummary)
+
+---#coverage
+-- for k, src in pairs(ctx.coverage) do
+-- 	io.write(k .. " ->\n")
+-- 	for line, count in helpers.spairs(src) do
+-- 		io.write("\t" .. line .. " : " .. count .. "\n")
+-- 	end
+-- end
 
 runner:done()
