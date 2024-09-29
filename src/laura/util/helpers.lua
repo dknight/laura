@@ -87,12 +87,12 @@ local function processFlags()
 		if flag == "-r" or flag == "--reporters" then
 			local reportersStr = arg[i + 1]
 			if reportersStr == nil then
-				warn(Labels.warningNoReporters)
+				warn(Labels.WarningNoReporters)
 				ctx.config.Reporters = {}
 			else
 				local rs = stringx.split(reportersStr, ",;")
-				for i in ipairs(rs) do
-					rs[i] = stringx.trim(rs[i])
+				for j in ipairs(rs) do
+					rs[j] = stringx.trim(rs[j])
 				end
 				ctx.config.Reporters = rs
 			end
