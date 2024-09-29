@@ -1,6 +1,6 @@
--- local describe = require("describe")
+-- local describe = require("laura.Suite")
 -- local expect = require("expect")
--- local it = require("it")
+-- local it = require("laura.Test")
 
 -- describe:skip("failed", function()
 -- 	it("hello", "world")
