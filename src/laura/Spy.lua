@@ -1,8 +1,12 @@
+---@alias SpyArgs table
+---@alias SpyCall table
+---@alias SpyReturn table
+
 ---Very basic spy implementation.
 ---@class Spy
----@field private _args table
----@field private _calls table
----@field private _returns table
+---@field private _args SpyArgs
+---@field private _calls SpyCall
+---@field private _returns SpyReturn
 local Spy = {}
 
 ---@return Spy
@@ -31,26 +35,26 @@ function Spy:new()
 end
 
 ---Gets the call stack.
----@return table
+---@return SpyCall[]
 function Spy:getCalls()
 	return self._calls
 end
 
 ---Gets calls number 'n' from the call stack.
 ---@param n number
----@return any
+---@return SpyCall | nil
 function Spy:getCall(n)
 	return self._calls[n]
 end
 
 ---Gets the first call from the call stack.
----@return any
+---@return SpyCall | nil
 function Spy:getFirstCall()
 	return self._calls[1]
 end
 
 ---Gets the last call from the call stack.
----@return any
+---@return SpyCall | nil
 function Spy:getLastCall()
 	return self._calls[#self._calls]
 end
@@ -69,19 +73,19 @@ end
 
 ---Gets return number 'n' from the return stack.
 ---@param n number
----@return any
+---@return SpyReturn | nil
 function Spy:getReturn(n)
 	return self._returns[n]
 end
 
 ---Gets the first return from the return stack.
----@return any
+---@return SpyReturn | nil
 function Spy:getFirstReturn()
 	return self._returns[1]
 end
 
 ---Gets the last return from the return stack.
----@return any
+---@return SpyReturn | nil
 function Spy:getLastReturn()
 	return self._returns[#self._returns]
 end
