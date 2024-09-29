@@ -24,7 +24,6 @@ local Runnable = {
 	_ctx = Context.global(),
 }
 
----Filters only tests. This method modifies context in place.
 ---@oaram suite Runnable
 Runnable.filterOnly = function(suite)
 	suite = suite or Runnable._ctx.root
@@ -37,7 +36,6 @@ Runnable.filterOnly = function(suite)
 	end
 end
 
----Traversing tests and suites tree
 ---@param suite Runnable
 ---@param func fun(test: Runnable, i?: number)
 Runnable.traverse = function(suite, func)
@@ -61,7 +59,6 @@ Runnable.createRootSuiteMaybe = function()
 	end
 end
 
----Create a new Runnable instance.
 ---@param description? string
 ---@param func? function
 ---@return Runnable
@@ -206,8 +203,7 @@ function Runnable:isFailed()
 	return self.status == Status.Failed
 end
 
----Traverses ancestors up to the root, or stopped after
----predicate stopper func.
+---Traverses ancestors up to the root, or stopped after predicate stopper func.
 ---@param func fun(parent: Runnable)
 ---@param stop? fun(parent: Runnable): boolean
 function Runnable:traverseAncestors(func, stop)

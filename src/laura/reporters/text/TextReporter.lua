@@ -15,7 +15,6 @@ function TextReporter:new(results)
 	return results
 end
 
----Print suite title.
 ---@param suite Runnable
 function TextReporter:printSuiteTitle(suite)
 	Terminal.printStyle(
@@ -24,28 +23,24 @@ function TextReporter:printSuiteTitle(suite)
 	)
 end
 
----Print failed test message.
 ---@param test Runnable
 function TextReporter:printFailed(test)
 	local timeFmt = time.toString(test.execTime, " (%s)")
 	Terminal.printActual(test.description, timeFmt, test.level - 1)
 end
 
----Print passed test message.
 ---@param test Runnable
 function TextReporter:printPassed(test)
 	local timeFmt = time.toString(test.execTime, " (%s)")
 	Terminal.printExpected(test.description, timeFmt, test.level - 1)
 end
 
----Print skipped test message.
 ---@param test Runnable
 function TextReporter:printSkipped(test)
 	local timeFmt = time.toString(test.execTime, " (%s)")
 	Terminal.printSkipped(test.description, timeFmt, test.level - 1)
 end
 
----Prints a single test report.
 ---@param test Runnable
 function TextReporter:reportTest(test)
 	local lvl = test.level - 1

@@ -2,7 +2,7 @@ local Context = require("laura.Context")
 
 local ctx = Context.global()
 
----All setup function goes here
+---Setup the project. All initiazliation stuff goes here.
 ---@param config? Config | table
 local function setup(config)
 	config = config or {}

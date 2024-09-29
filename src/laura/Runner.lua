@@ -44,7 +44,6 @@ function Runner:new()
 	})
 end
 
----Runs all test cases.
 ---@return RunResults
 function Runner:runTests()
 	if not self._ctx.root then

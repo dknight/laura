@@ -55,7 +55,7 @@ end
 
 local hasTermColors = testTputColors()
 
----Checks that termianl supports colors. If in config file 'color' set to false
+---Checks that termianl supports colors. If in config 'color' set to false
 ---the function ignores all checks and return false immideatly.
 ---@return boolean
 local function isColorSupported()
@@ -87,7 +87,6 @@ local function setColor(status)
 	return ""
 end
 
----Sets terminal styles.
 ---@param msg string
 ---@param ... Style
 local function setStyle(msg, ...)
@@ -98,14 +97,12 @@ local function setStyle(msg, ...)
 	return msg
 end
 
----Prints out styles in the terminal.
 ---@param msg string
 ---@param ... Style
 local function printStyle(msg, ...)
 	io.write(setStyle(msg .. "\n", ...))
 end
 
----Toggle the terminal cursor
 ---@param flag boolean
 local function toggleCursor(flag)
 	if flag then
@@ -163,7 +160,7 @@ local function printSkipped(msg, suffix, level)
 	printResult(msg, Status.Skipped, suffix, level)
 end
 
----Restores terminal, if was changed.
+---Restores terminal styling, if was changed.
 local function restore()
 	toggleCursor(false)
 	reset()

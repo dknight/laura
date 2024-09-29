@@ -11,7 +11,6 @@ local key = require("laura.key")
 ---@field public coverage table
 local Context = {}
 
----Creates new app context.
 ---@return Context
 function Context.new()
 	return {

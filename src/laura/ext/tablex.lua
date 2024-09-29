@@ -10,7 +10,6 @@ local Version = require("laura.Version")
 local spairs = helpers.spairs
 local tab = helpers.tab
 
----Returnts the result difference from two tales.
 ---@param a table
 ---@param b table
 ---@param count? DiffCount
@@ -72,7 +71,6 @@ local function diff(a, b, count)
 	return df, count
 end
 
----Patches table a with table b.
 ---@param a table
 ---@param d DiffResults
 ---@return table
@@ -101,7 +99,6 @@ local function patch(a, d)
 	return t
 end
 
----Comapares two tables for deep equality.
 ---@param a table
 ---@param b table
 ---@return boolean
@@ -110,7 +107,6 @@ local function equal(a, b)
 	return d.mod == nil and d.sub == nil and d.del == nil
 end
 
----Prints the value, if table prints table as string.
 ---@param val any Value to be printed.
 ---@param key string | number Key to be printed.
 ---@param sign string Added, removed or unchanged sign.

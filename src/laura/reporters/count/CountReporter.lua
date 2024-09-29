@@ -12,14 +12,13 @@ local skipped = 0
 local total = 0
 
 ---@param results RunResults
----@return CountReporter
+---@return CountReporter | RunResults
 function CountReporter:new(results)
 	setmetatable(results, { __index = CountReporter })
 	setmetatable(CountReporter, { __index = Reporter })
 	return results
 end
 
----Prints a single test report.
 ---@param test Runnable
 function CountReporter:reportTest(test)
 	if not test:isSkipped() then

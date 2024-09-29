@@ -23,7 +23,6 @@ local Terminal = require("laura.Terminal")
 
 local ctx = Context.global()
 
----Creates a new error instance.
 ---@param err? Error
 ---@return Error
 local function new(err)

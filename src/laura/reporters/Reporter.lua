@@ -31,7 +31,6 @@ function Reporter:new(results)
 	return setmetatable(results, self)
 end
 
----Print report summary.
 function Reporter:reportSummary()
 	Terminal.printStyle(
 		Labels.Summary.Title,
@@ -68,7 +67,6 @@ function Reporter:reportPerformance()
 	)
 end
 
----Prints the errors if exist.
 function Reporter:reportErrors()
 	if #self.failing <= 0 then
 		return
@@ -86,29 +84,24 @@ function Reporter:reportErrors()
 	end
 end
 
----Report the single test
 ---@param _? Runnable
 function Reporter:reportTest(_) end
 
----Print suite title.
 ---@param _? Runnable
 function Reporter:printSuiteTitle(_)
 	-- to implement
 end
 
----Print failed test message.
 ---@param _? Runnable
 function Reporter:printFailed(_)
 	-- to implement
 end
 
----Print passed test message.
 ---@param _? Runnable
 function Reporter:printPassed(_)
 	-- to implement
 end
 
----Print skipped test message.
 ---@param _? Runnable
 function Reporter:printSkipped(_) end
 

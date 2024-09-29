@@ -17,7 +17,7 @@ local createResult = function(actual)
 	}
 	return setmetatable(t, {
 		__call = function()
-			--COMPAT
+			--COMPAT info only
 			--  assert(v, [, message]) - for some lua versions message expected
 			--  to be only string, not table.
 			-- assert(t.isNot ~= t.ok, t.error)

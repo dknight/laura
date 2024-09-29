@@ -5,8 +5,8 @@
 ---@field ok boolean
 ---@field isNot boolean
 
----@alias comparator fun(a: any, b?: any): boolean, Error?
----@alias Assertion fun(t: table, expected: any, cmp: comparator): boolean Error?
+---@alias ComparatorFn fun(a: any, b?: any): boolean, Error?
+---@alias Assertion fun(t: table, expected: any, cmp: ComparatorFn): boolean Error?
 
 local Context = require("laura.Context")
 local errorx = require("laura.ext.errorx")
@@ -20,6 +20,8 @@ local stringx = require("laura.ext.stringx")
 local Version = require("laura.Version")
 
 local ctx = Context.global()
+
+-- TODO check types for all matchers
 
 ---@type Assertion
 local function compare(t, expected, cmp)
@@ -40,8 +42,6 @@ local function compare(t, expected, cmp)
 	return t(expected)
 end
 
----Checks the equality of actual and expected. This don't use deep comparison for tables.
----For tables use toDeepEqual method.
 ---@type Assertion
 local function toEqual(t, expected)
 	return compare(t, expected, function(a, b)
@@ -49,7 +49,6 @@ local function toEqual(t, expected)
 	end)
 end
 
----Checks the deep equality of actual and expected.
 ---@type Assertion
 local function toDeepEqual(t, expected)
 	return compare(t, expected, function(a, b)
@@ -74,7 +73,6 @@ local function toDeepEqual(t, expected)
 	end)
 end
 
----Checks if value is truthy, in Lua everything is true expect false and nil.
 ---@type Assertion
 local function toBeTruthy(t)
 	return compare(t, true, function(a)
@@ -82,7 +80,6 @@ local function toBeTruthy(t)
 	end)
 end
 
----Checks if value is falsy, false and nil are false in Lua.
 ---@type Assertion
 local function toBeFalsy(t)
 	return compare(t, false, function(a)
@@ -90,7 +87,6 @@ local function toBeFalsy(t)
 	end)
 end
 
----Checks if value is nil.
 ---@type Assertion
 local function toBeNil(t)
 	return compare(t, nil, function(a)
@@ -98,7 +94,6 @@ local function toBeNil(t)
 	end)
 end
 
----Checks if number is finite.
 ---@type Assertion
 local function toBeFinite(t)
 	return compare(t, ctx.config._rationalSet, function(a)
@@ -106,7 +101,6 @@ local function toBeFinite(t)
 	end)
 end
 
----Checks if number is infinite.
 ---@type Assertion
 local function toBeInfinite(t)
 	return compare(t, true, function(a)
@@ -114,7 +108,6 @@ local function toBeInfinite(t)
 	end)
 end
 
----Checks  type of a value.
 ---@type Assertion
 local function toHaveTypeOf(t, expected)
 	return compare(t, expected, function(a, b)
@@ -126,8 +119,8 @@ end
 -- Length and keys -----------------------------------------------------------
 -- ---------------------------------------------------------------------------
 
----Checks length of a table. It uses # operator, so beware if table is not a sequence.
----For UTF-8 comparison sring, check for config UTF8 flag.
+---Checks length of a table or string. It uses # operator, so beware if table
+---is not a sequence. For UTF-8 comparison sring, check for config UTF8 flag.
 ---@type Assertion
 local function toHaveLength(t, expected)
 	return compare(t, expected, function(a, b)
@@ -149,7 +142,6 @@ local function toHaveLength(t, expected)
 	end)
 end
 
----Count keys in the table, where key is not nil.
 ---@type Assertion
 local function toHaveKeysLength(t, expected)
 	return compare(t, expected, function(a, b)
@@ -173,7 +165,6 @@ local function toHaveKeysLength(t, expected)
 	end)
 end
 
----Checks a key in the table, where key is not nil.
 ---@type Assertion
 local function toHaveKey(t, expected)
 	return compare(t, expected, function(a, b)
@@ -192,7 +183,7 @@ end
 -- ---------------------------------------------------------------------------
 
 ---Checks number is close to another number, useful to compare floats.
----default 2.
+---Default precisioun 2.
 ---@type Assertion
 local function toBeCloseTo(t, expected)
 	local n
@@ -231,7 +222,6 @@ local function toBeCloseTo(t, expected)
 	end)
 end
 
----Checks number is greater than expected number.
 ---@type Assertion
 local function toBeGreaterThan(t, expected)
 	return compare(t, expected, function(a, b)
@@ -244,7 +234,6 @@ local function toBeGreaterThan(t, expected)
 	end)
 end
 
----Checks number is greater than or equal expected number.
 ---@type Assertion
 local function toBeGreaterThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
@@ -257,7 +246,6 @@ local function toBeGreaterThanOrEqual(t, expected)
 	end)
 end
 
----Checks number is less than expected number.
 ---@type Assertion
 local function toBeLessThan(t, expected)
 	return compare(t, expected, function(a, b)
@@ -270,7 +258,6 @@ local function toBeLessThan(t, expected)
 	end)
 end
 
----Checks number is less or equal than expected number.
 ---@type Assertion
 local function toBeLessThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
@@ -337,8 +324,6 @@ end
 -- Errors --------------------------------------------------------------------
 -- ---------------------------------------------------------------------------
 
--- TODO check types for all matchers
----Checks that function is failed, in other words 'throws error'.
 ---@type Assertion
 local function toFail(t, expected)
 	return compare(t, expected, function(a, b)
@@ -393,7 +378,6 @@ local function toHaveBeenCalled(t)
 	end)
 end
 
----Checks that spy has been called once.
 ---@type Assertion
 local function toHaveBeenCalledOnce(t)
 	return compare(t, 1, function(a)
@@ -408,7 +392,6 @@ local function toHaveBeenCalledOnce(t)
 	end)
 end
 
----Checks that spy has been called times.
 ---@type Assertion
 local function toHaveBeenCalledTimes(t, expected)
 	return compare(t, expected, function(a, b)
@@ -423,7 +406,6 @@ local function toHaveBeenCalledTimes(t, expected)
 	end)
 end
 
----Checks that spy has been called with given arguments.
 ---@type Assertion
 local function toHaveBeenCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -462,7 +444,6 @@ local function toHaveBeenCalledWith(t, expected)
 	end)
 end
 
----Checks that last call called with given arguments.
 ---@type Assertion
 local function toHaveBeenLastCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -494,7 +475,6 @@ local function toHaveBeenLastCalledWith(t, expected)
 	end)
 end
 
----Checks that last call called with given arguments.
 ---@type Assertion
 local function toHaveBeenFirstCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -526,9 +506,6 @@ local function toHaveBeenFirstCalledWith(t, expected)
 	end)
 end
 
----Checks that n-th call called with given arguments.
----expected must have the first key is a number of the call,
----second argument is an argument's value.
 ---@type Assertion
 local function toHaveBeenNthCalledWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -561,7 +538,6 @@ local function toHaveBeenNthCalledWith(t, expected)
 	end)
 end
 
----Checks that spy has returned, and return value is not nil.
 ---@type Assertion
 local function toHaveReturned(t, expected)
 	return compare(t, expected, function(a)
@@ -582,7 +558,6 @@ local function toHaveReturned(t, expected)
 	end)
 end
 
----Checks that spy has returned n times, and return value is not nil.
 ---@type Assertion
 local function toHaveReturnedTimes(t, expected)
 	return compare(t, expected, function(a, b)
@@ -603,7 +578,6 @@ local function toHaveReturnedTimes(t, expected)
 	end)
 end
 
----Checks that spy has returned with argument
 ---@type Assertion
 local function toHaveReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -642,7 +616,6 @@ local function toHaveReturnedWith(t, expected)
 	end)
 end
 
----Checks the last call of the spy has returned with argument.
 ---@type Assertion
 local function toHaveLastReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -677,7 +650,6 @@ local function toHaveLastReturnedWith(t, expected)
 	end)
 end
 
----Checks the first call of the spy has returned with argument.
 ---@type Assertion
 local function toHaveFirstReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
@@ -711,7 +683,6 @@ local function toHaveFirstReturnedWith(t, expected)
 	end)
 end
 
----Checks N-th first call of the spy has returned with argument.
 ---@type Assertion
 local function toHaveNthReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)

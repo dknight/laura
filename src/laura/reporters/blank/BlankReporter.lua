@@ -11,7 +11,6 @@ function BlankReporter:new(results)
 	return results
 end
 
----Prints a single test report.
 function BlankReporter:reportTest()
 	-- noop
 end
