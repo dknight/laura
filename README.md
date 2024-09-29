@@ -1,26 +1,26 @@
-# Laura - unit-testing framework for Lua
+# Laura &ndash; unit-testing framework for Lua
 
 <a href="https://github.com/dknight/laura/actions/workflows/tests.yml"><img src="https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 <a href="https://luarocks.org/modules/dknight/laura"><img src="https://img.shields.io/luarocks/v/dknight/laura" alt="LuaRocks"></a>
 
 Laura is a lightweight unit-testing framework for Lua with simplicity in mind.
-The framework has no dependencies and works with Lua versions 5.1—5.4 and
-LuaJIT.
+The framework has no dependencies and is compatible with Lua versions 5.1&mdash;5.4 and LuaJIT.
 
 - **Lightweight**
 - **Easy to install and launch**
-- **No Dependencies**
-- **Understandable Feedback**
 - **Fast**
+- **No Dependencies**
+- **Understandable, human-readable feedback**
+- **Compatible with any Lua 5.1+ version and LuaJIT**
 
-[Complete documentation\_](https://www.whoop.ee/laura/)
+[Complete documentation](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html)
 
 ## Getting started
 
 ### Install
 
-There are several ways to install: LuaRocks, Makefile and manual.
+There are several ways to install: LuaRocks, Make utility, and manual.
 
 #### LuaRocks
 
@@ -52,9 +52,9 @@ make install
 
 There are variables that can be set with `make`.
 
-- `PREFIX` - basic installation prefix for the module (default `/usr/local`);
-- `BINDIR` - use the binary path in the file system tree (default `${PREFIX}/bin`);
-- `LIBDIR` - where to put the shared libraries (default `${PREFIX}/share/lua/${LUA_VERSION}`)
+- `PREFIX`: basic installation prefix for the module (default `/usr/local`);
+- `BINDIR`: use the binary path in the file system tree (default `${PREFIX}/bin`);
+- `LIBDIR`: where to put the shared libraries (default `${PREFIX}/share/lua/${LUA_VERSION}`)
 
 Consider:
 
@@ -68,7 +68,7 @@ Just clone the repository and add location to `LUA_PATH`.
 
 ## Writing tests
 
-Writing test is pretty simple and straightforward.
+Writing tests is pretty simple and straightforward.
 
 ```lua
 local describe = require("laura.Suite")
@@ -121,19 +121,19 @@ runner:done()
 ## Configuration
 
 There are the [options](https://github.com/dknight/laura/blob/main/src/Config.lua) that can be customized.
-Check more options on the [documentation page](https://www.whoop.ee/laura/).
+Check more options on the [documentation page](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html).
 
-Options can be set in any \*.lua file that returned a module and specified with flag.
+Options can be set in any \*.lua file that returns a module and specified with a flag.
 
 ```sh
 laura -c <path_to_config.lua> [test_dir]
 ```
 
-Also, there are ["private" configuration fields](https://github.com/dknight/laura/blob/main/src/laura/Config.lua), which is not recommended to change, unless you know that you know what you are doing.
+Also, there are ["private" configuration fields](https://github.com/dknight/laura/blob/main/src/laura/Config.lua), which are not recommended to change, unless you know that you know what you are doing.
 
 ## Documentation
 
-Read the complete documentation on the [external website](https://www.whoop.ee/laura/).
+Read the complete documentation on the [external website](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html).
 
 ## What is not included yet
 
