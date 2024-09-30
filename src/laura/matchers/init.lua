@@ -406,7 +406,7 @@ local function toHaveBeenCalledWith(t, expected)
 		local calls = a:getCalls()
 		for _, call in ipairs(calls) do
 			for _, x in ipairs(call) do
-				if x == expected then
+				if x == expected then -- stright equality
 					ok = true
 					break
 				end
@@ -730,8 +730,10 @@ local matchers = {
 	toBeGreaterThanOrEqual = toBeGreaterThanOrEqual,
 	toBeLessThan = toBeLessThan,
 	toBeLessThanOrEqual = toBeLessThanOrEqual,
+	-- strings
 	toMatch = toMatch,
 	toContain = toContain,
+	-- errors
 	toFail = toFail,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,

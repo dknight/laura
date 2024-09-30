@@ -16,6 +16,10 @@ describe("strings", function()
 			expect("4324").toMatch("(%d+)")
 		end)
 
+		it("should match float number", function()
+			expect("-12.43256").toMatch("^-?%d+%.%d+$")
+		end)
+
 		it("should not match number", function()
 			expect("4324").notToMatch("(%a+)")
 		end)
