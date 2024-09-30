@@ -102,13 +102,6 @@ local function toBeFinite(t)
 end
 
 ---@type Assertion
-local function toBeInfinite(t)
-	return compare(t, true, function(a)
-		return a == math.huge or a == -math.huge
-	end)
-end
-
----@type Assertion
 local function toHaveTypeOf(t, expected)
 	return compare(t, expected, function(a, b)
 		return type(a) == b, errorx.new({ actual = type(a), expected = b })
@@ -718,17 +711,20 @@ local function toHaveNthReturnedWith(t, expected)
 end
 
 local matchers = {
+	-- equality
 	toBe = toDeepEqual, -- alias of toDeepEqual
 	toBeNil = toBeNil,
 	toBeFalsy = toBeFalsy,
 	toBeFinite = toBeFinite,
-	toBeInfinite = toBeInfinite,
 	toBeTruthy = toBeTruthy,
 	toDeepEqual = toDeepEqual,
 	toEqual = toEqual,
+	toHaveTypeOf = toHaveTypeOf,
+	-- tables
 	toHaveLength = toHaveLength,
 	toHaveKeysLength = toHaveKeysLength,
 	toHaveKey = toHaveKey,
+	-- numbers
 	toBeCloseTo = toBeCloseTo,
 	toBeGreaterThan = toBeGreaterThan,
 	toBeGreaterThanOrEqual = toBeGreaterThanOrEqual,
@@ -737,7 +733,6 @@ local matchers = {
 	toMatch = toMatch,
 	toContain = toContain,
 	toFail = toFail,
-	toHaveTypeOf = toHaveTypeOf,
 	-- spies
 	toHaveBeenCalled = toHaveBeenCalled,
 	toHaveBeenCalledOnce = toHaveBeenCalledOnce,
