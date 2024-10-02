@@ -7,9 +7,8 @@
 Laura is a lightweight unit-testing framework for Lua with simplicity in mind.
 The framework has no dependencies and is compatible with Lua versions 5.1&mdash;5.4 and LuaJIT.
 
-- **Lightweight**
-- **Easy to install and launch**
-- **Fast**
+- **Lightweight and minimalist**
+- **Easy to install and use**
 - **No Dependencies**
 - **Understandable, human-readable feedback**
 - **Compatible with any Lua 5.1+ version and LuaJIT**
@@ -62,7 +61,7 @@ Consider:
 PREFIX=/opt/lua/libs BINDIR=/opt/bin LIBDIR=/opt/share make install
 ```
 
-#### Manual
+#### Manual installation
 
 Just clone the repository and add location to `LUA_PATH`.
 
