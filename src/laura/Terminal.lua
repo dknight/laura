@@ -176,8 +176,6 @@ end
 
 ---@enum Terminal
 local Terminal = {
-	color = Color,
-	isColorSupported = isColorSupported,
 	printActual = printActual,
 	printExpected = printExpected,
 	printResult = printResult,
