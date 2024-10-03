@@ -31,6 +31,7 @@ local Color = {
 	[Status.Skipped] = "2;36",
 	[Status.Common] = "1;1",
 	[Status.Unchanged] = "90",
+	[Status.Warning] = "33",
 }
 
 setmetatable(Color, {
@@ -160,6 +161,13 @@ local function printSkipped(msg, suffix, level)
 	printResult(msg, Status.Skipped, suffix, level)
 end
 
+---@param msg string
+---@param suffix? string
+---@param level? number
+local function printWarning(msg, suffix, level)
+	printResult(msg, Status.Warning, suffix, level)
+end
+
 ---Restores terminal styling, if was changed.
 local function restore()
 	toggleCursor(false)
@@ -175,6 +183,7 @@ local Terminal = {
 	printResult = printResult,
 	printSkipped = printSkipped,
 	printStyle = printStyle,
+	printWarning = printWarning,
 	reset = reset,
 	setColor = setColor,
 	setStyle = setStyle,

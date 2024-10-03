@@ -5,6 +5,7 @@ local Status = {
 	Passed = 2,
 	Skipped = 4,
 	Unchanged = 8,
+	Warning = 16,
 }
 
 return Status
