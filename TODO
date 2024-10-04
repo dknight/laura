@@ -1,8 +1,12 @@
 ## Bugs
 
+## Nice to have
+
+Better type check in matchers maybe.
+
 ## CI/CD
 
-- LuaRock
+- LuaRock (almost done)
 
 ## Docs
 

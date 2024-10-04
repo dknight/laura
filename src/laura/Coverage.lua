@@ -1,8 +1,9 @@
+local Context = require("laura.Context")
 local helpers = require("laura.util.helpers")
+local Labels = require("laura.Labels")
+local Status = require("laura.Status")
 local stringx = require("laura.ext.stringx")
 local Terminal = require("laura.Terminal")
-local Status = require("laura.Status")
-local Context = require("laura.Context")
 
 ---@class Coverage
 ---@field public data {[string]: number[]}
@@ -103,10 +104,21 @@ function Coverage:printReport()
 		elseif pct >= 75 and pct < 90 then
 			color = Terminal.setColor(Status.Warning)
 		end
-		io.write(color)
+		if Terminal.isColorSupported() then
+			io.write(color)
+		end
 		io.write(string.format("%-" .. longest .. "s %6.1f%%\n", src, pct))
-		io.write(Terminal.reset())
+		if Terminal.isColorSupported() then
+			io.write(Terminal.reset())
+		end
 	end
+	print(
+		string.format(
+			"%-" .. longest .. "s %6.1f%%",
+			Labels.Total,
+			self:calculateTotalAveragePercent()
+		)
+	)
 end
 
 return Coverage

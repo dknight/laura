@@ -43,6 +43,9 @@ setmetatable(Color, {
 ---Runs `tput colors` command and get color count
 ---@return boolean
 local function testTputColors()
+	if osx.isWindows() then
+		return false
+	end
 	-- vt100 should return 8 for colors as the last fallback.
 	local term = os.getenv("TERM") or "vt100"
 	local fd = io.popen(string.format("tput -T %s colors", term), "r")
@@ -170,12 +173,15 @@ end
 
 ---Restores terminal styling, if was changed.
 local function restore()
-	toggleCursor(false)
-	reset()
+	if isColorSupported() then
+		toggleCursor(false)
+		reset()
+	end
 end
 
 ---@enum Terminal
 local Terminal = {
+	isColorSupported = isColorSupported,
 	printActual = printActual,
 	printExpected = printExpected,
 	printResult = printResult,
@@ -183,10 +189,10 @@ local Terminal = {
 	printStyle = printStyle,
 	printWarning = printWarning,
 	reset = reset,
+	restore = restore,
 	setColor = setColor,
 	setStyle = setStyle,
 	Style = Style,
-	restore = restore,
 	toggleCursor = toggleCursor,
 }
 
