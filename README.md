@@ -178,7 +178,7 @@ I would not recommend relying on it. Definitely better support is planned for th
 
 ## Compatibility Notes
 
-No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an extra UTF-8 module](https://github.com/starwing/luautf8).
+No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an extra UTF-8 module](https://github.com/starwing/luautf8), if you are going to compare UTF-8 strings.
 
 ## Contribution
 
