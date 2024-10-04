@@ -6,10 +6,10 @@ if [[ -z "$VERSION" ]]; then
   exit 1
 fi
 
-# echo "Pushing to git"
-# git tag "$VERSION"
+echo "Pushing to git..."
+git tag "$VERSION"
 # git push --tags
-# git push origin "$VERSION"
+git push origin "$VERSION"
 
 specfile="laura-$VERSION.rockspec"
 echo "Packing rock..."
