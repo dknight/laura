@@ -13,7 +13,7 @@ The framework has no dependencies and is compatible with Lua versions 5.1&mdash;
 - **Understandable, human-readable feedback**
 - **Compatible with any Lua 5.1+ version and LuaJIT**
 
-📖 [Complete documentation](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html)
+[📚 Complete documentation](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html)
 
 ## Getting started
 
