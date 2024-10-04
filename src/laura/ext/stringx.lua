@@ -28,8 +28,19 @@ local function len(str, useUTF8)
 	return useUTF8 and utf8.len(str) or string.len(str)
 end
 
+---@param str string
+---@return string
+local function removeComments(str)
+	str = str:gsub("%s*%-%-[^\n\r]+", "")
+	for eqs in str:gmatch("%-%-%[(=*)%[") do
+		str = str:gsub("%-%-%[" .. eqs .. "%[(.-)%]" .. eqs .. "%]", "", 1)
+	end
+	return str
+end
+
 return {
 	len = len,
 	split = split,
 	trim = trim,
+	removeComments = removeComments,
 }

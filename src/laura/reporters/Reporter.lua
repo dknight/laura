@@ -114,4 +114,30 @@ function Reporter:report()
 	end
 end
 
+function Reporter:reportCoverage()
+	print(
+		Terminal.setStyle(
+			Labels.Summary.Coverage,
+			Terminal.Style.Bold,
+			Terminal.Style.Underlined
+		)
+	)
+	ctx.coverage:printReport()
+	local pct = ctx.coverage:calculateTotalAveragePercent()
+	if
+		ctx.config.Coverage.Threshold > 0
+		and pct < ctx.config.Coverage.Threshold
+	then
+		print(
+			string.format(
+				Labels.ErrorCoverageNotMet,
+				pct,
+				ctx.config.Coverage.Threshold
+			)
+		)
+		print(Labels.ResultFailed)
+		os.exit(ctx.config._exitCoverageFailed)
+	end
+end
+
 return Reporter

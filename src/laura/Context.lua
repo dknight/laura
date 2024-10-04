@@ -3,12 +3,12 @@ local key = require("laura.key")
 ---@class Context
 ---@field public children Runnable[]
 ---@field public config {[string]: any}
+---@field public coverage? Coverage
 ---@field public current? Runnable
 ---@field public level number
 ---@field public parent? Runnable
 ---@field public root? Runnable
 ---@field public suites Runnable[]
----@field public coverage table
 local Context = {}
 
 ---@return Context
@@ -21,7 +21,7 @@ function Context.new()
 		parent = nil,
 		root = nil,
 		suites = {},
-		coverage = {},
+		coverage = nil,
 	}
 end
 

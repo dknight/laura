@@ -1,10 +1,21 @@
 local Context = require("laura.Context")
+local Coverage = require("laura.Coverage")
 
 local ctx = Context.global()
 
----Setup the project. All initiazliation stuff goes here.
+---Enables coverage collection.
+local function enableCoverage()
+	ctx.coverage = Coverage:new()
+	local hoolFn = ctx.coverage:createHook(2)
+	local hook = debug.gethook()
+	if hook == nil then
+		debug.sethook(hoolFn, "l")
+	end
+end
+
+---Merges config from defaults to context.
 ---@param config? Config | table
-local function setup(config)
+local function mergeConfig(config)
 	config = config or {}
 	ctx = ctx or Context.global()
 	ctx.config = require("laura.Config")
@@ -17,20 +28,19 @@ local function setup(config)
 	end
 end
 
--- initial setup
+---Setup the project. All initiazliation stuff goes here.
+---@param config? Config | table
+local function setup(config)
+	mergeConfig(config)
+	if ctx.config.Coverage.Enabled then
+		enableCoverage()
+	end
+end
+
+-- initial setup, not sure should it be here
 setup({})
 
 ---#coverage
--- local hoolFn = function(event, lineno)
--- local src = debug.getinfo(2, "S").short_src
--- ctx.coverage[src] = ctx.coverage[src] or {}
--- ctx.coverage[src][lineno] = (ctx.coverage[src][lineno] or 0) + 1
--- print(event, lineno, src)
--- end
--- local hook = debug.gethook()
--- if hook == nil then
--- debug.sethook(hoolFn, "l")
--- end
 
 return {
 	Config = require("laura.Config"),

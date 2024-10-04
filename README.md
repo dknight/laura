@@ -136,7 +136,8 @@ Read the complete documentation on the [external website](https://www.whoop.ee/p
 
 ## What is not included yet
 
-- Code coverage.
+**Code coverage** is yet to be finalized. It implements only very basic functionality.
+I would not recommend relying on it. Definitely better support is planned for the next releases.
 
 ## Compatibility Notes
 
