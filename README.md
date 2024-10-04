@@ -19,7 +19,7 @@ The framework has no dependencies and is compatible with Lua versions 5.1&mdash;
 
 ### Install
 
-There are several ways to install: LuaRocks, Make utility, and manual.
+There are several ways to install: LuaRocks, Make utility, and manual installation.
 
 #### LuaRocks
 
@@ -63,7 +63,8 @@ PREFIX=/opt/lua/libs BINDIR=/opt/bin LIBDIR=/opt/share make install
 
 #### Manual installation
 
-Just clone the repository and add location to `LUA_PATH`.
+Just clone the repository and include the location to `LUA_PATH`
+environment variable.
 
 ## Writing tests
 
