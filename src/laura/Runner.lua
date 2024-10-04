@@ -85,7 +85,7 @@ function Runner:runTests()
 		datetime = os.date(),
 		duration = os.clock() - tstart,
 		failing = self.failing,
-		memory = collectgarbage("count"), -- TODO check "incremental?"
+		memory = collectgarbage("count"),
 		passing = self.passing,
 		skipping = self.skipping,
 		total = self.total,

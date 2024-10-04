@@ -21,8 +21,6 @@ local Version = require("laura.Version")
 
 local ctx = Context.global()
 
--- TODO check types for all matchers
-
 ---@type Assertion
 local function compare(t, expected, cmp)
 	t.expected = expected
@@ -290,7 +288,7 @@ local function toContain(t, expected)
 		local isString = type(a) == "string"
 		local ok = false
 		if isTable then
-			-- TODO binary search is faster
+			-- FIXME binary search should be faster
 			for _, elem in ipairs(a) do
 				if expected == elem then
 					ok = true
@@ -335,7 +333,9 @@ local function toFail(t, expected)
 			expected = string.format("%s %s", actual, Labels.Expected.FnFail),
 		})
 
-		--- TODO not only string probably
+		-- FIXME not only string probably
+		--  Only in Lua 5.1 errors should be strings, in the later version
+		--  any other value. But no sure need to check.
 		if type(err) == "string" then
 			local act = err
 			local matches = stringx.split(err, ":")

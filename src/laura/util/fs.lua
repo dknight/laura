@@ -5,7 +5,6 @@ local stringx = require("laura.ext.stringx")
 
 local ctx = Context.global()
 
--- TODO checks file listing for windows
 ---@param directory string
 ---@return {[number]: string}
 local scandir = function(directory)
