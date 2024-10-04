@@ -1,11 +1,6 @@
--- local describe = require("laura.Suite")
--- local expect = require("expect")
--- local it = require("laura.Test")
-
--- describe:skip("failed", function()
--- 	it("hello", "world")
--- end)
-
+--
+-- File used for random tests and experiments
+--
 local describe = require("laura.Suite")
 local it = require("laura.Test")
 local expect = require("laura.expect")
@@ -206,6 +201,9 @@ describe("tests", function()
 	end
 
 	local spy = Spy:new()
+	local retSpy = Spy:new(function(a)
+		return a
+	end)
 	local meals = { "soup", "meat", "dessert" }
 
 	local eat = function(meal, callback)
@@ -232,11 +230,9 @@ describe("tests", function()
 
 	it("should be return with argument", function()
 		for _, meal in ipairs(meals) do
-			spy(function()
-				return meal
-			end)
+			retSpy(meal)
 		end
-		expect(spy).toHaveReturnedWith("meat")
+		expect(retSpy).toHaveReturnedWith("meat")
 	end)
 
 	local getMeal = function(i)
@@ -246,50 +242,52 @@ describe("tests", function()
 	end
 
 	it("should return all meals", function()
-		-- for i in ipairs(meals) do
-		-- 	spy(getMeal(i))
-		-- end
-		-- expect(spy).toHaveReturnedTimes(3)
+		local spy = Spy:new(getMeal)
+		for i in ipairs(meals) do
+			spy(i)
+		end
+		expect(spy).toHaveReturnedTimes(3)
 	end)
 
-	-- it("should be called", function()
-	-- 	for _ = 1, 4 do
-	-- 		eatCandy(spy)
-	-- 	end
-	-- 	expect(spy).toHaveBeenCalledTimes(4)
-	-- end)
-
-	-- it("should be called", function()
-	-- 	eatCandy(spy)
-	-- 	-- expect(spy).toHaveBeenCalled()
-	-- 	expect(spy).toHaveBeenCalledOnce()
-	-- end)
-
-	it("should be return with argument", function()
+	it("should be called", function()
+		local spy = Spy:new(function(a)
+			return a
+		end)
 		for _, meal in ipairs(meals) do
-			spy(function()
-				return meal
-			end)
+			spy(meal)
+		end
+		expect(spy).toHaveNthReturnedWith({ 2, "meat" })
+	end)
+
+	it("should be called", function()
+		local spy = Spy:new(function(a)
+			return a
+		end)
+		for _, meal in ipairs(meals) do
+			spy(meal)
 		end
 		expect(spy).toHaveFirstReturnedWith("soup")
 	end)
 
 	it("should be return with argument", function()
 		for _, meal in ipairs(meals) do
-			spy(function()
-				return meal
-			end)
+			retSpy(meal)
 		end
-		expect(spy).toHaveLastReturnedWith("dessert")
+		expect(retSpy).toHaveFirstReturnedWith("soup")
 	end)
 
 	it("should be return with argument", function()
 		for _, meal in ipairs(meals) do
-			spy(function()
-				return meal
-			end)
+			retSpy(meal)
 		end
-		expect(spy).toHaveNthReturnedWith({ 2, "meat" })
+		expect(retSpy).toHaveLastReturnedWith("dessert")
+	end)
+
+	it("should be return with argument", function()
+		for _, meal in ipairs(meals) do
+			retSpy(meal)
+		end
+		expect(retSpy).toHaveNthReturnedWith({ 2, "meat" })
 	end)
 
 	it("should be 'hello'", function()

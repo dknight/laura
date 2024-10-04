@@ -6,8 +6,12 @@ local Spy = require("laura.Spy")
 
 describe("spies", function()
 	local spy
+	local retSpy
 	hooks.beforeEach(function()
 		spy = Spy:new()
+		retSpy = Spy:new(function(a)
+			return a
+		end)
 	end)
 
 	it("should be called", function()
@@ -135,104 +139,86 @@ describe("spies", function()
 	end)
 
 	it("should be returned", function()
-		spy(function()
+		spy = Spy:new(function()
 			return true
 		end)
+		spy()
 		expect(spy).toHaveReturned()
 	end)
 
 	it("should not be returned", function()
-		spy(function()
+		spy = Spy:new(function()
 			return nil
 		end)
+		spy()
 		expect(spy).notToHaveReturned()
 	end)
 
 	it("should be returned 4 times", function()
 		for _ = 1, 4 do
-			spy(function()
-				return math.random(4)
-			end)
+			retSpy(math.random(4))
 		end
-		expect(spy).toHaveReturnedTimes(4)
+		expect(retSpy).toHaveReturnedTimes(4)
 	end)
 
 	it("should not be returned 4 times", function()
 		for _ = 1, 2 do
-			spy(function()
-				return math.random(4)
-			end)
+			retSpy(math.random(4))
 		end
-		expect(spy).notToHaveReturnedTimes(4)
+		expect(retSpy).notToHaveReturnedTimes(4)
 	end)
 
 	it("should be return with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).toHaveReturnedWith("middle")
+		expect(retSpy).toHaveReturnedWith("middle")
 	end)
 
 	it("should not be returned with argument", function()
-		spy(function()
-			return "first"
-		end)
-		expect(spy).notToHaveReturnedWith("second")
+		retSpy("first")
+		expect(retSpy).notToHaveReturnedWith("second")
 	end)
 
 	it("should be first returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).toHaveFirstReturnedWith("first")
+		expect(retSpy).toHaveFirstReturnedWith("first")
 	end)
 
 	it("should not be first returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).notToHaveFirstReturnedWith("middle")
+		expect(retSpy).notToHaveFirstReturnedWith("middle")
 	end)
 
 	it("should be last returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).toHaveLastReturnedWith("last")
+		expect(retSpy).toHaveLastReturnedWith("last")
 	end)
 
 	it("should be last returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).notToHaveLastReturnedWith("middle")
+		expect(retSpy).notToHaveLastReturnedWith("middle")
 	end)
 
 	it("should be last returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).toHaveNthReturnedWith({ 2, "middle" })
+		expect(retSpy).toHaveNthReturnedWith({ 2, "middle" })
 	end)
 
 	it("should be last returned with argument", function()
 		for _, v in ipairs({ "first", "middle", "last" }) do
-			spy(function()
-				return v
-			end)
+			retSpy(v)
 		end
-		expect(spy).notToHaveNthReturnedWith({ 1, "middle" })
+		expect(retSpy).notToHaveNthReturnedWith({ 1, "middle" })
 	end)
 end)

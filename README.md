@@ -81,6 +81,42 @@ describe("my test case", function()
 end)
 ```
 
+### Skipping tests
+
+There is a possibility to skip the test case or suite using the `skip` method.
+Skipped tests won't run and will be reported as **[SKIPPED]**. Please note
+that there is a `:` colon. If you mark a suite as skipped, all its children will
+also be skipped.
+
+```lua
+local describe = require("laura.Suite")
+local it = require("laura.Test")
+local expect = require("laura.expect")
+
+describe:skip("skipped suite", function()
+	it:sli("should be skipped", function()
+		expect(1 + 2).toEqual(3)
+	end)
+end)
+```
+
+### Only tests
+
+Like skipped tests, mark tests with `only`; only marked tests will run;
+others will be ignored, useful for debugging.
+
+```lua
+local describe = require("laura.Suite")
+local it = require("laura.Test")
+local expect = require("laura.expect")
+
+describe:only("only suite", function()
+	it("should be three", function()
+		expect(1 + 2).toEqual(3)
+	end)
+end)
+```
+
 ## Running tests
 
 ### Using Command Line Client

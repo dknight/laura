@@ -576,28 +576,23 @@ local function toHaveReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
 		local ok = false
 		local rets = a:getReturns()
-		for _, ret in ipairs(rets) do
-			for _, x in ipairs(ret) do
-				if x == expected then
-					ok = true
-					break
-				end
+		local act
+		local exp
+		for _, x in ipairs(rets) do
+			if x == expected then
+				ok = true
+				act = x
+				break
 			end
 		end
 
-		local tmp = {}
-		for i in ipairs(rets) do
-			for j in ipairs(rets[i]) do
-				tmp[#tmp + 1] = rets[i][j]
-			end
-		end
-		if #tmp == 1 then
-			tmp = tmp[1]
+		if type(b) == "table" then
+			exp = b[2]
 		end
 
 		return ok,
 			errorx.new({
-				actual = tmp,
+				actual = act,
 				expected = b,
 				message = string.format(
 					"\n%s%s%d\n",
@@ -612,26 +607,12 @@ end
 ---@type Assertion
 local function toHaveLastReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		local ok = false
-		local ret = a:getLastReturn(expected)
-		for _, x in ipairs(ret) do
-			if x == expected then
-				ok = true
-				break
-			end
-		end
-
-		local tmp = {}
-		for i in ipairs(ret) do
-			tmp[#tmp + 1] = ret[i]
-		end
-		if #tmp == 1 then
-			tmp = tmp[1]
-		end
+		local last = a:getLastReturn(expected)
+		local ok = last == expected
 
 		return ok,
 			errorx.new({
-				actual = tmp,
+				actual = last,
 				sexpected = b,
 				message = string.format(
 					"\n%s%s%d\n",
@@ -646,25 +627,12 @@ end
 ---@type Assertion
 local function toHaveFirstReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		local ok = false
-		local ret = a:getFirstReturn(expected)
-		for _, x in ipairs(ret) do
-			if x == expected then
-				ok = true
-				break
-			end
-		end
+		local first = a:getFirstReturn(expected)
+		local ok = first == expected
 
-		local tmp = {}
-		for i in ipairs(ret) do
-			tmp[#tmp + 1] = ret[i]
-		end
-		if #tmp == 1 then
-			tmp = tmp[1]
-		end
 		return ok,
 			errorx.new({
-				actual = tmp,
+				actual = first,
 				expected = b,
 				message = string.format(
 					"\n%s%s%d\n",
@@ -679,26 +647,12 @@ end
 ---@type Assertion
 local function toHaveNthReturnedWith(t, expected)
 	return compare(t, expected, function(a, b)
-		local ok = false
-		local ret = a:getReturn(expected[1])
-		for _, x in ipairs(ret) do
-			if x == expected[2] then
-				ok = true
-				break
-			end
-		end
-
-		local tmp = {}
-		for i in ipairs(ret) do
-			tmp[#tmp + 1] = ret[i]
-		end
-		if #tmp == 1 then
-			tmp = tmp[1]
-		end
+		local nth = a:getReturn(b[1])
+		local ok = nth == b[2]
 
 		return ok,
 			errorx.new({
-				actual = tmp,
+				actual = nth,
 				expected = b[2],
 				message = string.format(
 					"\n%s%s%d\n",

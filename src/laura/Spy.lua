@@ -6,14 +6,17 @@
 ---@field private _args SpyArgs
 ---@field private _calls SpyCall
 ---@field private _returns SpyReturn
+---@field private func? function
 local Spy = {}
 
+---@param func? function
 ---@return Spy
-function Spy:new()
+function Spy:new(func)
 	local t = {
 		_args = {},
 		_calls = {},
 		_returns = {},
+		_func = func,
 	}
 
 	return setmetatable(t, {
@@ -22,12 +25,12 @@ function Spy:new()
 			local args = { ... }
 			t._args = args
 			t._calls[#t._calls + 1] = args
-			if type(args[1]) == "function" then
-				local ret = args[1]()
-				if ret ~= nil then
-					t._returns[#t._returns + 1] = { ret }
+
+			if type(t._func) == "function" then
+				local retval = t._func(...)
+				if retval ~= nil then
+					t._returns[#t._returns + 1] = retval
 				end
-				return ret
 			end
 		end,
 	})
