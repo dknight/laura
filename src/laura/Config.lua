@@ -35,9 +35,10 @@ local Config = {
 	UTF8 = true,
 
 	-- Collect code coverage.
+	-- Not yet ready.
 	Coverage = {
-		Enabled = true,
-		Threshold = 50,
+		Enabled = false,
+		Threshold = 0,
 	},
 
 	--
