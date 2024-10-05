@@ -37,7 +37,7 @@ local Config = {
 	-- Collect code coverage.
 	-- Not yet ready.
 	Coverage = {
-		Enabled = true,
+		Enabled = false,
 		Threshold = 0,
 	},
 
