@@ -41,12 +41,17 @@ function Coverage:createHook(level)
 	level = level or 2
 	return function(_, lineno)
 		-- FIXME very bad performance optimize this
-		local src = debug.getinfo(level, "S").short_src
+		local info = debug.getinfo(level, "S")
+		local source = info.source:gsub("^@", "")
 
-		-- skip test pattern files
-		if src:match("." .. self.ctx.config.FilePattern) == nil then
-			self.data[src] = self.data[src] or {}
-			self.data[src][lineno] = (self.data[src][lineno] or 0) + 1
+		-- skip test pattern files and exec
+		local shouldSkip = source:match("." .. self.ctx.config.FilePattern)
+				== nil
+			and source:match("^.*" .. self.ctx.config._execName .. "$")
+				== nil
+		if shouldSkip then
+			self.data[source] = self.data[source] or {}
+			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
 		end
 	end
 end

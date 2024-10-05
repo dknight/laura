@@ -37,7 +37,7 @@ local Config = {
 	-- Collect code coverage.
 	-- Not yet ready.
 	Coverage = {
-		Enabled = false,
+		Enabled = true,
 		Threshold = 0,
 	},
 
@@ -72,6 +72,9 @@ local Config = {
 
 	-- rational numbers set
 	_rationalSet = "n={Q}",
+
+	-- executable name
+	_execName = "laura",
 }
 
 return setmetatable(Config, {
