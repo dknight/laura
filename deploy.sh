@@ -6,14 +6,18 @@ if [[ -z "$VERSION" ]]; then
   exit 1
 fi
 
+specfile="laura-$VERSION.rockspec"
+rockfile="laura-$VERSION.rock"
+echo "Packing rock..."
+luarocks pack "$specfile"
+
+git add "$rockfile" 
+git commit -m "Commiting rock $rockfile"
+
 echo "Pushing to git..."
 git tag "$VERSION"
 # git push --tags
 git push origin "$VERSION"
-
-specfile="laura-$VERSION.rockspec"
-echo "Packing rock..."
-luarocks pack "$specfile"
 
 echo "Uploading rock..."
 luarocks upload "$specfile" --api-key="$API_KEY"
