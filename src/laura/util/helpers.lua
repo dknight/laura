@@ -8,7 +8,7 @@ local ctx = Context.global()
 ---Get the version.
 ---@return string
 local function version()
-	return "1.0.0-1"
+	return "0.9.0-1"
 end
 
 ---Sort table by keys in alphabetical order.
