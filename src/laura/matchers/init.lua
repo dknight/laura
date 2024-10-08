@@ -593,7 +593,7 @@ local function toHaveReturnedWith(t, expected)
 		return ok,
 			errorx.new({
 				actual = act,
-				expected = b,
+				expected = exp,
 				message = string.format(
 					"\n%s%s%d\n",
 					helpers.tab(1),
