@@ -1,17 +1,20 @@
 API_KEY=$(cat api_key)
 VERSION="$1"
+GIT_BRANCH="$VERSION"
 
 if [[ -z "$VERSION" ]]; then
-  echo "No version set as \$1 arg"
-  exit 1
+  VERSION="dev-0"
+  GIT_BRANCH="main"
 fi
 
 specfile="laura-$VERSION.rockspec"
 rockfile="laura-$VERSION.src.rock"
 
 echo "Pushing to git..."
-git tag "$VERSION"
-git push origin "$VERSION"
+if [ "$VERSION" != "dev-0" ]; then
+  git tag "$VERSION"
+fi
+git push origin "$GIT_BRANCH"
 
 echo "Packing rock..."
 luarocks pack "$specfile"
