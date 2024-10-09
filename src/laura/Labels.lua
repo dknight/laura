@@ -13,6 +13,7 @@ local Labels = {
 	ErrorHookNotFunction = "hook is not a function",
 	ErrorNotADir = "is not a directory",
 	ErrorSyntax = "syntax error",
+	ErrorNothingToCover = "nothing to cover",
 	FailedTests = "FAILED TESTS",
 	NoTests = "no tests found",
 	NumberOfCalls = "number of calls: ",

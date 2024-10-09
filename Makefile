@@ -43,7 +43,12 @@ uninstall:
 test:
 		@echo "Running tests"
 		$(LUA) -v
-		$(LUA) ./bin/laura tests
+		LAURA_DEV_TEST=1 $(LUA) ./bin/laura tests
+
+coverage:
+		@echo "Running tests and coverage"
+		$(LUA) -v
+		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --coverage tests
 
 lint:
 		luacheck --no-self .

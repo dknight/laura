@@ -40,17 +40,26 @@ end
 function Coverage:createHook(level)
 	level = level or 2
 	return function(_, lineno)
+		local isLibTesting = os.getenv("LAURA_DEV_TEST")
+
 		-- FIXME very bad performance optimize this
 		local info = debug.getinfo(level, "S")
 		local source = info.source:gsub("^@", "")
 		-- collaspe slashes (bad)
-		source = source:gsub("//+", "")
+		source = source:gsub("////+", "")
 
 		-- skip test pattern files and exec
-		local shouldSkip = source:match("." .. self.ctx.config.FilePattern)
-				== nil
-			and source:match("^.*" .. self.ctx.config._execName .. "$")
-				== nil
+		local matchPattern = source:match("." .. self.ctx.config.FilePattern)
+		local matchExec =
+			source:match(string.format("^.*%s$", self.ctx.config._execName))
+		local shouldSkip = matchPattern == nil and matchExec == nil
+
+		-- skipping lib calls to print from testing outside the lib.
+		-- FIXME also not very elegant
+		if not isLibTesting and source:match("/laura/") ~= nil then
+			shouldSkip = false
+		end
+
 		if shouldSkip then
 			self.data[source] = self.data[source] or {}
 			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
@@ -119,6 +128,12 @@ function Coverage:printReport()
 			io.write(Terminal.reset())
 		end
 	end
+
+	if longest == 0 then
+		print(Labels.ErrorNothingToCover)
+		return
+	end
+
 	print(
 		string.format(
 			"%-" .. longest .. "s %6.1f%%",
