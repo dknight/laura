@@ -1,9 +1,9 @@
 rockspec_format = "3.0"
 package = "Laura"
-version = "0.9.0-1"
+version = "dev-0"
 source = {
 	url = "git+https://github.com/dknight/laura.git",
-	tag = "0.9.0-1"
+	branch = "main"
 }
 description = {
 	summary = "Unit-testing framework written purely in Lua.",

@@ -3,6 +3,7 @@ package = "Laura"
 version = "0.9.0-2"
 source = {
 	url = "git+https://github.com/dknight/laura.git",
+	tag = "0.9.0-2"
 }
 description = {
 	summary = "Unit-testing framework written purely in Lua.",

@@ -7,6 +7,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 specfile="laura-$VERSION.rockspec"
+rockfile="laura-$VERSION.src.rock"
 
 echo "Pushing to git..."
 git tag "$VERSION"
@@ -14,6 +15,8 @@ git push origin "$VERSION"
 
 echo "Packing rock..."
 luarocks pack "$specfile"
+
+rm "$rockfile"
 
 echo "Uploading rock..."
 luarocks upload "$specfile" --api-key="$API_KEY"
