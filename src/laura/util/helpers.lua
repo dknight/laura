@@ -58,6 +58,7 @@ local function usage()
 		"\t\t" .. "- count : Prints tests counters.",
 		"",
 		"\t" .. "-S,--nosummary\tDo not report summary.",
+		"\t" .. "--coverage\tEnables code coverage report.",
 		"\t" .. "-v,--version\tPrint program name and it's version.",
 		"\t" .. "-h,-?,--help\tPrint this help message.",
 	}, "\n"))
@@ -99,6 +100,9 @@ local function processFlags()
 		end
 		if flag == "-S" or flag == "--nosummary" then
 			ctx.config.ReportSummary = false
+		end
+		if flag == "--coverage" then
+			ctx.config.Coverage.Enabled = true
 		end
 	end
 end
