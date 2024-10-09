@@ -43,6 +43,8 @@ function Coverage:createHook(level)
 		-- FIXME very bad performance optimize this
 		local info = debug.getinfo(level, "S")
 		local source = info.source:gsub("^@", "")
+		-- collaspe slashes (bad)
+		source = source:gsub("//+", "")
 
 		-- skip test pattern files and exec
 		local shouldSkip = source:match("." .. self.ctx.config.FilePattern)

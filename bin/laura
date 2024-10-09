@@ -9,15 +9,16 @@ if Version[_VERSION] <= Version["Lua 5.2"] then
 	package.path = package.path .. ";./?/init.lua"
 end
 
+local laura = require("laura")
 local fs = require("laura.util.fs")
 local helpers = require("laura.util.helpers")
 local Reporter = require("laura.reporters.Reporter")
-local laura = require("laura")
 local ctx = laura.Context.global()
 
 local runner = laura.Runner:new()
 
 helpers.processFlags()
+laura.setup({})
 
 -- last argument should be directory with tests
 local dir = arg[#arg]

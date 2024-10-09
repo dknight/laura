@@ -1,5 +1,7 @@
 ## Bugs
 
+return in function is not count in coverage
+
 ## Nice to have
 
 Better type check in matchers maybe.
