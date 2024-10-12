@@ -43,7 +43,7 @@ uninstall:
 test:
 		@echo "Running tests"
 		$(LUA) -v
-		LAURA_DEV_TEST=1 $(LUA) ./bin/laura tests
+		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --nocoverage tests
 
 coverage:
 		@echo "Running tests and coverage"

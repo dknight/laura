@@ -38,7 +38,7 @@ local Config = {
 	-- Not yet ready.
 	Coverage = {
 		Enabled = false,
-		Threshold = 0,
+		Threshold = 50,
 	},
 
 	--

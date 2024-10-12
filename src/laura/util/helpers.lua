@@ -58,26 +58,40 @@ local function usage()
 		"\t\t" .. "- count : Prints tests counters.",
 		"",
 		"\t" .. "-S,--nosummary\tDo not report summary.",
-		"\t" .. "--coverage\tEnables code coverage report.",
+		"\t" .. "--coverage\tForce to enable code coverage report.",
+		"\t" .. "--nocoverage\tForce to disable code coverage report.",
 		"\t" .. "-v,--version\tPrint program name and it's version.",
 		"\t" .. "-h,-?,--help\tPrint this help message.",
 	}, "\n"))
 end
 
+---@param ...string
+---@return boolean
+local function hasFlag(...)
+	for i, a in ipairs(arg) do
+		for _, f in ipairs({ ... }) do
+			if f == a then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local function processFlags()
 	-- Very dirty and primitive arguments parsing.
 	for i, flag in ipairs(arg) do
-		if flag == "-h" or flag == "-?" or flag == "--help" then
+		if hasFlag("-h", "-?", "--help") then
 			usage()
 			os.exit(ctx.config._exitOK)
 		end
 
-		if flag == "-v" or flag == "--version" then
+		if hasFlag("-v", "--version") then
 			print(string.format("%s v%s", ctx.config._appKey, version()))
 			os.exit(ctx.config._exitOK)
 		end
 
-		if flag == "-c" or flag == "--config" then
+		if hasFlag("-c", "--config") then
 			local path = arg[i + 1]
 			if path == nil then
 				error(Labels.ErrorConfigFilePath)
@@ -85,7 +99,7 @@ local function processFlags()
 			fs.mergeFromConfigFile(path)
 		end
 
-		if flag == "-r" or flag == "--reporters" then
+		if hasFlag("-r", "--reporters") then
 			local reportersStr = arg[i + 1]
 			if reportersStr == nil then
 				warn(Labels.WarningNoReporters)
@@ -98,16 +112,20 @@ local function processFlags()
 				ctx.config.Reporters = rs
 			end
 		end
-		if flag == "-S" or flag == "--nosummary" then
+		if hasFlag("-S", "--nosummary") then
 			ctx.config.ReportSummary = false
 		end
-		if flag == "--coverage" then
+		if hasFlag("--coverage") then
 			ctx.config.Coverage.Enabled = true
+		end
+		if hasFlag("--nocoverage") then
+			ctx.config.Coverage.Enabled = false
 		end
 	end
 end
 
 return {
+	hasFlag = hasFlag,
 	processFlags = processFlags,
 	spairs = spairs,
 	tab = tab,

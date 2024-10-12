@@ -123,11 +123,9 @@ function Reporter:reportCoverage()
 		)
 	)
 	ctx.coverage:printReport()
+	local threshold = ctx.config.Coverage.Threshold
 	local pct = ctx.coverage:calculateTotalAveragePercent()
-	if
-		ctx.config.Coverage.Threshold > 0
-		and pct < ctx.config.Coverage.Threshold
-	then
+	if threshold > 0 and pct < threshold then
 		print(
 			string.format(
 				Labels.ErrorCoverageNotMet,

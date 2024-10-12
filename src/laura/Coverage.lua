@@ -41,10 +41,14 @@ function Coverage:createHook(level)
 	level = level or 2
 	return function(_, lineno)
 		local isLibTesting = os.getenv("LAURA_DEV_TEST")
-
 		-- FIXME very bad performance optimize this
 		local info = debug.getinfo(level, "S")
 		local source = info.source:gsub("^@", "")
+		if not source then
+			warn(Labels.WarningUnknownContext)
+			return
+		end
+
 		-- collaspe slashes (bad)
 		source = source:gsub("////+", "")
 
@@ -52,15 +56,14 @@ function Coverage:createHook(level)
 		local matchPattern = source:match("." .. self.ctx.config.FilePattern)
 		local matchExec =
 			source:match(string.format("^.*%s$", self.ctx.config._execName))
-		local shouldSkip = matchPattern == nil and matchExec == nil
+		local shouldInclude = matchPattern == nil and matchExec == nil
 
 		-- skipping lib calls to print from testing outside the lib.
-		-- FIXME also not very elegant
 		if not isLibTesting and source:match("/laura/") ~= nil then
-			shouldSkip = false
+			shouldInclude = false
 		end
 
-		if shouldSkip then
+		if shouldInclude then
 			self.data[source] = self.data[source] or {}
 			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
 		end

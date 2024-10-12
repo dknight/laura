@@ -58,6 +58,7 @@ local Labels = {
 	UnchangedSymbol = "",
 	UnknownContext = "unknown context",
 	WarningNoReporters = "no reporters given",
+	WarningUnknownContext = "unknown source",
 }
 
 return setmetatable(Labels, {

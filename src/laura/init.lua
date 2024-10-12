@@ -1,10 +1,11 @@
 local Context = require("laura.Context")
 local Coverage = require("laura.Coverage")
+local helpers = require("laura.util.helpers")
 
 local ctx = Context.global()
 
 ---Enables coverage collection.
-local function enableCoverage()
+local function collectCoverage()
 	ctx.coverage = Coverage:new()
 	local hoolFn = ctx.coverage:createHook(2)
 	local hook = debug.gethook()
@@ -14,9 +15,8 @@ local function enableCoverage()
 end
 
 ---Merges config from defaults to context.
----@param config? Config | table
+---@param config Config | table
 local function mergeConfig(config)
-	config = config or {}
 	ctx = ctx or Context.global()
 	ctx.config = require("laura.Config")
 	for k, v in
@@ -31,9 +31,17 @@ end
 ---Setup the project. All initiazliation stuff goes here.
 ---@param config? Config | table
 local function setup(config)
+	config = config or {}
 	mergeConfig(config)
+
+	if helpers.hasFlag("--nocoverage") then
+		ctx.config.Coverage.Enabled = false
+	elseif helpers.hasFlag("--coverage") then
+		ctx.config.Coverage.Enabled = true
+	end
+
 	if ctx.config.Coverage.Enabled then
-		enableCoverage()
+		collectCoverage()
 	end
 end
 

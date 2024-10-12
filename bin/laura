@@ -18,7 +18,6 @@ local ctx = laura.Context.global()
 local runner = laura.Runner:new()
 
 helpers.processFlags()
-laura.setup({})
 
 -- last argument should be directory with tests
 local dir = arg[#arg]

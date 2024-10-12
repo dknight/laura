@@ -1,6 +1,7 @@
 ## Bugs
 
 return in function is not count in coverage
+Find way to optimize code coverage (using debug mod issue)
 
 ## Nice to have
 
