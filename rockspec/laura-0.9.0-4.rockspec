@@ -1,6 +1,6 @@
 rockspec_format = "3.0"
 package = "Laura"
-version = "0.9.0-3"
+version = "0.9.0-4"
 source = {
 	url = "git+https://github.com/dknight/laura.git",
 	tag = "0.9.0-3"

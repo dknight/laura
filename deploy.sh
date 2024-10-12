@@ -24,7 +24,7 @@ git push origin "$GIT_BRANCH"
 echo "Packing rock..."
 luarocks pack "$specfile"
 
-rm "$rockfile"
+rm -y "$rockfile"
 
 echo "Uploading rock..."
 luarocks upload "$specfile" --api-key="$API_KEY"
