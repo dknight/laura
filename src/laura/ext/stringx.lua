@@ -31,10 +31,10 @@ end
 ---@param str string
 ---@return string
 local function removeComments(str)
-	str = str:gsub("%s*%-%-[^\n\r]+", "")
 	for eqs in str:gmatch("%-%-%[(=*)%[") do
-		str = str:gsub("%-%-%[" .. eqs .. "%[(.-)%]" .. eqs .. "%]", "", 1)
+		str = str:gsub("%-%-%[" .. eqs .. "%[.*%]" .. eqs .. "%]%c?", "")
 	end
+	str = str:gsub("%s*%-%.*%c?", "")
 	return str
 end
 

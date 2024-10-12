@@ -31,7 +31,11 @@ function Coverage:countTotalLines(src)
 		s = fd:read("*a")
 		fd:close()
 	end
-	return #stringx.split(stringx.removeComments(s), "\n")
+	-- local function declarations not counted as debug? So, if yes
+	-- then skip
+	s = stringx.removeComments(s)
+	s = s:gsub("%s*local%s+function%s*[%w_]+%([%w%s_,]*%)", "")
+	return #stringx.split(s, "\n")
 end
 
 ---Creates coverage hook function that collects coverad lines.
@@ -41,14 +45,14 @@ function Coverage:createHook(level)
 	level = level or 2
 	return function(_, lineno)
 		local isLibTesting = os.getenv("LAURA_DEV_TEST")
-		-- FIXME very bad performance optimize this
+		-- FIXME very bad performance, optimize this
 		local info = debug.getinfo(level, "S")
-		local source = info.source:gsub("^@", "")
-		if not source then
+		if not info then
 			warn(Labels.WarningUnknownContext)
 			return
 		end
 
+		local source = info.source:gsub("^@", "")
 		-- collaspe slashes (bad)
 		source = source:gsub("////+", "")
 
@@ -66,6 +70,7 @@ function Coverage:createHook(level)
 		if shouldInclude then
 			self.data[source] = self.data[source] or {}
 			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
+			-- print(lineno, self.data[source][lineno], "#")
 		end
 	end
 end

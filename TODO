@@ -1,6 +1,12 @@
+## Tasks
+
+Coverage terminal reporter
+Coverage csv reporter
+Coverage html reporter
+Coverage blank reporter
+
 ## Bugs
 
-return in function is not count in coverage
 Find way to optimize code coverage (using debug mod issue)
 
 ## Nice to have
@@ -9,11 +15,9 @@ Better type check in matchers maybe.
 
 ## CI/CD
 
-- LuaRock (almost done)
-
 ## Docs
 
-- Handle mascot quickly!
+- Handle mascot.
 
 ## Testing
 
