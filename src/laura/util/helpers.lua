@@ -2,13 +2,14 @@ local Context = require("laura.Context")
 local fs = require("laura.util.fs")
 local Labels = require("laura.Labels")
 local stringx = require("laura.ext.stringx")
+local ver = require("laura.v")
 
 local ctx = Context.global()
 
 ---Get the version.
 ---@return string
 local function version()
-	return "0.9.0-3"
+	return ver
 end
 
 ---Sort table by keys in alphabetical order.
