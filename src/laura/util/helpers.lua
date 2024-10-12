@@ -71,7 +71,7 @@ end
 ---@param ...string
 ---@return boolean
 local function hasFlag(...)
-	for i, a in ipairs(arg) do
+	for _, a in ipairs(_G.arg) do
 		for _, f in ipairs({ ... }) do
 			if f == a then
 				return true
