@@ -3,4 +3,4 @@
 *.exe
 *.dll
 *.rock
-api_key
+luarocks_apikey
