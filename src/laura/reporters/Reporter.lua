@@ -33,23 +33,24 @@ end
 
 function Reporter:reportSummary()
 	Terminal.printStyle(
-		Labels.Summary.Title,
+		"\n" .. Labels.Summary.Title,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
-		Labels.Summary.Passing,
+		Labels.Summary.Passing .. "\n",
 		#self.passing,
 		self.total - #self.skipping
 	)
 	io.write(successMsg)
 
-	local failedMessage = string.format(Labels.Summary.Failing, #self.failing)
+	local failedMessage =
+		string.format(Labels.Summary.Failing .. "\n", #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(Labels.Summary.Skipping, #self.skipping)
+		string.format(Labels.Summary.Skipping .. "\n", #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -59,7 +60,7 @@ function Reporter:reportPerformance()
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			Labels.Performance,
+			"\n" .. Labels.Performance .. "\n",
 			formatedTime,
 			formattedMemory,
 			os.date()
@@ -117,7 +118,7 @@ end
 function Reporter:reportCoverage()
 	print(
 		Terminal.setStyle(
-			Labels.Summary.Coverage,
+			"\n" .. Labels.Summary.Coverage,
 			Terminal.Style.Bold,
 			Terminal.Style.Underlined
 		)

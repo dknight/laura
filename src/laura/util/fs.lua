@@ -72,7 +72,7 @@ local function mergeFromConfigFile(path)
 			end
 		end
 	else
-		error(Labels.ErrorConfigRead .. err)
+		error(Labels.ErrorConfigRead .. "\n" .. err)
 	end
 end
 

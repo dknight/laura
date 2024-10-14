@@ -7,10 +7,10 @@ local ctx = Context.global()
 ---Enables coverage collection.
 local function collectCoverage()
 	ctx.coverage = Coverage:new()
-	local hoolFn = ctx.coverage:createHook(2)
+	local hookFn = ctx.coverage:createHookFunction(2)
 	local hook = debug.gethook()
 	if hook == nil then
-		debug.sethook(hoolFn, "l")
+		debug.sethook(hookFn, "l")
 	end
 end
 

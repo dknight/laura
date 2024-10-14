@@ -39,14 +39,13 @@ function Coverage:countTotalLines(src)
 end
 
 ---Creates coverage hook function that collects coverad lines.
----@param level number
+---@param level? number
 ---@return function
-function Coverage:createHook(level)
-	level = level or 2
+function Coverage:createHookFunction(level)
 	return function(_, lineno)
 		local isLibTesting = os.getenv("LAURA_DEV_TEST")
 		-- FIXME very bad performance, optimize this
-		local info = debug.getinfo(level, "S")
+		local info = debug.getinfo(level or 2, "S")
 		if not info then
 			warn(Labels.WarningUnknownContext)
 			return
@@ -70,7 +69,6 @@ function Coverage:createHook(level)
 		if shouldInclude then
 			self.data[source] = self.data[source] or {}
 			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
-			-- print(lineno, self.data[source][lineno], "#")
 		end
 	end
 end
