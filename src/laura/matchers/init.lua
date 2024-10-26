@@ -6,7 +6,7 @@
 ---@field isNot boolean
 
 ---@alias ComparatorFn fun(a: any, b?: any): boolean, Error?
----@alias Assertion fun(t: table, expected: any, cmp: ComparatorFn): boolean Error?
+---@alias Assertion fun(t: table, expected: any, cmp: ComparatorFn): boolean
 
 local Context = require("laura.Context")
 local errorx = require("laura.ext.errorx")

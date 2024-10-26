@@ -51,9 +51,9 @@ local Config = {
 		-- | html
 		-- | terminal
 		Reporters = {
+			-- "csv",
+			-- "html",
 			"terminal",
-			"csv",
-			"html",
 		},
 
 		-- Directory where coverage is written.

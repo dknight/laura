@@ -16,7 +16,6 @@ local errorx = require("laura.ext.errorx")
 ---@field public level number
 ---@field public parent? Runnable
 ---@field public status? Status
----@field public traverse fun(suite: Runnable, func: fun(test: Runnable, i?: number))
 ---@field private _suite boolean
 ---@field private _only boolean
 ---@field protected _ctx Context

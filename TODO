@@ -6,6 +6,7 @@
 2. Coverage JSON reporter
 3. Coverage Lua reporter
 4. Make .laurarc file for config
+5. check covignore
 
 ## Bugs
 

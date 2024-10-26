@@ -57,7 +57,7 @@ function Coverage:createHookFunction(level)
 		local path = string.match(source, "^@(.*)")
 		if path then
 			path = path:gsub("^%.[/\\]", ""):gsub("[/\\]", PathSep)
-		else
+			-- else
 			-- skip raw strings
 		end
 

@@ -43,14 +43,14 @@ uninstall:
 test:
 		@echo "Running tests"
 		$(LUA) -v
-		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --nocoverage tests
+		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --nocoverage test
 
 coverage:
 		@echo "Running tests and coverage"
 		$(LUA) -v
-		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --coverage tests
+		LAURA_DEV_TEST=1 $(LUA) ./bin/laura --coverage test
 
 lint:
-		luacheck --no-self .
+		luacheck .
 
 .PHONY: all install uninstall test lint coverage

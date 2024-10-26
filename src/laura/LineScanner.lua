@@ -34,7 +34,8 @@ local fixups = {
 	{ "=", " ?= ?" }, -- '=' may be surrounded by spaces
 	{ "(", " ?%( ?" }, -- '(' may be surrounded by spaces
 	{ ")", " ?%) ?" }, -- ')' may be surrounded by spaces
-	{ "<FULLID>", "x ?[%[%.]? ?[ntfx0']* ?%]?" }, -- identifier, possibly indexed once
+	{ "<FULLID>", "x ?[%[%.]? ?[ntfx0']* ?%]?" }, --[[ identifier, possibly
+  indexed once]]
 	{ "<IDS>", "x ?, ?x[x, ]*" }, -- at least two comma-separated identifiers
 	{ "<FIELDNAME>", "%[? ?[ntfx0']+ ?%]?" }, -- field, possibly like ["this"]
 	{ "<PARENS>", "[ %(]*" }, -- optional opening parentheses
@@ -75,15 +76,18 @@ local zero_hits_exclusions = {
 	fixup("<FIELDNAME>=<PARENS>'"), -- "[123] = [[", possibly with opening parens
 	"return function", -- "return function(arg1, ..., argN)"
 	"function", -- "function(arg1, ..., argN)"
-	"[ntfx0]", -- Single token expressions leave no trace in tables, function calls and sometimes assignments
+	"[ntfx0]", --[[Single token expressions leave no trace in tables,
+  function calls and sometimes assignments]]
 	"''", -- Same for strings
 	"{ ?}", -- Same for empty tables
 	fixup("<FULLID>"), -- Same for local variables indexed once
 	fixup("local x=function"), -- "local a = function(arg1, ..., argN)"
 	fixup("local x=<PARENS>'"), -- "local a = [[", possibly with opening parens
 	fixup("local x=(<PARENS>"), -- "local a = (", possibly with several parens
-	fixup("local <IDS>=(<PARENS>"), -- "local a, b = (", possibly with several parens
-	fixup("local x=n"), -- "local a = nil; local b = nil" produces no trace for the second statement
+	fixup("local <IDS>=(<PARENS>"), --[["local a, b = (", possibly with several
+  parens]]
+	fixup("local x=n"), --[["local a = nil; local b = nil" produces no trace for
+  the second statement]]
 	fixup("<FULLID>=<PARENS>'"), -- "a.b = [[", possibly with opening parens
 	fixup("<FULLID>=function"), -- "a = function(arg1, ..., argN)"
 	"} ?,", -- "}," generates no trace if the table ends with a key-value pair
@@ -91,7 +95,9 @@ local zero_hits_exclusions = {
 	"break", -- "break" generates no trace in Lua 5.2+
 	"{", -- "{" opening table
 	"}?[ %)]*", -- optional closing paren, possibly with several closing parens
-	"[ntf0']+ ?}[ %)]*", -- a constant at the end of a table, possibly with closing parens (for LuaJIT)
+	"[ntf0']+ ?}[ %)]*", --[[
+  a constant at the end of a table, possibly with closing parens
+  (for LuaJIT) ]]
 	"goto [%w_]+", -- goto statements
 	"::[%w_]+::", -- labels
 }
@@ -240,16 +246,17 @@ function LineScanner:skip_name()
 	table.insert(self.simple_line_buffer, name)
 
 	if name == "function" then
-		-- This flag indicates that the next pair of parentheses (function args) must be skipped.
+		-- This flag indicates that the next pair of parentheses
+		-- (function args) must be skipped.
 		self.after_function = true
 	end
 end
 
----Source lines can be explicitly ignored using `enable` and `disable` inline options.
----An inline option is a simple comment: `-- luacov: enable` or `-- luacov: disable`.
----Inline option parsing is not whitespace sensitive.
----All lines starting from a line containing `disable` option and up to a line containing `enable`
----option (or end of file) are excluded.
+---Source lines can be explicitly ignored using `enable` and `disable`
+---inline options. An inline option is a simple comment: `-- luacov: enable`
+---or `-- luacov: disable`. Inline option parsing is not whitespace sensitive.
+---All lines starting from a line containing `disable` option and up to a line
+---containing `enable`option (or end of file) are excluded.
 ---@param comment_body string
 function LineScanner:check_inline_options(comment_body)
 	if comment_body:find("^%s*luacov:%s*enable%s*$") then
