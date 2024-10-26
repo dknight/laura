@@ -22,7 +22,7 @@ BINDIR ?= ${PREFIX}/bin
 LIBDIR ?= ${PREFIX}/share/lua/${LUA_VERSION}
 
 default:
-		@echo "Possible make targets are: test, install, uninstall"
+		@echo "Possible make targets are: install, uninstall, test, lint, coverage"
 
 install:
 		@echo "Installing Laura executable file"
@@ -52,3 +52,5 @@ coverage:
 
 lint:
 		luacheck --no-self .
+
+.PHONY: all install uninstall test lint coverage

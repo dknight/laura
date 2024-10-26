@@ -1,24 +1,23 @@
+# TODOs and FIXMEs
+
 ## Tasks
 
-Coverage terminal reporter
-Coverage csv reporter
-Coverage html reporter
-Coverage blank reporter
+1. Coverage blank (simple) reporter
+2. Coverage JSON reporter
+3. Coverage Lua reporter
+4. Make .laurarc file for config
 
 ## Bugs
 
-Find way to optimize code coverage (using debug mod issue)
-
 ## Nice to have
 
-Better type check in matchers maybe.
+1. Better type check in matchers maybe.
+2. Try to improve coverage performance.
 
 ## CI/CD
 
 ## Docs
 
-- Handle mascot.
-
 ## Testing
 
-- Test better with Windows and MacOS
+1. Test better with Windows and MacOS

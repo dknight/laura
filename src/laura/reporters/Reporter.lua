@@ -55,8 +55,10 @@ function Reporter:reportSummary()
 end
 
 ---Print the approximate execution time of the runner.
-function Reporter:reportPerformance()
-	local formatedTime = time.format(self.duration)
+---@param dt? number
+function Reporter:reportPerformance(dt)
+	local duration = self.duration + (dt or 0)
+	local formatedTime = time.format(duration)
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
@@ -106,36 +108,12 @@ end
 ---@param _? Runnable
 function Reporter:printSkipped(_) end
 
----Reports all summary information.
-function Reporter:report()
-	self:reportErrors()
+---Reports all summary of the tests
+---@param duration? number
+function Reporter:finalSummary(duration)
 	if ctx.config.ReportSummary then
 		self:reportSummary()
-		self:reportPerformance()
-	end
-end
-
-function Reporter:reportCoverage()
-	print(
-		Terminal.setStyle(
-			"\n" .. Labels.Summary.Coverage,
-			Terminal.Style.Bold,
-			Terminal.Style.Underlined
-		)
-	)
-	ctx.coverage:printReport()
-	local threshold = ctx.config.Coverage.Threshold
-	local pct = ctx.coverage:calculateTotalAveragePercent()
-	if threshold > 0 and pct < threshold then
-		print(
-			string.format(
-				Labels.ErrorCoverageNotMet,
-				pct,
-				ctx.config.Coverage.Threshold
-			)
-		)
-		print(Labels.ResultFailed)
-		os.exit(ctx.config._exitCoverageFailed)
+		self:reportPerformance(duration)
 	end
 end
 

@@ -15,7 +15,7 @@ end
 ---Sort table by keys in alphabetical order.
 ---@param t table
 ---@param sortFunc? fun(t:table, a: any, b: any): boolean
----@retrn fun(): string | number, any
+---@retrn fun(): string | number | boolean, any
 local function spairs(t, sortFunc)
 	local keys = {}
 	for k in pairs(t) do
@@ -84,7 +84,7 @@ end
 
 local function processFlags()
 	-- Very dirty and primitive arguments parsing.
-	for i, flag in ipairs(arg) do
+	for i in ipairs(arg) do
 		if hasFlag("-h", "-?", "--help") then
 			usage()
 			os.exit(ctx.config._exitOK)

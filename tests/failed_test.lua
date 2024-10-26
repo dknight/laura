@@ -1,5 +1,6 @@
 --
 -- File used for random tests and experiments
+-- TODO remove after testing is done
 --
 local describe = require("laura.Suite")
 local it = require("laura.Test")
@@ -124,7 +125,7 @@ describe("tests", function()
 		expect(pets).toHaveKeysLength(4)
 	end)
 
-	local pets = {
+	pets = {
 		["cat"] = "Barsik",
 		["dog"] = "Woofey",
 		["hamster"] = "Cookie",

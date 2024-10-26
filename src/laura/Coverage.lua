@@ -1,12 +1,16 @@
 local Context = require("laura.Context")
-local helpers = require("laura.util.helpers")
-local Labels = require("laura.Labels")
-local Status = require("laura.Status")
-local stringx = require("laura.ext.stringx")
-local Terminal = require("laura.Terminal")
+local LineScanner = require("laura.LineScanner")
+local fs = require("laura.util.fs")
+
+local PathSep = fs.PathSep
+
+---@alias CoverageRecord {calls: number, code: string, included: boolean}
+---@alias CoverageData {[string]: {[string]: CoverageRecord}}
 
 ---@class Coverage
----@field public data {[string]: number[]}
+---@field public data CoverageData
+---@field public reporters CoverageReporter[]
+---@field public scanner LineScanner
 ---@field private ctx Context
 local Coverage = {}
 Coverage.__index = Coverage
@@ -16,61 +20,103 @@ Coverage.__index = Coverage
 function Coverage:new(ctx)
 	local t = {
 		data = {},
+		reporters = {},
+		scanner = LineScanner:new(),
 		ctx = ctx or Context.global(),
 	}
+
+	local threshold = t.ctx.config.Coverage
+
+	-- load coverage reporters
+	if t.ctx.config.Coverage.Enabled then
+		for _, name in ipairs(t.ctx.config.Coverage.Reporters) do
+			t.reporters[#t.reporters + 1] =
+				require("laura.reporters.coverage." .. name):new(t, threshold)
+		end
+	end
+
 	return setmetatable(t, self)
 end
 
----@private
----@param src string
----@return number
-function Coverage:countTotalLines(src)
-	local fd = io.open(src, "r")
-	local s
-	if fd ~= nil then
-		s = fd:read("*a")
-		fd:close()
-	end
-	-- local function declarations not counted as debug? So, if yes
-	-- then skip
-	s = stringx.removeComments(s)
-	s = s:gsub("%s*local%s+function%s*[%w_]+%([%w%s_,]*%)", "")
-	return #stringx.split(s, "\n")
+---@param record CoverageRecord
+---@return boolean
+function Coverage:isRecordIncluded(record)
+	local ae, enc = self.scanner:consume(record.code)
+	return not ae and (not enc or record.calls > 0)
 end
 
 ---Creates coverage hook function that collects coverad lines.
 ---@param level? number
 ---@return function
 function Coverage:createHookFunction(level)
-	return function(_, lineno)
-		local isLibTesting = os.getenv("LAURA_DEV_TEST")
-		-- FIXME very bad performance, optimize this
-		local info = debug.getinfo(level or 2, "S")
-		if not info then
-			warn(Labels.WarningUnknownContext)
+	return function(_, lineno, lvl)
+		lvl = lvl or level or 2
+		-- FIXME[2]
+		local source = debug.getinfo(lvl, "S").source
+
+		local path = string.match(source, "^@(.*)")
+		if path then
+			path = path:gsub("^%.[/\\]", ""):gsub("[/\\]", PathSep)
+		else
+			-- skip raw strings
+		end
+
+		if not self:isFileIncluded(path) then
 			return
 		end
 
-		local source = info.source:gsub("^@", "")
-		-- collaspe slashes (bad)
-		source = source:gsub("////+", "")
+		if not self.data[path] then
+			self.data[path] = {}
+			local n = 1
 
-		-- skip test pattern files and exec
-		local matchPattern = source:match("." .. self.ctx.config.FilePattern)
-		local matchExec =
-			source:match(string.format("^.*%s$", self.ctx.config._execName))
-		local shouldInclude = matchPattern == nil and matchExec == nil
-
-		-- skipping lib calls to print from testing outside the lib.
-		if not isLibTesting and source:match("/laura/") ~= nil then
-			shouldInclude = false
+			for line in io.lines(path) do
+				local rec = {
+					calls = 0,
+					code = line,
+				}
+				rec.included = self:isRecordIncluded(rec)
+				self.data[path][n] = rec
+				n = n + 1
+			end
 		end
 
-		if shouldInclude then
-			self.data[source] = self.data[source] or {}
-			self.data[source][lineno] = (self.data[source][lineno] or 0) + 1
+		local record = self.data[path][lineno]
+		record.calls = record.calls + 1
+	end
+end
+
+---@private
+---@param path string
+---@return boolean
+function Coverage:isFileIncluded(path)
+	-- skip test pattern files and exec
+	local isLibTesting = os.getenv("LAURA_DEV_TEST")
+	local matchPattern = path:match("." .. self.ctx.config.FilePattern)
+	local matchExec =
+		path:match(string.format("^.*%s$", self.ctx.config._execName))
+	local includeFile = matchPattern == nil and matchExec == nil
+
+	-- skipping lib calls to print from testing outside the lib.
+	if
+		not isLibTesting
+		and path:match(PathSep .. "laura" .. PathSep) ~= nil
+	then
+		includeFile = false
+	end
+	return includeFile
+end
+
+---@private
+---@param src string
+---@return number
+function Coverage:countTotalCoverableLines(src)
+	local n = 0
+	for _, record in pairs(self.data[src]) do
+		if record.included then
+			n = n + 1
 		end
 	end
+	return n
 end
 
 ---@private
@@ -78,8 +124,10 @@ end
 ---@return number
 function Coverage:countCoveredLines(src)
 	local n = 0
-	for _ in pairs(self.data[src]) do
-		n = n + 1
+	for _, record in pairs(self.data[src]) do
+		if record.included and record.calls > 0 then
+			n = n + 1
+		end
 	end
 	return n
 end
@@ -87,7 +135,7 @@ end
 ---@param src string
 ---@return number
 function Coverage:getCoveredPercent(src)
-	local total = self:countTotalLines(src)
+	local total = self:countTotalCoverableLines(src)
 	local cov = self:countCoveredLines(src)
 	if total == 0 then
 		return 0
@@ -109,44 +157,6 @@ function Coverage:calculateTotalAveragePercent()
 	end
 
 	return (total / n)
-end
-
----@public
-function Coverage:printReport()
-	local longest = 0
-	for src in pairs(self.data) do
-		longest = math.max(src:len(), longest)
-	end
-
-	for src in helpers.spairs(self.data) do
-		local pct = self:getCoveredPercent(src)
-		local color = Terminal.setColor(Status.Failed)
-		if pct >= 90 then
-			color = Terminal.setColor(Status.Passed)
-		elseif pct >= 75 and pct < 90 then
-			color = Terminal.setColor(Status.Warning)
-		end
-		if Terminal.isColorSupported() then
-			io.write(color)
-		end
-		io.write(string.format("%-" .. longest .. "s %6.1f%%\n", src, pct))
-		if Terminal.isColorSupported() then
-			io.write(Terminal.reset())
-		end
-	end
-
-	if longest == 0 then
-		print(Labels.ErrorNothingToCover)
-		return
-	end
-
-	print(
-		string.format(
-			"%-" .. longest .. "s %6.1f%%",
-			Labels.Total,
-			self:calculateTotalAveragePercent()
-		)
-	)
 end
 
 return Coverage

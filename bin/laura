@@ -20,16 +20,17 @@ local Reporter = require("laura.reporters.Reporter")
 
 local ctx = Context.global()
 local runner = Runner:new()
+local coverage = ctx.coverage
 
 helpers.processFlags()
 
 -- last argument should be directory with tests
 local dir = arg[#arg]
-if not fs.isDir(dir) then
+if not fs.isdir(dir) then
 	dir = ctx.config.Dir
 end
 
-if not fs.isDir(dir) and dir ~= "." and dir ~= "./" and dir ~= ".\\" then
+if not fs.isdir(dir) and dir ~= "." and dir ~= "./" and dir ~= ".\\" then
 	error(dir .. " " .. Labels.ErrorNotADir)
 end
 
@@ -50,13 +51,30 @@ for fname in helpers.spairs(files) do
 	end
 end
 
-local results = runner:runTests()
-local genericReporter = Reporter:new(results)
+local testResults = runner:runTests()
+local genericReporter = Reporter:new(testResults)
 
-genericReporter:report(ctx.config.ReportSummary)
+genericReporter:reportErrors()
 
-if ctx.config.Coverage.Enabled then
-	genericReporter:reportCoverage()
+local covStart = 0
+local covFinish = 0
+
+if ctx.config.Coverage.Enabled and coverage ~= nil then
+	covStart = os.clock()
+	local CoverageReporter =
+		require("laura.reporters.coverage.CoverageReporter")
+
+	CoverageReporter.printTitle()
+
+	for _, coverageReporter in ipairs(coverage.reporters) do
+		coverageReporter:report()
+	end
+
+	local commonCovReporter =
+		CoverageReporter:new(coverage, ctx.config.Coverage.Threshold)
+	commonCovReporter:results()
+	covFinish = os.clock()
 end
 
+genericReporter:finalSummary(covFinish - covStart)
 runner:done()

@@ -34,9 +34,9 @@ function Runner:new()
 	}
 
 	-- load reporters
-	for _, id in ipairs(self._ctx.config.Reporters) do
+	for _, name in ipairs(self._ctx.config.Reporters) do
 		t.reporters[#t.reporters + 1] =
-			require("laura.reporters." .. id):new({})
+			require("laura.reporters." .. name):new({})
 	end
 
 	return setmetatable(t, {

@@ -4,3 +4,4 @@
 *.dll
 *.rock
 luarocks_apikey
+/coverage

@@ -5,11 +5,13 @@ local stringx = require("laura.ext.stringx")
 
 local ctx = Context.global()
 
+local isWindows = osx.isWindows
+
 ---@param directory string
 ---@return {[number]: string}
 local scandir = function(directory)
 	local cmd
-	if osx.isWindows() then
+	if isWindows() then
 		cmd = "DIR /S/B/O:n %s\\%s"
 	else
 		cmd = "find '%s' -type f -name '%s' -print | sort"
@@ -41,7 +43,7 @@ local function getFiles(pattern)
 	return files, i
 end
 
----Checks that file exists,
+---Checks that file or exists.
 ---@param file string
 ---@return boolean, string?
 local function exists(file)
@@ -76,10 +78,51 @@ local function mergeFromConfigFile(path)
 	end
 end
 
+---@param path string
+---@return boolean?, exitcode?, integer?
+local function mkdir(path)
+	local cmd
+	if isWindows() then
+		cmd = "MKDIR " .. path .. " 2>NUL"
+	else
+		cmd = "mkdir " .. path .. " &>/dev/null"
+	end
+	return os.execute(cmd)
+end
+
+---@param path string
+---@return  boolean?, exitcode?, integer?
+local function rmdir(path)
+	-- TODO make protection from mass deletion of not desired directory.
+	local cmd
+	if isWindows() then
+		cmd = "RMDIR /Q /S " .. path .. " 2>NUL"
+	else
+		cmd = "rm -r " .. path .. " &>/dev/null"
+	end
+	return os.execute(cmd)
+end
+
+local PathSep = isWindows() and "\\" or "/"
+
+local EOL = isWindows() and "\r\n" or "\n"
+
+---@param path string
+---@return string
+local function basename(path)
+	local t = stringx.split(path, PathSep)
+	return t[#t]
+end
+
 return {
+	basename = basename,
+	EOL = EOL,
 	exists = exists,
 	getFiles = getFiles,
-	isDir = isdir,
-	scandir = scandir,
+	isdir = isdir,
 	mergeFromConfigFile = mergeFromConfigFile,
+	mkdir = mkdir,
+	PathSep = PathSep,
+	rmdir = rmdir,
+	scandir = scandir,
 }

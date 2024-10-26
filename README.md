@@ -1,11 +1,21 @@
 # Laura &ndash; unit-testing framework for Lua
 
+<p align="center">
+<img src=">
+</p>
+
+<div align="center">
 <a href="https://github.com/dknight/laura/actions/workflows/tests.yml"><img src="https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 <a href="https://luarocks.org/modules/dknight/laura"><img src="https://img.shields.io/luarocks/v/dknight/laura" alt="LuaRocks"></a>
+</div>
 
-Laura is a lightweight unit-testing framework for Lua with simplicity in mind.
+<p align="center">
+Laura 👧🏻 is a lightweight unit-testing framework for Lua with simplicity in mind.
 The framework has no dependencies and is compatible with Lua versions 5.1&mdash;5.4 and LuaJIT.
+</p>
+
+## Features
 
 - **Lightweight and minimalist**
 - **Easy to install and use**
@@ -179,6 +189,11 @@ I would not recommend relying on it. Definitely better support is planned for th
 ## Compatibility Notes
 
 No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an extra UTF-8 module](https://github.com/starwing/luautf8), if you are going to compare UTF-8 strings.
+
+## Credits
+
+Original picture by [lumeish](https://lumeish.itch.io/), used under
+[Creative Commons Attribution v4.0 International](https://itch.io/game-assets/assets-cc4-by) license.
 
 ## Contribution
 

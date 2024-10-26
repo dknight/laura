@@ -23,7 +23,11 @@ local Config = {
 	-- false by default.
 	Traceback = false,
 
-	-- List of reporters. Check reporter section for possible values.
+	-- List of reporters. Available reporters:
+	-- | blank
+	-- | count
+	-- | dots
+	-- | text
 	Reporters = { "text" },
 
 	-- Print tests summary if reporter support it. true by default.
@@ -37,8 +41,23 @@ local Config = {
 	-- Collect code coverage.
 	-- Not yet ready.
 	Coverage = {
-		Enabled = false,
+		Enabled = true,
 		Threshold = 50,
+		ReportName = "covreport",
+		DateFormat = "%Y-%m-%d %H:%M:%S",
+
+		-- Coverage reporters. Available coverage reporters:
+		-- | csv
+		-- | html
+		-- | terminal
+		Reporters = {
+			"terminal",
+			"csv",
+			"html",
+		},
+
+		-- Directory where coverage is written.
+		Dir = "coverage",
 	},
 
 	--
@@ -75,6 +94,9 @@ local Config = {
 
 	-- executable name
 	_execName = "laura",
+
+	-- lines marked as execluded in coverage reporters
+	_coverageExcludeLineIndex = -1,
 }
 
 return setmetatable(Config, {

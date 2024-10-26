@@ -3,7 +3,7 @@ local Version = require("laura.Version")
 ---@param sep? string
 ---@return string[]
 local function split(str, sep)
-	sep = sep or ""
+	sep = sep or "%s"
 	local t = {}
 	for s in string.gmatch(str, "([^" .. sep .. "]+)") do
 		t[#t + 1] = s
