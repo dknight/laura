@@ -81,9 +81,11 @@ environment variable.
 Writing tests is pretty simple and straightforward.
 
 ```lua
-local describe = require("laura.Suite")
-local it = require("laura.Test")
-local expect = require("laura.expect")
+local laura = require("laura")
+
+local it = laura.it
+local describe = laura.describe
+local expect = laura.expect
 
 describe("my test case", function()
 	it("should be equal to three", function()
@@ -100,9 +102,11 @@ that there is a `:` colon. If you mark a suite as skipped, all its children will
 also be skipped.
 
 ```lua
-local describe = require("laura.Suite")
-local it = require("laura.Test")
-local expect = require("laura.expect")
+local laura = require("laura")
+
+local it = laura.it
+local describe = laura.describe
+local expect = laura.expect
 
 describe:skip("skip", function()
 	it("should be skipped", function()
@@ -117,9 +121,11 @@ Like skipped tests, mark tests with `only`; only marked tests will run;
 others will be ignored, useful for debugging.
 
 ```lua
-local describe = require("laura.Suite")
-local it = require("laura.Test")
-local expect = require("laura.expect")
+local laura = require("laura")
+
+local it = laura.it
+local describe = laura.describe
+local expect = laura.expect
 
 describe:only("only suite", function()
 	it("should be three", function()

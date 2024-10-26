@@ -48,8 +48,6 @@ end
 -- initial setup, not sure should it be here
 setup({})
 
----#coverage
-
 return {
 	Config = require("laura.Config"),
 	Context = require("laura.Context"),
