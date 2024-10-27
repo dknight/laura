@@ -20,11 +20,11 @@
 
 -- List of reporters.
 -- Reporters = {
---"blank",
+-- "blank",
 -- "count",
 -- "dots",
 -- "text",
--- },
+-- }
 
 -- Print tests summary if reporter support it. true by default.
 -- ReportSummary = true

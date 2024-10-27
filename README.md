@@ -181,16 +181,25 @@ Options can be set in any \*.lua file that returns a module and specified with a
 laura -c <path_to_config.lua> [test_dir]
 ```
 
+Another way to create [`.laurarc`](https://github.com/dknight/laura/blob/main/)
+file in your project directory and setup preferences in the same format
+as in the configuration file.
+
 Also, there are ["private" configuration fields](https://github.com/dknight/laura/blob/main/src/laura/Config.lua), which are not recommended to change, unless you know that you know what you are doing.
+
+# Code coverage
+
+Code coverage can be enabled in `.laurarc` configuration file. Or if you are
+using CLI flag `--coverage`. There are extra coverage reporters can be used,
+like: terminal, html, csv, etc. Check [configuration file](https://github.com/dknight/laura/blob/main/src/laura/Config.lua) source.
 
 ## Documentation
 
 Read the complete documentation on the [external website](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html).
 
-## What is not included yet
+## Known issues
 
-**Code coverage** is yet to be finalized. It implements only very basic functionality.
-I would not recommend relying on it. Definitely better support is planned for the next releases.
+**Code coverage** is yet to be finalized. It might have a minor inaccuracies.
 
 ## Compatibility Notes
 
