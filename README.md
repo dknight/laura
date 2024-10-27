@@ -201,6 +201,9 @@ No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an 
 Original picture by [lumeish](https://lumeish.itch.io/), used under
 [Creative Commons Attribution v4.0 International](https://itch.io/game-assets/assets-cc4-by) license.
 
+Coverage line scanner is modified algorithm based on [lunarmodules/luacov](https://github.com/lunarmodules/luacov), published under
+[MIT](https://opensource.org/license/MIT) license.
+
 ## Contribution
 
 Any help is appreciated. Found a bug, typo, inaccuracy, etc.? Please do

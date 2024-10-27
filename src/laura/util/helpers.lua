@@ -60,10 +60,10 @@ local function usage()
 		"",
 		"\t"
 			.. "--color\tForce to use colors, if system supports colored terminal.",
-		"\t" .. "--nocolor\tForce to disable colors.",
-		"\t" .. "-S,--nosummary\tDo not report summary.",
+		"\t" .. "--no-color\tForce to disable colors.",
+		"\t" .. "-S,--no-summary\tDo not report summary.",
 		"\t" .. "--coverage\tForce to enable code coverage report.",
-		"\t" .. "--nocoverage\tForce to disable code coverage report.",
+		"\t" .. "--no-coverage\tForce to disable code coverage report.",
 		"\t" .. "-v,--version\tPrint program name and it's version.",
 		"\t" .. "-h,-?,--help\tPrint this help message.",
 	}, "\n"))
@@ -106,7 +106,7 @@ local function processFlags()
 		if hasFlag("--color") then
 			ctx.config.Color = true
 		end
-		if hasFlag("--nocolor") then
+		if hasFlag("--no-color") then
 			ctx.config.Color = false
 		end
 
@@ -123,13 +123,13 @@ local function processFlags()
 				ctx.config.Reporters = rs
 			end
 		end
-		if hasFlag("-S", "--nosummary") then
+		if hasFlag("-S", "--no-summary") then
 			ctx.config.ReportSummary = false
 		end
 		if hasFlag("--coverage") then
 			ctx.config.Coverage.Enabled = true
 		end
-		if hasFlag("--nocoverage") then
+		if hasFlag("--no-coverage") then
 			ctx.config.Coverage.Enabled = false
 		end
 	end
