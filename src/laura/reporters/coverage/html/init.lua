@@ -103,7 +103,7 @@ function CoverageHTMLReporter:buildRow(source, percent, status)
 	html[#html + 1] = "</summary>"
 	html[#html + 1] = '<ol class="listing">'
 
-	for _, record in ipairs(self.coverage.data[source]) do
+	for i, record in ipairs(self.coverage.data[source]) do
 		local cssClass
 		if not record.included then
 			cssClass = "excluded"
@@ -117,10 +117,15 @@ function CoverageHTMLReporter:buildRow(source, percent, status)
 			[">"] = "&gt;",
 		})
 		html[#html + 1] = string.format(
-			'<li data-calls="%d" class="%s">%s</li>',
-			record.calls,
+			'<li class="%s">\z
+				<code>\z
+					<span>%s</span>\z
+					<span class="calls">&times;%d</span>\z
+				</code>\z
+			</li>',
 			cssClass,
-			record.code
+			record.code,
+			record.calls
 		)
 	end
 

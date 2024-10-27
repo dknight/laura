@@ -5,7 +5,7 @@
 1. Coverage blank (simple) reporter
 2. Coverage JSON reporter
 3. Coverage Lua reporter
-4. check covignore
+4. Stubs
 
 ## Bugs
 

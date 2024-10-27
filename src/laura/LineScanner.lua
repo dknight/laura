@@ -2,6 +2,8 @@
 -- https://github.com/lunarmodules/luacov/blob/master/src/luacov/linescanner.lua
 -- MIT License by lunarmodules
 
+local ignoreComment = "coverage"
+
 ---@class LineScanner
 ---@field private first boolean
 ---@field private comment boolean
@@ -253,15 +255,22 @@ function LineScanner:skip_name()
 end
 
 ---Source lines can be explicitly ignored using `enable` and `disable`
----inline options. An inline option is a simple comment: `-- luacov: enable`
----or `-- luacov: disable`. Inline option parsing is not whitespace sensitive.
+---inline options. An inline option is a simple comment: `-- coverage: enable`
+---or `-- coverage: disable`. Inline option parsing is not whitespace sensitive.
 ---All lines starting from a line containing `disable` option and up to a line
 ---containing `enable`option (or end of file) are excluded.
+---`-- luacov: enable | disable` are also valid.
 ---@param comment_body string
 function LineScanner:check_inline_options(comment_body)
-	if comment_body:find("^%s*luacov:%s*enable%s*$") then
+	local isEnabled = comment_body:find(
+		"^%s*" .. ignoreComment .. ":%s*enable%s*$"
+	) or comment_body:find("^%s*luacov:%s*enable%s*$")
+	local isDisabled = comment_body:find(
+		"^%s*" .. ignoreComment .. ":%s*disable%s*$"
+	) or comment_body:find("^%s*luacov:%s*disable%s*$")
+	if isEnabled then
 		self.enabled = true
-	elseif comment_body:find("^%s*luacov:%s*disable%s*$") then
+	elseif isDisabled then
 		self.enabled = false
 	end
 end

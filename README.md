@@ -181,7 +181,7 @@ Options can be set in any \*.lua file that returns a module and specified with a
 laura -c <path_to_config.lua> [test_dir]
 ```
 
-Another way to create [`.laurarc`](https://github.com/dknight/laura/blob/main/)
+Another way to create [`.laurarc`](https://github.com/dknight/laura/blob/main/.laurarc)
 file in your project directory and setup preferences in the same format
 as in the configuration file.
 
