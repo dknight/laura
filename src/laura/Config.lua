@@ -49,6 +49,7 @@ local Config = {
 
 		-- Coverage reporters.
 		Reporters = {
+			"blank",
 			"csv",
 			"html",
 			"terminal",

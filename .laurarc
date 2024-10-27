@@ -46,6 +46,7 @@
 --
 -- Coverage reporters.
 -- Reporters = {
+-- "blank",
 -- "csv",
 -- "html",
 -- "terminal",
