@@ -19,10 +19,10 @@ local helpers = require("laura.util.helpers")
 local Reporter = require("laura.reporters.Reporter")
 
 local ctx = Context.global()
-local runner = Runner:new()
 local coverage = ctx.coverage
 
-helpers.readConfig()
+-- read configs before runner init
+helpers.mergeFromRCFile()
 helpers.processFlags()
 
 -- last argument should be directory with tests
@@ -43,6 +43,7 @@ end
 
 -- Sorting files in alphabetical order to keep consistency.
 for fname in helpers.spairs(files) do
+	-- TODO do not use _G?
 	local chunk, err = loadfile(fname, "t", _G)
 	if chunk ~= nil then
 		chunk()
@@ -52,8 +53,9 @@ for fname in helpers.spairs(files) do
 	end
 end
 
-local testResults = runner:runTests()
-local genericReporter = Reporter:new(testResults)
+local runner = Runner:new()
+local results = runner:runTests()
+local genericReporter = Reporter:new(results)
 
 genericReporter:reportErrors()
 

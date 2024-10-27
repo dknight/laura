@@ -135,12 +135,12 @@ local function processFlags()
 	end
 end
 
-local function readConfig()
+---Reads and merges configuration from .laurarc file.
+local function mergeFromRCFile()
 	local path = ctx.config._configFile
 	local chunk, err = loadfile(path, "t", ctx.config)
 	if chunk ~= nil then
-		local data = chunk()
-		print(ctx.config.Dir)
+		chunk()
 	else
 		error(err)
 	end
@@ -149,7 +149,7 @@ end
 return {
 	hasFlag = hasFlag,
 	processFlags = processFlags,
-	readConfig = readConfig,
+	mergeFromRCFile = mergeFromRCFile,
 	spairs = spairs,
 	tab = tab,
 	usage = usage,

@@ -23,13 +23,15 @@ end
 
 ---@param test Runnable
 function DotsReporter:reportTest(test)
+	local status = Status.Unchanged
 	if test:isSkipped() then
-		self:printDot(Status.Skipped)
+		status = Status.Skipped
 	elseif test:isFailed() then
-		self:printDot(Status.Failed)
+		status = Status.Failed
 	elseif test:isPassed() then
-		self:printDot(Status.Passed)
+		status = Status.Passed
 	end
+	self:printDot(status)
 	io.write(Terminal.reset())
 end
 
