@@ -70,8 +70,7 @@ local Config = {
 	_appKey = key,
 
 	-- Failure exit code, usually non-zero by *nix convention.
-	---@diagnostic disable-next-line: undefined-global
-	_Exit({
+	_Exit = {
 		-- Sucess exit code, usually zero by *nix convention.
 		OK = 0,
 		-- Lua or system error.
@@ -80,7 +79,7 @@ local Config = {
 		Failed = 2,
 		-- Failure exit code, when coverage threshold is not met.
 		CoverageFailed = 3,
-	}),
+	},
 
 	-- Unique key in global context in case of integration with other software.
 	_rootSuiteKey = "__LAURA_ROOT__",
