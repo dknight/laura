@@ -48,7 +48,7 @@ end
 function Runner:runTests()
 	if not self._ctx.root then
 		print(Labels.NoTests)
-		os.exit(self._ctx.config._exitOK)
+		os.exit(self._ctx.config._Exit.OK)
 	end
 	local tstart = os.clock()
 	if self._ctx.root:hasOnly() then
@@ -93,16 +93,16 @@ function Runner:runTests()
 end
 
 ---Finishes runner. Should be called last. Exists the program with codes:
---- * ctx.config._exitFailed (1) There are the failures.
---- * ctx.config._exitOK (0) All tests are passed.
+--- * ctx.config._Exit.Failed (1) There are the failures.
+--- * ctx.config._Exit.OK (0) All tests are passed.
 function Runner:done()
 	Terminal.restore()
 	if #self.failing > 0 then
 		print(Labels.ResultFailed)
-		os.exit(self._ctx.config._exitFailed)
+		os.exit(self._ctx.config._Exit.Failed)
 	else
 		print(Labels.ResultPass)
-		os.exit(self._ctx.config._exitOK)
+		os.exit(self._ctx.config._Exit.OK)
 	end
 end
 

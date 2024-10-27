@@ -52,7 +52,7 @@ function CoverageReporter:results()
 	if threshold > 0 and pct < threshold then
 		print(string.format(Labels.ErrorCoverageNotMet, pct, threshold))
 		print(Labels.ResultFailed)
-		os.exit(config._exitCoverageFailed)
+		os.exit(config._Exit.CoverageFailed)
 	end
 end
 

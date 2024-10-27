@@ -38,7 +38,7 @@ end
 local files, fcount = fs.getFiles(dir)
 if fcount == 0 then
 	print(Labels.NoTests)
-	os.exit(ctx.config._exitOK)
+	os.exit(ctx.config._Exit.OK)
 end
 
 -- Sorting files in alphabetical order to keep consistency.
@@ -49,7 +49,7 @@ for fname in helpers.spairs(files) do
 		chunk()
 	else
 		Terminal.printActual(err or Labels.errorSyntax)
-		os.exit(ctx.config._exitFailed)
+		os.exit(ctx.config._Exit.SysErr)
 	end
 end
 

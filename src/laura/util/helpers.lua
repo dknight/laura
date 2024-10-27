@@ -87,12 +87,12 @@ local function processFlags()
 	for i in ipairs(arg) do
 		if hasFlag("-h", "-?", "--help") then
 			usage()
-			os.exit(ctx.config._exitOK)
+			os.exit(ctx.config._Exit.OK)
 		end
 
 		if hasFlag("-v", "--version") then
 			print(string.format("%s v%s", ctx.config._appKey, version()))
-			os.exit(ctx.config._exitOK)
+			os.exit(ctx.config._Exit.OK)
 		end
 
 		if hasFlag("-c", "--config") then

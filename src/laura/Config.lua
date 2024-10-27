@@ -69,14 +69,18 @@ local Config = {
 	-- Application name. "Laura" is default.
 	_appKey = key,
 
-	-- Sucess exit code, usually zero by *nix convention.
-	_exitOK = 0,
-
 	-- Failure exit code, usually non-zero by *nix convention.
-	_exitFailed = 1,
-
-	-- Failure exit code, when coverage threshold is not met.
-	_exitCoverageFailed = 2,
+	---@diagnostic disable-next-line: undefined-global
+	_Exit({
+		-- Sucess exit code, usually zero by *nix convention.
+		OK = 0,
+		-- Lua or system error.
+		SysErr = 1,
+		-- Tests are failed.
+		Failed = 2,
+		-- Failure exit code, when coverage threshold is not met.
+		CoverageFailed = 3,
+	}),
 
 	-- Unique key in global context in case of integration with other software.
 	_rootSuiteKey = "__LAURA_ROOT__",
