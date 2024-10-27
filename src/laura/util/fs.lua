@@ -90,18 +90,16 @@ local function mkdir(path)
 	return os.execute(cmd)
 end
 
----@param path string
----@return  boolean?, exitcode?, integer?
-local function rmdir(path)
-	-- TODO make protection from mass deletion of not desired directory.
-	local cmd
-	if isWindows() then
-		cmd = "RMDIR /Q /S " .. path .. " 2>NUL"
-	else
-		cmd = "rm -r " .. path .. " &>/dev/null"
-	end
-	return os.execute(cmd)
-end
+---Not in use, maybe will be useful, but it to dangerous to dive
+---software to remove something with `rm -rf`.
+-- local function rmdir(path)
+-- if isWindows() then
+-- cmd = "RMDIR /Q /S " .. path .. " 2>NUL"
+-- else
+-- cmd = "rm -r " .. path .. " &>/dev/null"
+-- end
+-- return os.execute(cmd)
+-- end
 
 local PathSep = isWindows() and "\\" or "/"
 
@@ -123,6 +121,5 @@ return {
 	mergeFromConfigFile = mergeFromConfigFile,
 	mkdir = mkdir,
 	PathSep = PathSep,
-	rmdir = rmdir,
 	scandir = scandir,
 }

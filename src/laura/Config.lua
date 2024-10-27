@@ -23,12 +23,13 @@ local Config = {
 	-- false by default.
 	Traceback = false,
 
-	-- List of reporters. Available reporters:
-	-- | blank
-	-- | count
-	-- | dots
-	-- | text
-	Reporters = { "text" },
+	-- List of reporters.
+	Reporters = {
+		--"blank",
+		-- "count",
+		-- "dots",
+		"text",
+	},
 
 	-- Print tests summary if reporter support it. true by default.
 	ReportSummary = true,
@@ -46,18 +47,18 @@ local Config = {
 		ReportName = "covreport",
 		DateFormat = "%Y-%m-%d %H:%M:%S",
 
-		-- Coverage reporters. Available coverage reporters:
-		-- | csv
-		-- | html
-		-- | terminal
+		-- Coverage reporters.
 		Reporters = {
-			-- "csv",
-			-- "html",
+			"csv",
+			"html",
 			"terminal",
 		},
 
 		-- Directory where coverage is written.
 		Dir = "coverage",
+
+		-- Files mask to include files.
+		IncludePattern = ".*%.lua",
 	},
 
 	--

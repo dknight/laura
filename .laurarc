@@ -18,12 +18,13 @@
 -- false by default.
 -- Traceback = false
 
--- List of reporters. Available reporters:
--- | blank
--- | count
--- | dots
--- | text
--- Reporters = { "text" }
+-- List of reporters.
+-- Reporters = {
+--"blank",
+-- "count",
+-- "dots",
+-- "text",
+-- },
 
 -- Print tests summary if reporter support it. true by default.
 -- ReportSummary = true
@@ -41,11 +42,9 @@
 -- ReportName = "covreport",
 -- DateFormat = "%Y-%m-%d %H:%M:%S",
 -- Dir = "coverage",
+-- IncludePattern = ".*%.lua",
 --
--- Coverage reporters. Available coverage reporters:
--- | csv
--- | html
--- | terminal
+-- Coverage reporters.
 -- Reporters = {
 -- "csv",
 -- "html",

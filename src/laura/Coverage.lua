@@ -89,6 +89,11 @@ end
 ---@param path string
 ---@return boolean
 function Coverage:isFileIncluded(path)
+	-- skip mask for coverage
+	if not path:match(self.ctx.config.Coverage.IncludePattern) then
+		return false
+	end
+
 	-- skip test pattern files and exec
 	local isLibTesting = os.getenv("LAURA_DEV_TEST")
 	local matchPattern = path:match("." .. self.ctx.config.FilePattern)
@@ -136,11 +141,14 @@ end
 ---@return number
 function Coverage:getCoveredPercent(src)
 	local total = self:countTotalCoverableLines(src)
-	local cov = self:countCoveredLines(src)
+	local covered = self:countCoveredLines(src)
 	if total == 0 then
 		return 0
 	end
-	return ((cov / total) * 100)
+	if total == 0 and covered == 0 then
+		return 1
+	end
+	return ((covered / total) * 100)
 end
 
 ---@return number
