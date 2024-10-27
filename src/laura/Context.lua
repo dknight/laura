@@ -1,5 +1,3 @@
-local key = require("laura.key")
-
 ---@class Context
 ---@field public children Runnable[]
 ---@field public config {[string]: any}
@@ -29,6 +27,8 @@ end
 ---creates a new context in _G.
 ---@return Context
 function Context.global()
+	local key = "__LAURA_CONTEXT__"
+
 	_G[key] = _G[key] or Context.new()
 	return _G[key]
 end

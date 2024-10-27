@@ -97,6 +97,9 @@ local Config = {
 
 	-- lines marked as execluded in coverage reporters
 	_coverageExcludeLineIndex = -1,
+
+	-- confing filename
+	_configFile = ".laurarc",
 }
 
 return setmetatable(Config, {

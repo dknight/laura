@@ -1,0 +1,54 @@
+---------------------------------------------------------------------------
+-- Externally configurable.
+-- Change this.
+---------------------------------------------------------------------------
+-- Enables colors in terminal if possible. true by default.
+-- Color = true
+
+-- Directory where tests are located. Current directory by default.
+-- Dir = "."
+
+-- Pattern for tests files.
+-- FilePattern = "*_test.lua"
+
+-- Tabulation string, "\t" by default.
+-- Tab = "\t"
+
+-- Print full traceback from debug library on test failure.
+-- false by default.
+-- Traceback = false
+
+-- List of reporters. Available reporters:
+-- | blank
+-- | count
+-- | dots
+-- | text
+-- Reporters = { "text" }
+
+-- Print tests summary if reporter support it. true by default.
+-- ReportSummary = true
+
+-- Use UTF-8 for strings comparison.
+-- Compatibility note: Before lua 5.3 there is no UTF8 support.
+-- Install extra module for UTF8 support https://github.com/starwing/luautf8
+-- UTF8 = true
+
+-- Collect code coverage.
+-- Not yet ready.
+-- Coverage = {
+-- Enabled = true,
+-- Threshold = 50,
+-- ReportName = "covreport",
+-- DateFormat = "%Y-%m-%d %H:%M:%S",
+-- Dir = "coverage",
+--
+-- Coverage reporters. Available coverage reporters:
+-- | csv
+-- | html
+-- | terminal
+-- Reporters = {
+-- "csv",
+-- "html",
+-- "terminal",
+-- },
+-- }

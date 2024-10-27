@@ -22,6 +22,7 @@ local ctx = Context.global()
 local runner = Runner:new()
 local coverage = ctx.coverage
 
+helpers.readConfig()
 helpers.processFlags()
 
 -- last argument should be directory with tests

@@ -135,9 +135,21 @@ local function processFlags()
 	end
 end
 
+local function readConfig()
+	local path = ctx.config._configFile
+	local chunk, err = loadfile(path, "t", ctx.config)
+	if chunk ~= nil then
+		local data = chunk()
+		print(ctx.config.Dir)
+	else
+		error(err)
+	end
+end
+
 return {
 	hasFlag = hasFlag,
 	processFlags = processFlags,
+	readConfig = readConfig,
 	spairs = spairs,
 	tab = tab,
 	usage = usage,
