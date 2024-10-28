@@ -62,6 +62,7 @@ return {
 	setup = setup,
 	Spy = require("laura.Spy"),
 	Status = require("laura.Status"),
+	Stub = require("laura.Stub"),
 	Suite = require("laura.Suite"),
 	suite = require("laura.Suite"), -- alias
 	Terminal = require("laura.Terminal"),

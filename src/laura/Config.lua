@@ -49,13 +49,13 @@ local Config = {
 
 		-- Coverage reporters.
 		Reporters = {
-			"blank",
-			"csv",
-			"html",
-			"json",
-			"lua",
+			-- "blank",
+			-- "csv",
+			-- "html",
+			-- "json",
+			-- "lua",
+			-- "xml",
 			"terminal",
-			"xml",
 		},
 
 		-- Directory where coverage is written.
