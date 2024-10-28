@@ -5,11 +5,6 @@ local helpers = require("laura.util.helpers")
 local fs = require("laura.util.fs")
 
 local ctx = Context.global()
-local config = ctx.config
-
-local spairs = helpers.spairs
-local EOL = fs.EOL
-local PathSep = fs.PathSep
 
 ---@class CoverageBlankReporter : CoverageReporter
 ---@field private coverage Coverage
@@ -32,8 +27,7 @@ end
 ---Reports blank.
 function CoverageBlankReporter:report()
 	self:prepare()
-	-- Do not print anything.
-	print("blank")
+	-- noop
 end
 
 return CoverageBlankReporter

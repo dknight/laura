@@ -57,9 +57,10 @@ function CoverageHTMLReporter:report()
 	local contents = tfp:read("*a")
 	tfp:close()
 	local reportFileName = string.format(
-		"%s%s" .. config.Coverage.ReportName .. "-%s.html",
+		"%s%s%s-%s.html",
 		path,
 		PathSep,
+		config.Coverage.ReportName,
 		os.date("%Y-%m-%d")
 	)
 	local fp = io.open(reportFileName, "w")
@@ -90,8 +91,6 @@ end
 ---@param status string
 ---@return string
 function CoverageHTMLReporter:buildRow(source, percent, status)
-	-- local threshold = config.Coverage.Threshold
-
 	local pct = string.format("%.1f" .. "&#37;", percent)
 	local id = string.gsub(source, "%p", "-")
 
@@ -103,13 +102,13 @@ function CoverageHTMLReporter:buildRow(source, percent, status)
 	html[#html + 1] = "</summary>"
 	html[#html + 1] = '<ol class="listing">'
 
-	for i, record in ipairs(self.coverage.data[source]) do
+	for _, record in ipairs(self.coverage.data[source]) do
 		local cssClass
 		if not record.included then
 			cssClass = "excluded"
-		elseif record.calls == 0 then
+		elseif record.hits == 0 then
 			cssClass = "not-covered"
-		elseif record.calls > 0 then
+		elseif record.hits > 0 then
 			cssClass = "covered"
 		end
 		record.code = string.gsub(record.code, "[><]", {
@@ -120,12 +119,12 @@ function CoverageHTMLReporter:buildRow(source, percent, status)
 			'<li class="%s">\z
 				<code>\z
 					<span>%s</span>\z
-					<span class="calls">&times;%d</span>\z
+					<span class="hits">&times;%d</span>\z
 				</code>\z
 			</li>',
 			cssClass,
 			record.code,
-			record.calls
+			record.hits
 		)
 	end
 

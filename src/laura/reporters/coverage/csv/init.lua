@@ -43,21 +43,22 @@ function CoverageCSVReporter:report()
 
 		local n = 1
 		for _, record in ipairs(data[source]) do
-			local calls = record.included and record.calls or excludeIndex
+			local hits = record.included and record.hits or excludeIndex
 			-- In CSV usually double qoutes inside are repeatedly replaced
 			-- with double qoutes. Usually this rule is used by spreadsheet
 			-- software.
 			record.code = record.code:gsub('"', string.rep('"', 2))
 			records[#records + 1] =
-				string.format('"%d"\t"%d"\t"%s"', n, calls, record.code)
+				string.format('"%d"\t"%d"\t"%s"', n, hits, record.code)
 			n = n + 1
 		end
 	end
 
 	local reportFileName = string.format(
-		"%s%s" .. config.Coverage.ReportName .. "-%s.csv",
+		"%s%s%s-%s.csv",
 		path,
 		PathSep,
+		config.Coverage.ReportName,
 		os.date("%Y-%m-%d")
 	)
 	local fp = io.open(reportFileName, "w")

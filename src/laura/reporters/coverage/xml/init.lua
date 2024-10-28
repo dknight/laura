@@ -1,0 +1,110 @@
+local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
+local Context = require("laura.Context")
+local fs = require("laura.util.fs")
+local helpers = require("laura.util.helpers")
+local Labels = require("laura.Labels")
+
+local ctx = Context.global()
+local config = ctx.config
+
+local concat = table.concat
+local spairs = helpers.spairs
+local PathSep = fs.PathSep
+local EOL = fs.EOL
+
+---@class CoverageXMLReporter : CoverageReporter
+---@field private coverage Coverage
+---@field private threshold number
+local CoverageXMLReporter = {}
+
+---@param coverage CoverageData
+---@param threshold number
+---@return CoverageTerminalReporter
+function CoverageXMLReporter:new(coverage, threshold)
+	local t = {
+		coverage = coverage,
+		threshold = threshold,
+	}
+	setmetatable(t, { __index = self })
+	setmetatable(self, { __index = CoverageReporter })
+	return t
+end
+
+---Reports coverage in the html file.
+function CoverageXMLReporter:report()
+	self:prepare()
+	local data = self.coverage.data
+	local path = config.Coverage.Dir
+	local contents = { '<?xml version="1.0" encoding="UTF-8"?>' }
+	contents[#contents + 1] = "<report>"
+	local reportFileName = string.format(
+		"%s%s%s-%s.xml",
+		path,
+		PathSep,
+		config.Coverage.ReportName,
+		os.date("%Y-%m-%d")
+	)
+	local fp = io.open(reportFileName, "w")
+	if fp == nil then
+		error(string.format(Labels.ErrorCannotWriteFile, reportFileName))
+	end
+
+	contents[#contents + 1] = "\t<info>"
+	local avgPct = self.coverage:calculateTotalAveragePercent()
+	contents[#contents + 1] = "\t\t<date>"
+		.. os.date(config.Coverage.DateFormat)
+		.. "</date>"
+	contents[#contents + 1] = "\t\t<average>" .. avgPct .. "</average>"
+	contents[#contents + 1] = "\t\t<software>Laura</software>"
+	contents[#contents + 1] = "\t</info>"
+	contents[#contents + 1] = "\t<files>"
+	for src in spairs(data) do
+		local pct = self.coverage:getCoveredPercent(src)
+		for _, rec in ipairs(self:buildRow(src, pct)) do
+			contents[#contents + 1] = rec
+		end
+	end
+	contents[#contents + 1] = "\t</files>"
+	contents[#contents + 1] = "</report>"
+
+	fp:write(concat(contents, EOL))
+	fp:close()
+	print(string.format(Labels.ReportWrittenTo, reportFileName))
+end
+
+---@private
+---@param source string
+---@param percent number
+---@return table
+function CoverageXMLReporter:buildRow(source, percent)
+	local pct = string.format("%.1f" .. "&#37;", percent)
+
+	local xml = {}
+	xml[#xml + 1] = "\t\t<file>"
+	xml[#xml + 1] = "\t\t\t<source>" .. source .. "</source>"
+	xml[#xml + 1] = "\t\t\t<coverage>" .. pct .. "</coverage>"
+
+	for i, record in ipairs(self.coverage.data[source]) do
+		record.code = string.gsub(record.code, "[><]", {
+			["<"] = "&lt;",
+			[">"] = "&gt;",
+		})
+		xml[#xml + 1] = string.format(
+			"\t\t\t<line >\n\z
+			\t\t\t\t<number>%d</number>\n\z
+			\t\t\t\t<included>%s</included>\n\z
+			\t\t\t\t<code><![CDATA[%s]]></code>\n\z
+			\t\t\t\t<hits>%d</hits>\n\z
+			\t\t\t</line>\n\z",
+			i,
+			tostring(record.included),
+			record.code,
+			record.hits
+		)
+	end
+
+	xml[#xml + 1] = "\t\t</file>"
+	return xml
+end
+
+return CoverageXMLReporter

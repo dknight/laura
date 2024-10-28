@@ -45,7 +45,7 @@ local Config = {
 		Enabled = true,
 		Threshold = 50,
 		ReportName = "covreport",
-		DateFormat = "%Y-%m-%d %H:%M:%S",
+		DateFormat = "%Y-%m-%dT%H:%M:%S",
 
 		-- Coverage reporters.
 		Reporters = {
@@ -53,6 +53,7 @@ local Config = {
 			"csv",
 			"html",
 			"terminal",
+			"xml",
 		},
 
 		-- Directory where coverage is written.

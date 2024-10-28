@@ -4,7 +4,7 @@ local fs = require("laura.util.fs")
 
 local PathSep = fs.PathSep
 
----@alias CoverageRecord {calls: number, code: string, included: boolean}
+---@alias CoverageRecord {hits: number, code: string, included: boolean}
 ---@alias CoverageData {[string]: {[string]: CoverageRecord}}
 
 ---@class Coverage
@@ -42,7 +42,7 @@ end
 ---@return boolean
 function Coverage:isRecordIncluded(record)
 	local ae, enc = self.scanner:consume(record.code)
-	return not ae and (not enc or record.calls > 0)
+	return not ae and (not enc or record.hits > 0)
 end
 
 ---Creates coverage hook function that collects coverad lines.
@@ -71,7 +71,7 @@ function Coverage:createHookFunction(level)
 
 			for line in io.lines(path) do
 				local rec = {
-					calls = 0,
+					hits = 0,
 					code = line,
 				}
 				rec.included = self:isRecordIncluded(rec)
@@ -81,7 +81,7 @@ function Coverage:createHookFunction(level)
 		end
 
 		local record = self.data[path][lineno]
-		record.calls = record.calls + 1
+		record.hits = record.hits + 1
 	end
 end
 
@@ -101,7 +101,7 @@ function Coverage:isFileIncluded(path)
 		path:match(string.format("^.*%s$", self.ctx.config._execName))
 	local includeFile = matchPattern == nil and matchExec == nil
 
-	-- skipping lib calls to print from testing outside the lib.
+	-- skipping lib hits to print from testing outside the lib.
 	if
 		not isLibTesting
 		and path:match(PathSep .. "laura" .. PathSep) ~= nil
@@ -130,7 +130,7 @@ end
 function Coverage:countCoveredLines(src)
 	local n = 0
 	for _, record in pairs(self.data[src]) do
-		if record.included and record.calls > 0 then
+		if record.included and record.hits > 0 then
 			n = n + 1
 		end
 	end
