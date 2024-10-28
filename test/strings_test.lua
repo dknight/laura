@@ -1,6 +1,7 @@
-local describe = require("laura.Suite")
-local expect = require("laura.expect")
-local it = require("laura.Test")
+local laura = require("laura")
+local describe = laura.describe
+local expect = laura.expect
+local it = laura.it
 
 describe("strings", function()
 	describe("toMatch", function()

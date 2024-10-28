@@ -1,11 +1,12 @@
 --
--- File used for random tests and experiments
--- TODO remove after testing is done
+-- For random tests and experiments
+-- Ignore this file
 --
-local describe = require("laura.Suite")
-local it = require("laura.Test")
-local expect = require("laura.expect")
-local Spy = require("laura.Spy")
+local laura = require("laura")
+local describe = laura.describe
+local expect = laura.expect
+local it = laura.it
+local Spy = laura.Spy
 
 local Tim = {
 	name = "Tim",

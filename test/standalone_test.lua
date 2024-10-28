@@ -1,5 +1,6 @@
-local expect = require("laura.expect")
-local it = require("laura.Test")
+local laura = require("laura")
+local expect = laura.expect
+local it = laura.it
 
 it("should be standalone 1", function()
 	expect(true).toEqual(true)

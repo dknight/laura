@@ -1,8 +1,9 @@
-local describe = require("laura.Suite")
-local expect = require("laura.expect")
-local it = require("laura.Test")
-local hooks = require("laura.hooks")
-local Spy = require("laura.Spy")
+local laura = require("laura")
+local describe = laura.describe
+local expect = laura.expect
+local it = laura.it
+local hooks = laura.hooks
+local Spy = laura.Spy
 
 describe("spies", function()
 	local spy
