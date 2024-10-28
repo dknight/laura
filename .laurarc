@@ -50,6 +50,7 @@
 -- "csv",
 -- "html",
 -- "json",
+-- "lua",
 -- "terminal",
 -- "xml",
 -- },

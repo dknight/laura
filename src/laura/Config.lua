@@ -53,6 +53,7 @@ local Config = {
 			"csv",
 			"html",
 			"json",
+			"lua",
 			"terminal",
 			"xml",
 		},
