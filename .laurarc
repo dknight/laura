@@ -49,6 +49,7 @@
 -- "blank",
 -- "csv",
 -- "html",
+-- "json",
 -- "terminal",
 -- "xml",
 -- },

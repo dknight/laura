@@ -12,15 +12,15 @@ local spairs = helpers.spairs
 local PathSep = fs.PathSep
 local EOL = fs.EOL
 
----@class CoverageXMLReporter : CoverageReporter
+---@class CoverageJSONReporter : CoverageReporter
 ---@field private coverage Coverage
 ---@field private threshold number
-local CoverageXMLReporter = {}
+local CoverageJSONReporter = {}
 
 ---@param coverage CoverageData
 ---@param threshold number
 ---@return CoverageTerminalReporter
-function CoverageXMLReporter:new(coverage, threshold)
+function CoverageJSONReporter:new(coverage, threshold)
 	local t = {
 		coverage = coverage,
 		threshold = threshold,
@@ -31,14 +31,14 @@ function CoverageXMLReporter:new(coverage, threshold)
 end
 
 ---Reports coverage in the html file.
-function CoverageXMLReporter:report()
+function CoverageJSONReporter:report()
 	self:prepare()
 	local data = self.coverage.data
 	local path = config.Coverage.Dir
-	local xml = { '<?xml version="1.0" encoding="UTF-8"?>' }
-	xml[#xml + 1] = "<report>"
+	local json = {}
+	json[#json + 1] = "{"
 	local reportFileName = string.format(
-		"%s%s%s-%s.xml",
+		"%s%s%s-%s.json",
 		path,
 		PathSep,
 		config.Coverage.ReportName,
@@ -49,25 +49,27 @@ function CoverageXMLReporter:report()
 		error(string.format(Labels.ErrorCannotWriteFile, reportFileName))
 	end
 
-	xml[#xml + 1] = "\t<info>"
+	json[#json + 1] = '\t"info": {'
 	local avgPct = self.coverage:calculateTotalAveragePercent()
-	xml[#xml + 1] = "\t\t<date>"
+	json[#json + 1] = '\t\t"date": "'
 		.. os.date(config.Coverage.DateFormat)
-		.. "</date>"
-	xml[#xml + 1] = "\t\t<average>" .. avgPct .. "</average>"
-	xml[#xml + 1] = "\t\t<software>Laura</software>"
-	xml[#xml + 1] = "\t</info>"
-	xml[#xml + 1] = "\t<files>"
+		.. '",'
+	json[#json + 1] = '\t\t"average": ' .. avgPct .. ","
+	json[#json + 1] = '\t\t"software": "Laura"'
+	json[#json + 1] = "\t},"
+	json[#json + 1] = '\t"files": ['
 	for src in spairs(data) do
 		local pct = self.coverage:getCoveredPercent(src)
 		for _, rec in ipairs(self:buildRow(src, pct)) do
-			xml[#xml + 1] = rec
+			json[#json + 1] = rec
 		end
 	end
-	xml[#xml + 1] = "\t</files>"
-	xml[#xml + 1] = "</report>"
+	json[#json] = string.sub(json[#json], 1, -2)
 
-	fp:write(concat(xml, EOL))
+	json[#json + 1] = "\t]"
+	json[#json + 1] = "}"
+
+	fp:write(concat(json, EOL))
 	fp:close()
 	print(string.format(Labels.ReportWrittenTo, reportFileName))
 end
@@ -76,35 +78,32 @@ end
 ---@param source string
 ---@param percent number
 ---@return table
-function CoverageXMLReporter:buildRow(source, percent)
-	local pct = string.format("%.1f" .. "&#37;", percent)
+function CoverageJSONReporter:buildRow(source, percent)
+	local json = {}
+	json[#json + 1] = "\t\t{"
+	json[#json + 1] = '\t\t\t"source": "' .. source .. '",'
+	json[#json + 1] = '\t\t\t"coverage": ' .. percent .. ","
+	json[#json + 1] = '\t\t\t"lines": ['
 
-	local xml = {}
-	xml[#xml + 1] = "\t\t<file>"
-	xml[#xml + 1] = "\t\t\t<source>" .. source .. "</source>"
-	xml[#xml + 1] = "\t\t\t<coverage>" .. pct .. "</coverage>"
-
+	local lines = {}
 	for i, record in ipairs(self.coverage.data[source]) do
-		record.code = string.gsub(record.code, "[><]", {
-			["<"] = "&lt;",
-			[">"] = "&gt;",
-		})
-		xml[#xml + 1] = string.format(
-			"\t\t\t<line>\n\z
-			\t\t\t\t<number>%d</number>\n\z
-			\t\t\t\t<included>%s</included>\n\z
-			\t\t\t\t<code><![CDATA[%s]]></code>\n\z
-			\t\t\t\t<hits>%d</hits>\n\z
-			\t\t\t</line>\n\z",
+		lines[#lines + 1] = string.format(
+			'\t\t\t\t{\n\z
+			\t\t\t\t\t"number": %d,\n\z
+			\t\t\t\t\t"included": %s,\n\z
+			\t\t\t\t\t"code": %s,\n\z
+			\t\t\t\t\t"hits": %d\n\z
+			\t\t\t\t}\n',
 			i,
-			tostring(record.included),
-			record.code,
+			record.included,
+			string.format("%q", record.code):gsub("\\9", "\\t"),
 			record.hits
 		)
 	end
-
-	xml[#xml + 1] = "\t\t</file>"
-	return xml
+	json[#json + 1] = concat(lines, ",")
+	json[#json + 1] = "\t\t\t]"
+	json[#json + 1] = "\t\t},"
+	return json
 end
 
-return CoverageXMLReporter
+return CoverageJSONReporter

@@ -52,6 +52,7 @@ local Config = {
 			"blank",
 			"csv",
 			"html",
+			"json",
 			"terminal",
 			"xml",
 		},
