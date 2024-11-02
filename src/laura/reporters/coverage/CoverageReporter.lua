@@ -4,6 +4,7 @@ local Labels = require("laura.Labels")
 local Terminal = require("laura.Terminal")
 local fs = require("laura.util.fs")
 
+local EOL = fs.EOL
 local ctx = Context.global()
 local config = ctx.config
 local mkdir = fs.mkdir
@@ -16,7 +17,7 @@ local CoverageReporter = {
 	printTitle = function()
 		print(
 			Terminal.setStyle(
-				"\n" .. Labels.Summary.Coverage,
+				EOL .. Labels.Summary.Coverage,
 				Terminal.Style.Bold,
 				Terminal.Style.Underlined
 			)

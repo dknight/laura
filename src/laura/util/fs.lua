@@ -23,7 +23,7 @@ local scandir = function(directory)
 	local list = fd:read("*a")
 	fd:close()
 
-	for _, fname in pairs(stringx.split(list, "\n")) do
+	for _, fname in pairs(stringx.split(list, EOL)) do
 		t[fname] = true
 	end
 	return t
@@ -80,7 +80,7 @@ local function mergeFromConfigFile(path)
 			end
 		end
 	else
-		error(Labels.ErrorConfigRead .. "\n" .. err)
+		error(Labels.ErrorConfigRead .. EOL .. err)
 	end
 	return true
 end

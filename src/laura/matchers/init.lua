@@ -18,8 +18,10 @@ local tablex = require("laura.ext.tablex")
 local Terminal = require("laura.Terminal")
 local stringx = require("laura.ext.stringx")
 local Version = require("laura.Version")
+local fs = require("laura.util.fs")
 
 local ctx = Context.global()
+local EOL = fs.EOL
 
 ---@type Assertion
 local function compare(t, expected, cmp)
@@ -122,12 +124,14 @@ local function toHaveLength(t, expected)
 				actual = len,
 				expected = b,
 				message = string.format(
-					"\n%s%s%s%s%s\n",
+					"%s%s%s%s%s%s%s",
+					EOL,
 					helpers.tab(1),
 					isString and Labels.Actual.String or Labels.Actual.Table,
 					Terminal.setColor(Status.Failed),
 					isString and a or tablex.inline(a),
-					Terminal.reset()
+					Terminal.reset(),
+					EOL
 				),
 			})
 	end)
@@ -145,12 +149,14 @@ local function toHaveKeysLength(t, expected)
 				actual = i,
 				expected = b,
 				message = string.format(
-					"\n%s%s%s%s%s\n",
+					"%s%s%s%s%s%s",
+					EOL,
 					helpers.tab(1),
 					Labels.Actual.Table,
 					Terminal.setColor(Status.Failed),
 					tablex.inline(a, true),
-					Terminal.reset()
+					Terminal.reset(),
+					EOL
 				),
 			})
 	end)
@@ -208,7 +214,7 @@ local function toBeCloseTo(t, expected)
 						Terminal.reset()
 					),
 					"",
-				}, "\n"),
+				}, EOL),
 			})
 	end)
 end
@@ -428,10 +434,12 @@ local function toHaveBeenCalledWith(t, expected)
 				actual = tmp,
 				expected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfCalls,
-					#calls
+					#calls,
+					EOL
 				),
 			})
 	end)
@@ -459,10 +467,12 @@ local function toHaveBeenLastCalledWith(t, expected)
 				actual = act,
 				expected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfCalls,
-					a:getCallsCount()
+					a:getCallsCount(),
+					EOL
 				),
 			})
 	end)
@@ -490,10 +500,12 @@ local function toHaveBeenFirstCalledWith(t, expected)
 				actual = act,
 				expected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfCalls,
-					a:getCallsCount()
+					a:getCallsCount(),
+					EOL
 				),
 			})
 	end)
@@ -522,10 +534,12 @@ local function toHaveBeenNthCalledWith(t, expected)
 				actual = act,
 				expected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfCalls,
-					a:getCallsCount()
+					a:getCallsCount(),
+					EOL
 				),
 			})
 	end)
@@ -542,10 +556,12 @@ local function toHaveReturned(t, expected)
 				actualLabel = Labels.Actual.Returns,
 				expectedLabel = Labels.Expected.Returns,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					a:getReturnsCount()
+					a:getReturnsCount(),
+					EOL
 				),
 			})
 	end)
@@ -562,10 +578,12 @@ local function toHaveReturnedTimes(t, expected)
 				actualLabel = Labels.Actual.Returns,
 				expectedLabel = Labels.Expected.Returns,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					count
+					count,
+					EOL
 				),
 			})
 	end)
@@ -595,10 +613,12 @@ local function toHaveReturnedWith(t, expected)
 				actual = act,
 				expected = exp,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					a:getReturnsCount()
+					a:getReturnsCount(),
+					EOL
 				),
 			})
 	end)
@@ -615,10 +635,12 @@ local function toHaveLastReturnedWith(t, expected)
 				actual = last,
 				sexpected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					a:getReturnsCount()
+					a:getReturnsCount(),
+					EOL
 				),
 			})
 	end)
@@ -635,10 +657,12 @@ local function toHaveFirstReturnedWith(t, expected)
 				actual = first,
 				expected = b,
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					a:getReturnsCount()
+					a:getReturnsCount(),
+					EOL
 				),
 			})
 	end)
@@ -655,10 +679,12 @@ local function toHaveNthReturnedWith(t, expected)
 				actual = nth,
 				expected = b[2],
 				message = string.format(
-					"\n%s%s%d\n",
+					"%s%s%s%d%s",
+					EOL,
 					helpers.tab(1),
 					Labels.NumberOfReturns,
-					a:getReturnsCount()
+					a:getReturnsCount(),
+					EOL
 				),
 			})
 	end)

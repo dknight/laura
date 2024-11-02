@@ -258,7 +258,7 @@ end
 ---@return string
 local function dump(t)
 	if type(t) == "table" then
-		local s = "{\n"
+		local s = "{" .. EOL
 		for k, v in pairs(t) do
 			if type(k) == "string" then
 				k = '"' .. k .. '"'
@@ -268,7 +268,7 @@ local function dump(t)
 			end
 			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
 		end
-		return s .. "}\n"
+		return s .. "}" .. EOL
 	else
 		return tostring(t)
 	end

@@ -88,12 +88,24 @@ function CoverageXMLReporter:buildRow(source, percent)
 			[">"] = "&gt;",
 		})
 		xml[#xml + 1] = string.format(
-			"\t\t\t<line>\n\z
-			\t\t\t\t<number>%d</number>\n\z
-			\t\t\t\t<included>%s</included>\n\z
-			\t\t\t\t<code><![CDATA[%s]]></code>\n\z
-			\t\t\t\t<hits>%d</hits>\n\z
-			\t\t\t</line>\n\z",
+			"\t\t\t<line>"
+				.. EOL
+				.. "\z
+			\t\t\t\t<number>%d</number>"
+				.. EOL
+				.. "\z
+			\t\t\t\t<included>%s</included>"
+				.. EOL
+				.. "\z
+			\t\t\t\t<code><![CDATA[%s]]></code>"
+				.. EOL
+				.. "\z
+			\t\t\t\t<hits>%d</hits>"
+				.. EOL
+				.. "\z
+			\t\t\t</line>"
+				.. EOL
+				.. "\z",
 			i,
 			tostring(record.included),
 			record.code,

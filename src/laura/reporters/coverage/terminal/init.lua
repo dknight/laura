@@ -4,7 +4,9 @@ local helpers = require("laura.util.helpers")
 local Labels = require("laura.Labels")
 local Status = require("laura.Status")
 local Terminal = require("laura.Terminal")
+local fs = require("laura.util.fs")
 
+local EOL = fs.EOL
 local spairs = helpers.spairs
 
 ---@class CoverageTerminalReporter : CoverageReporter
@@ -44,7 +46,7 @@ function CoverageTerminalReporter:report()
 		if Terminal.isColorSupported() then
 			io.write(color)
 		end
-		io.write(string.format("%-" .. longest .. "s %6.1f%%\n", src, pct))
+		io.write(string.format("%-" .. longest .. "s %6.1f%%%s", src, pct, EOL))
 		if Terminal.isColorSupported() then
 			io.write(Terminal.reset())
 		end

@@ -3,8 +3,10 @@ local helpers = require("laura.util.helpers")
 local Labels = require("laura.Labels")
 local osx = require("laura.ext.osx")
 local Status = require("laura.Status")
+local fs = require("laura.util.fs")
 
 local ctx = Context.global()
+local EOL = fs.EOL
 
 ---@enum Style
 local Style = {
@@ -104,7 +106,7 @@ end
 ---@param msg string
 ---@param ... Style
 local function printStyle(msg, ...)
-	io.write(setStyle(msg .. "\n", ...))
+	io.write(setStyle(msg .. EOL, ...))
 end
 
 ---@param flag boolean
@@ -123,15 +125,15 @@ end
 local function printResult(message, status, suffix, level)
 	level = level or 0
 	suffix = suffix or ""
-	local tpl = "%s%s%s\n"
+	local tpl = "%s%s%s" .. EOL
 	if status ~= Status.Common then
-		tpl = "%s[%s] %s%s\n"
+		tpl = "%s[%s] %s%s" .. EOL
 	end
 	if status == Status.Skipped then
 		tpl = "%s"
 			.. setStyle("[", Style.Dim)
 			.. "%s"
-			.. setStyle("] %s%s\n", Style.Dim)
+			.. setStyle("] %s%s" .. EOL, Style.Dim)
 	end
 	local str = string.format(
 		tpl,

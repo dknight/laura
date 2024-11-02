@@ -10,8 +10,10 @@ local Labels = require("laura.Labels")
 local memory = require("laura.util.memory")
 local Terminal = require("laura.Terminal")
 local time = require("laura.util.time")
+local fs = require("laura.util.fs")
 
 local ctx = Context.global()
+local EOL = fs.EOL
 
 ---@class Reporter
 ---@field protected duration number
@@ -33,24 +35,24 @@ end
 
 function Reporter:reportSummary()
 	Terminal.printStyle(
-		"\n" .. Labels.Summary.Title,
+		EOL .. Labels.Summary.Title,
 		Terminal.Style.Bold,
 		Terminal.Style.Underlined
 	)
 
 	local successMsg = string.format(
-		Labels.Summary.Passing .. "\n",
+		Labels.Summary.Passing .. EOL,
 		#self.passing,
 		self.total - #self.skipping
 	)
 	io.write(successMsg)
 
 	local failedMessage =
-		string.format(Labels.Summary.Failing .. "\n", #self.failing)
+		string.format(Labels.Summary.Failing .. EOL, #self.failing)
 	io.write(failedMessage)
 
 	local skippedMessage =
-		string.format(Labels.Summary.Skipping .. "\n", #self.skipping)
+		string.format(Labels.Summary.Skipping .. EOL, #self.skipping)
 	io.write(skippedMessage)
 end
 
@@ -62,7 +64,7 @@ function Reporter:reportPerformance(dt)
 	local formattedMemory = memory.format(collectgarbage("count"))
 	io.write(
 		string.format(
-			"\n" .. Labels.Performance .. "\n",
+			EOL .. Labels.Performance .. EOL,
 			formatedTime,
 			formattedMemory,
 			os.date(ctx.config.DateFormat)
@@ -74,7 +76,7 @@ function Reporter:reportErrors()
 	if #self.failing <= 0 then
 		return
 	end
-	io.write("\n")
+	io.write(EOL)
 	Terminal.printStyle(
 		Labels.FailedTests,
 		Terminal.Style.Bold,

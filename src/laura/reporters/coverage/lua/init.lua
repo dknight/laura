@@ -7,7 +7,7 @@ local tablex = require("laura.ext.tablex")
 
 local ctx = Context.global()
 local config = ctx.config
-
+local EOL = fs.EOL
 local concat = table.concat
 local PathSep = fs.PathSep
 
@@ -75,12 +75,24 @@ function CoverageLuaReporter:buildRow(source, percent)
 	local lines = {}
 	for i, record in ipairs(self.coverage.data[source]) do
 		lines[#lines + 1] = string.format(
-			'\t\t\t\t{\n\z
-			\t\t\t\t\t"number": %d,\n\z
-			\t\t\t\t\t"included": %s,\n\z
-			\t\t\t\t\t"code": %s,\n\z
-			\t\t\t\t\t"hits": %d\n\z
-			\t\t\t\t}\n',
+			"\t\t\t\t"
+				.. EOL
+				.. '\z
+			\t\t\t\t\t"number": %d,'
+				.. EOL
+				.. '\z
+			\t\t\t\t\t"included": %s,'
+				.. EOL
+				.. '\z
+			\t\t\t\t\t"code": %s,'
+				.. EOL
+				.. '\z
+			\t\t\t\t\t"hits": %d'
+				.. EOL
+				.. "\z
+			\t\t\t\t}"
+				.. EOL
+				.. "",
 			i,
 			record.included,
 			string.format("%q", record.code):gsub("\\9", "\\t"),

@@ -4,6 +4,7 @@ local Labels = require("laura.Labels")
 local stringx = require("laura.ext.stringx")
 local ver = require("laura.v")
 
+local EOL = fs.EOL
 local ctx = Context.global()
 
 ---Get the version.
@@ -65,7 +66,7 @@ local function usage()
 		"\t" .. "--no-coverage\tForce to disable code coverage report.",
 		"\t" .. "-v,--version\tPrint program name and it's version.",
 		"\t" .. "-h,-?,--help\tPrint this help message.",
-	}, "\n"))
+	}, EOL))
 end
 
 ---@param ...string
