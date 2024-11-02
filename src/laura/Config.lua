@@ -25,8 +25,8 @@ local Config = {
 	-- List of reporters.
 	Reporters = {
 		--"blank",
-		-- "count",
-		-- "dots",
+		--"count",
+		--"dots",
 		"text",
 	},
 
@@ -49,12 +49,12 @@ local Config = {
 
 		-- Coverage reporters.
 		Reporters = {
-			-- "blank",
-			-- "csv",
-			"html",
-			-- "json",
-			-- "lua",
-			-- "xml",
+			--"blank",
+			--"csv",
+			--"html",
+			--"json",
+			--"lua",
+			--"xml",
 			"terminal",
 		},
 
