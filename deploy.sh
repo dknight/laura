@@ -17,7 +17,7 @@ sed -i -e "s/\"main\"/\"$VERSION\"/g" "$specfile"
 sed -i -e "s/\"dev-0\"/\"$VERSION\"/g" "$specfile"
 
 printf "return \"%s\"" "$VERSION" > "$VERSION_FILE"
-git add "$VERSION_FILE"
+git add "$VERSION_FILE" "rockspec/$specfile"
 git ci -m "release: $VERSION_FILE"
 
 echo "Pushing to git..."
