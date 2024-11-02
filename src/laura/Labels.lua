@@ -52,6 +52,7 @@ local Labels = {
 		[Status.Failed] = "failing",
 		[Status.Skipped] = "skipping",
 		[Status.Common] = "",
+		[Status.Warning] = "warning",
 	},
 	Summary = {
 		Title = "SUMMARY",

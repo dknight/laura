@@ -73,7 +73,7 @@ local function isColorSupported()
 	end
 
 	local term = os.getenv("TERM") or ""
-	return term:match("color") or term:match("xterm") or hasTermColors
+	return not not (term:match("color") or term:match("xterm") or hasTermColors)
 end
 
 ---@return string
@@ -194,6 +194,7 @@ local Terminal = {
 	restore = restore,
 	setColor = setColor,
 	setStyle = setStyle,
+	Color = Color,
 	Style = Style,
 	toggleCursor = toggleCursor,
 }

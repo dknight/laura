@@ -47,5 +47,5 @@ describe("Coverage", function()
 		end)
 	end)
 
-	-- TODO TESTS
+	-- TODO more tests
 end)
