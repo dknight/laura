@@ -137,7 +137,7 @@ local function printValue(val, key, sign, status, i, isColor)
 		out[#out + 1] = tab(i) .. sign .. "}"
 	else
 		-- COMPAT why in Lua 5.1 so?
-		local q = Version[_VERSION] <= Version["Lua 5.1"] and "%s" or "%q"
+		local q = Version[_VERSION] <= Version["Lua 5.2"] and "%s" or "%q"
 		out[#out + 1] = string.format(q, val)
 	end
 
