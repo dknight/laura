@@ -1,3 +1,4 @@
+-- coverage: disable
 local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
 local Context = require("laura.Context")
 local fs = require("laura.util.fs")
@@ -104,3 +105,4 @@ function CoverageJSONReporter:buildRow(source, percent)
 end
 
 return CoverageJSONReporter
+-- coverage: enable

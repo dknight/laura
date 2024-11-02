@@ -1,3 +1,4 @@
+-- coverage: disable
 local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
 
 ---@class CoverageBlankReporter : CoverageReporter
@@ -22,3 +23,4 @@ function CoverageBlankReporter:report()
 end
 
 return CoverageBlankReporter
+-- coverage: enable

@@ -1,3 +1,4 @@
+-- coverage: disable
 local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
 local Context = require("laura.Context")
 local Labels = require("laura.Labels")
@@ -68,3 +69,4 @@ function CoverageCSVReporter:report()
 end
 
 return CoverageCSVReporter
+-- coverage: enable

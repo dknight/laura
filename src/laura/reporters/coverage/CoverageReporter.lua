@@ -1,3 +1,4 @@
+-- coverage: disable
 local Context = require("laura.Context")
 local Labels = require("laura.Labels")
 local Terminal = require("laura.Terminal")
@@ -62,3 +63,4 @@ function CoverageReporter:report()
 end
 
 return CoverageReporter
+-- coverage: enable
