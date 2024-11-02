@@ -1,3 +1,4 @@
+-- TODO coverage
 -- coverage: disable
 local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
 local helpers = require("laura.util.helpers")

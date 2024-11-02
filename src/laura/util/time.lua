@@ -1,8 +1,10 @@
 ---Time related helpers.
 
 -- COMPAT Lua 5.1
+-- coverage: disable
 ---@diagnostic disable-next-line: deprecated
 local unpack = table.unpack or unpack
+-- coverage: enable
 
 ---Formats C's clock function to the human readable format.
 ---Time is very relative, depending one OS processes and other factors.

@@ -331,9 +331,11 @@ local function toFail(t, expected)
 
 		local actual = a
 		--COMPAT %s in string.format() requires tostring(v)
+		-- coverage: disable
 		if Version[_VERSION] <= Version["Lua 5.2"] then
 			actual = tostring(actual)
 		end
+		-- coverage: enable
 		local e = errorx.new({
 			actual = string.format("%s %s", actual, Labels.Actual.FnFail),
 			expected = string.format("%s %s", actual, Labels.Expected.FnFail),

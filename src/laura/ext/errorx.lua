@@ -101,6 +101,7 @@ local function toString(err, isColor)
 	end
 
 	-- COMPAT
+	-- coverage: disable
 	if Version[_VERSION] <= Version["Lua 5.1"] then
 		if type(expectedValue) ~= "string" then
 			expectedValue = tostring(expectedValue)
@@ -109,6 +110,7 @@ local function toString(err, isColor)
 			actualValue = tostring(actualValue)
 		end
 	end
+	-- coverage: enable
 
 	local passedColor = isColor and Terminal.setColor(Status.Passed) or ""
 	local failedColor = isColor and Terminal.setColor(Status.Failed) or ""

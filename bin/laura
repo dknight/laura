@@ -10,9 +10,11 @@ local Runner = laura.Runner
 local Terminal = laura.Terminal
 
 --COMPAT include path fix for lua 5.1 and lua 5.2
+-- coverage: disable
 if Version[_VERSION] <= Version["Lua 5.2"] then
 	package.path = package.path .. ";./?/init.lua"
 end
+-- coverage: enable
 
 local fs = require("laura.util.fs")
 local helpers = require("laura.util.helpers")
