@@ -1,16 +1,16 @@
 # TODOs and FIXMEs
 
-Tests should pass with lua-5.1
 Replace "\n" with fs.EOL
+Add version to reporter
+Try to improve coverage performance.
 
 ## Tasks
 
-1. Write coverage tests
+1. Write better coverage tests
 
 ## Nice to have
 
 1. Better type check in matchers maybe.
-2. Try to improve coverage performance.
 
 ## CI/CD
 
