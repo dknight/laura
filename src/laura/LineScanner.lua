@@ -2,6 +2,7 @@
 -- https://github.com/lunarmodules/luacov/blob/master/src/luacov/linescanner.lua
 -- MIT License by lunarmodules
 
+-- coverage: disable
 local ignoreComment = "coverage"
 
 ---@class LineScanner
@@ -394,3 +395,4 @@ function LineScanner:consume(line)
 end
 
 return LineScanner
+-- coverage: enable
