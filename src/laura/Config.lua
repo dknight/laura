@@ -38,7 +38,7 @@ local Config = {
 
 	-- Collect code coverage.
 	Coverage = {
-		Enabled = true,
+		Enabled = false,
 		Threshold = 50,
 		ThresholdPoints = {
 			Low = 50,
