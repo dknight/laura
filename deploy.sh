@@ -11,6 +11,11 @@ fi
 specfile="laura-$VERSION.rockspec"
 rockfile="laura-$VERSION.src.rock"
 
+cp laura-dev-0.rockspec "$specfile"
+
+sed -i -e "s/\"main\"/\"$VERSION\"/g" "$specfile"
+sed -i -e "s/\"dev-0\"/\"$VERSION\"/g" "$specfile"
+
 printf "return \"%s\"" "$VERSION" > "$VERSION_FILE"
 git add "$VERSION_FILE"
 git ci -m "release: $VERSION_FILE"
@@ -24,9 +29,10 @@ git push origin "$GIT_BRANCH"
 echo "Packing rock..."
 luarocks pack "$specfile"
 
-rm -y "$rockfile"
-
 echo "Uploading rock..."
 luarocks upload "$specfile" --api-key="$API_KEY"
+
+rm -f "$rockfile"
+mv "$specfile" rockspec
 
 echo "Deployed $VERSION"
