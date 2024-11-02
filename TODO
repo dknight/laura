@@ -1,7 +1,6 @@
 # TODOs and FIXMEs
 
 Replace "\n" with fs.EOL
-Add version to reporter
 Try to improve coverage performance.
 
 ## Tasks
