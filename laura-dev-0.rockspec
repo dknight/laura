@@ -24,7 +24,7 @@ dependencies = {
 build = {
 	type = "builtin",
 	copy_directories = {
-		"tests",
+		"test",
 	},
 	install = {
 		bin = {

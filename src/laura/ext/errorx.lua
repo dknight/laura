@@ -1,10 +1,13 @@
 local Context = require("laura.Context")
 local helpers = require("laura.util.helpers")
 local Labels = require("laura.Labels")
-local mathx = require("laura.ext.mathx")
 local Status = require("laura.Status")
 local tablex = require("laura.ext.tablex")
 local Terminal = require("laura.Terminal")
+local fs = require("laura.util.fs")
+local Version = require("laura.Version")
+
+local EOL = fs.EOL
 
 ---@class Error
 ---@field title? string Title for the error.
@@ -26,7 +29,7 @@ local ctx = Context.global()
 ---@param err? Error
 ---@return Error
 local function new(err)
-	local opts = {
+	local params = {
 		actual = nil,
 		actualOperator = "",
 		currentLine = -1,
@@ -41,26 +44,20 @@ local function new(err)
 
 	if type(err) == "table" then
 		for k, v in pairs(err) do
-			opts[k] = v
+			params[k] = v
 		end
 	end
 
-	return opts
+	return params
 end
 
 ---@param v any
----@param precision? number
 ---@return string
-local function resolveQualifier(v, precision)
-	precision = precision or 2
+local function resolveQualifier(v)
 	local typ = type(v)
 	local q = "%q"
 	if typ == "number" then
-		if mathx.type(v) == "float" then
-			q = "%." .. precision .. "f"
-		else
-			q = "%d"
-		end
+		q = "%d"
 	elseif typ == "table" or typ == "function" then
 		q = "%s"
 	elseif typ == "string" then
@@ -71,13 +68,17 @@ local function resolveQualifier(v, precision)
 		else
 			q = '"%s"'
 		end
+	else
+		q = "%s"
 	end
 	return q
 end
 
 ---@param err Error
+---@param isColor? boolean
 ---@return string
-local function toString(err)
+local function toString(err, isColor)
+	isColor = isColor == nil
 	local act = string.format(
 		"%s%s",
 		err.actualLabel or Labels.ErrorActual,
@@ -93,41 +94,60 @@ local function toString(err)
 	act = string.format(fmt, act)
 	exp = string.format(fmt, exp)
 
+	local expectedValue = err.expected
 	local actualValue = err.actual
 	if type(err.actual) == "table" and #err.actual > 0 then
 		actualValue = tablex.inline(err.actual, true)
 	end
 
+	-- COMPAT
+	if Version[_VERSION] <= Version["Lua 5.1"] then
+		if type(expectedValue) ~= "string" then
+			expectedValue = tostring(expectedValue)
+		end
+		if type(actualValue) ~= "string" then
+			actualValue = tostring(actualValue)
+		end
+	end
+
+	local passedColor = isColor and Terminal.setColor(Status.Passed) or ""
+	local failedColor = isColor and Terminal.setColor(Status.Failed) or ""
+	local resetSeq = isColor and Terminal.reset() or ""
 	local out = {
 		helpers.tab(ctx.level),
 		err.title,
-		"\n\n",
+		string.rep(EOL, 2),
 		helpers.tab(1),
 		exp,
-		Terminal.setColor(Status.Passed),
-		string.format(resolveQualifier(err.expected), err.expected),
-		Terminal.reset(),
+		passedColor,
+		string.format(resolveQualifier(err.expected), expectedValue),
+		resetSeq,
 		helpers.tab(ctx.level),
-		"\n",
+		EOL,
 		helpers.tab(1),
 		act,
-		Terminal.setColor(Status.Failed),
+		failedColor,
 		string.format(resolveQualifier(err.actual), actualValue),
-		Terminal.reset(),
-		"\n",
+		resetSeq,
+		EOL,
 		err.message,
-		"\n",
+		EOL,
 	}
 	if err.debuginfo ~= nil then
 		-- might be better?
 		local activeLine = math.huge
-		for i in pairs(err.debuginfo.activelines) do
+		local activeLines = err.debuginfo.activelines
+		if not activeLines then
+			activeLine = -1
+			activeLines = {}
+		end
+		for i in pairs(activeLines) do
 			activeLine = math.min(i, activeLine)
 		end
 		-- end --
 
 		out[#out + 1] = string.format(
-			"%s:%d\n\n",
+			"%s:%d" .. string.rep(EOL, 2),
 			err.debuginfo.source,
 			err.currentLine > 0 and err.currentLine or activeLine
 		)
@@ -141,18 +161,18 @@ local function toString(err)
 			then
 				local decs = math.log(err.debuginfo.lastlinedefined, 10) + 1
 				local l = line
-				local f = "%" .. math.ceil(decs) .. "d. %s\n"
-				if err.debuginfo.activelines[lineno] then
+				local f = "%" .. math.ceil(decs) .. "d. %s" .. EOL
+				if activeLines[lineno] then
 					local match = l:gsub(
 						"%((.*)%)(.*)%((.*)%)",
 						"("
-							.. Terminal.setColor(Status.Failed)
+							.. failedColor
 							.. "%1"
-							.. Terminal.reset()
+							.. resetSeq
 							.. ")%2("
-							.. Terminal.setColor(Status.Passed)
+							.. passedColor
 							.. "%3"
-							.. Terminal.reset()
+							.. resetSeq
 							.. ")"
 					)
 					l = Terminal.setStyle(match, Terminal.Style.Normal)
@@ -162,23 +182,25 @@ local function toString(err)
 				out[#out + 1] = string.format(f, lineno, l)
 			end
 		end
-		out[#out + 1] = "\n"
+		out[#out + 1] = EOL
 	end
 	if ctx.config.Traceback then
 		out[#out + 1] = err.traceback
-		out[#out + 1] = "\n"
+		out[#out + 1] = EOL
 	end
 	return table.concat(out)
 end
 
+---@param isColor? boolean
 ---@param err Error
-local function printError(err)
-	io.write(toString(err))
+local function printError(err, isColor)
+	io.write(toString(err, isColor))
 end
 
 return {
 	new = new,
 	print = printError,
+	-- COMPAT print() cause an error in Lua 5.1
+	printError = printError,
 	toString = toString,
-	resolveQualifier = resolveQualifier,
 }

@@ -47,10 +47,7 @@ end
 ---Creates root context if not yet exists.
 Runnable.createRootSuiteMaybe = function()
 	if not Runnable._ctx.root then
-		local root = Runnable:new(
-			Runnable._ctx.config._rootSuiteKey,
-			function() end
-		)
+		local root = Runnable:new(Runnable._ctx.config._rootKey, function() end)
 		Runnable._ctx.root = root
 		Runnable._ctx.suites[0] = root
 		Runnable._ctx.level = Runnable._ctx.level + 1
@@ -138,10 +135,19 @@ function Runnable:run()
 
 	local ok, err = pcall(self.func)
 	if not ok then
-		self.error = err
-		self.error.title = self.description
-		self.error.debuginfo = debug.getinfo(self.func, "SL")
-		self.error.traceback = debug.traceback()
+		if type(err) == "string" then
+			self.error = errorx.new({
+				title = err,
+				actual = nil,
+				expected = err,
+			})
+		else
+			self.error = err
+			self.error.title = self.description
+			self.error.debuginfo = debug.getinfo(self.func, "SL")
+			self.error.traceback = debug.traceback()
+		end
+
 		self.status = Status.Failed
 	else
 		self.status = Status.Passed

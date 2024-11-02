@@ -11,27 +11,27 @@ local PathSep = fs.PathSep
 ---@field public data CoverageData
 ---@field public reporters CoverageReporter[]
 ---@field public scanner LineScanner
----@field private ctx Context
-local Coverage = {}
+---@field public ctx Context
+---@field public points {Low: number, Average: number, High: number}
+local Coverage = {
+	ctx = Context.global(),
+}
 Coverage.__index = Coverage
 
----@param ctx? Context
 ---@return Coverage
-function Coverage:new(ctx)
+function Coverage:new()
 	local t = {
 		data = {},
 		reporters = {},
 		scanner = LineScanner:new(),
-		ctx = ctx or Context.global(),
+		points = Coverage.ctx.config.Coverage.ThresholdPoints,
 	}
 
-	local threshold = t.ctx.config.Coverage
-
 	-- load coverage reporters
-	if t.ctx.config.Coverage.Enabled then
-		for _, name in ipairs(t.ctx.config.Coverage.Reporters) do
+	if Coverage.ctx.config.Coverage.Enabled then
+		for _, name in ipairs(Coverage.ctx.config.Coverage.Reporters) do
 			t.reporters[#t.reporters + 1] =
-				require("laura.reporters.coverage." .. name):new(t, threshold)
+				require("laura.reporters.coverage." .. name):new(t)
 		end
 	end
 
@@ -51,8 +51,9 @@ end
 function Coverage:createHookFunction(level)
 	return function(_, lineno, lvl)
 		lvl = lvl or level or 2
-		-- FIXME[2]
-		local source = debug.getinfo(lvl, "S").source
+		-- FIXME try to optimize
+		local info = debug.getinfo(lvl, "S")
+		local source = info.source
 
 		local path = string.match(source, "^@(.*)")
 		if path then
@@ -90,15 +91,15 @@ end
 ---@return boolean
 function Coverage:isFileIncluded(path)
 	-- skip mask for coverage
-	if not path:match(self.ctx.config.Coverage.IncludePattern) then
+	if not path:match(Coverage.ctx.config.Coverage.IncludePattern) then
 		return false
 	end
 
 	-- skip test pattern files and exec
 	local isLibTesting = os.getenv("LAURA_DEV_TEST")
-	local matchPattern = path:match("." .. self.ctx.config.FilePattern)
+	local matchPattern = path:match("." .. Coverage.ctx.config.TestPattern)
 	local matchExec =
-		path:match(string.format("^.*%s$", self.ctx.config._execName))
+		path:match(string.format("^.*%s$", Coverage.ctx.config._execName))
 	local includeFile = matchPattern == nil and matchExec == nil
 
 	-- skipping lib hits to print from testing outside the lib.
@@ -142,11 +143,8 @@ end
 function Coverage:getCoveredPercent(src)
 	local total = self:countTotalCoverableLines(src)
 	local covered = self:countCoveredLines(src)
-	if total == 0 then
-		return 0
-	end
 	if total == 0 and covered == 0 then
-		return 1
+		return 100
 	end
 	return ((covered / total) * 100)
 end

@@ -1,4 +1,3 @@
-local key = require("laura.key")
 local Labels = require("laura.Labels")
 
 ---@enum Config
@@ -14,7 +13,7 @@ local Config = {
 	Dir = ".",
 
 	-- Pattern for tests files.
-	FilePattern = "*_test.lua",
+	TestPattern = "*_test.lua",
 
 	-- Tabulation string, "\t" by default.
 	Tab = "\t",
@@ -31,27 +30,28 @@ local Config = {
 		"text",
 	},
 
+	-- Date/time format for the reports.
+	DateFormat = "%Y-%m-%d %H:%M:%S",
+
 	-- Print tests summary if reporter support it. true by default.
 	ReportSummary = true,
 
-	-- Use UTF-8 for strings comparison.
-	-- Compatibility note: Before lua 5.3 there is no UTF8 support.
-	-- Install extra module for UTF8 support https://github.com/starwing/luautf8
-	UTF8 = true,
-
 	-- Collect code coverage.
-	-- Not yet ready.
 	Coverage = {
 		Enabled = true,
 		Threshold = 50,
+		ThresholdPoints = {
+			Low = 50,
+			Average = 66.7,
+			High = 90,
+		},
 		ReportName = "covreport",
-		DateFormat = "%Y-%m-%dT%H:%M:%S",
 
 		-- Coverage reporters.
 		Reporters = {
 			-- "blank",
 			-- "csv",
-			-- "html",
+			"html",
 			-- "json",
 			-- "lua",
 			-- "xml",
@@ -71,7 +71,13 @@ local Config = {
 	-- Not recommened to change.
 	---------------------------------------------------------------------------
 	-- Application name. "Laura" is default.
-	_appKey = key,
+	_appKey = "Laura",
+
+	-- Unique key in global context in case of integration with other software.
+	_contextKey = "__LAURA_CONTEXT__",
+
+	-- Unique key in global context for root test suite/case.
+	_rootKey = "__LAURA_ROOT__",
 
 	-- Failure exit code, usually non-zero by *nix convention.
 	_Exit = {
@@ -84,9 +90,6 @@ local Config = {
 		-- Failure exit code, when coverage threshold is not met.
 		CoverageFailed = 3,
 	},
-
-	-- Unique key in global context in case of integration with other software.
-	_rootSuiteKey = "__LAURA_ROOT__",
 
 	-- Hooks names.
 	_beforeEachName = "beforeEach",

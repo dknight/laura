@@ -1,5 +1,8 @@
 # TODOs and FIXMEs
 
+Tests should pass with lua-5.1
+Replace "\n" with fs.EOL
+
 ## Tasks
 
 1. Write coverage tests

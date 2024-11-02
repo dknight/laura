@@ -4,7 +4,7 @@ local describe = laura.describe
 local expect = laura.expect
 local Stub = laura.Stub
 
-describe("stubs", function()
+describe("Stub", function()
 	it("should create stub", function()
 		local t = {
 			hello = "world",
@@ -19,11 +19,12 @@ describe("stubs", function()
 			return "external program `" .. prog .. "` is not permitted"
 		end
 		local stub = Stub:new(os, "execute", stubFn)
-		expect(os.execute("ls")).toEqual(
-			"external program `ls` is not permitted"
+		expect(os.execute("dir")).toEqual(
+			"external program `dir` is not permitted"
 		)
 		stub:restore()
-		local result = os.execute("ls")
-		expect(result).toBe(true)
+		local result = os.execute("dir")
+		-- COMPAT os.execute in Lua 5.1 returns the code (number)
+		expect(result).toBeTruthy()
 	end)
 end)

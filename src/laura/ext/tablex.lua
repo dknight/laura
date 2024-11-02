@@ -6,7 +6,9 @@ local Labels = require("laura.Labels")
 local Status = require("laura.Status")
 local Terminal = require("laura.Terminal")
 local Version = require("laura.Version")
+local fs = require("laura.util.fs")
 
+local EOL = fs.EOL
 local spairs = helpers.spairs
 local tab = helpers.tab
 
@@ -111,48 +113,57 @@ end
 ---@param key string | number Key to be printed.
 ---@param sign string Added, removed or unchanged sign.
 ---@param status Status Status of the difference.
+---@param isColor boolean? Indclude color sequences.
 ---@param i number Indentation level
-local function printValue(val, key, sign, status, i)
+local function printValue(val, key, sign, status, i, isColor)
 	i = i or 0
 	local out = {}
 
 	if type(val) == "table" then
-		out[#out + 1] = "\n" .. tab(i) .. sign .. "{\n"
+		out[#out + 1] = EOL .. tab(i) .. sign .. "{" .. EOL
 		i = i + 1
 		for k, v in pairs(val) do
 			out[#out + 1] = string.format(
-				"%s%s%s[%q] = %q,\n",
+				"%s%s%s[%q] = %q,%s",
 				tab(i - 1),
 				sign,
 				tab(1),
 				k,
-				v
+				v,
+				EOL
 			)
 		end
 		i = i - 1
 		out[#out + 1] = tab(i) .. sign .. "}"
 	else
-		out[#out + 1] = string.format("%q", val)
+		-- COMPAT why in Lua 5.1 so?
+		local q = Version[_VERSION] <= Version["Lua 5.1"] and "%s" or "%q"
+		out[#out + 1] = string.format(q, val)
 	end
 
-	return Terminal.setColor(status)
-		.. string.format(
-			"%s%s[%q] = %s\n",
-			tab(i),
-			sign,
-			key,
-			table.concat(out)
-		)
-		.. Terminal.reset()
+	local result = string.format(
+		"%s%s[%q] = %s%s",
+		tab(i),
+		sign,
+		key,
+		table.concat(out),
+		EOL
+	)
+	if isColor then
+		return Terminal.setColor(status) .. result .. Terminal.reset()
+	else
+		return result
+	end
 end
 
 ---@param t table Table to print
 ---@param d table Table with difference
 ---@param i number Start indentation level
+---@param isColor boolean? Include color sequences
 ---@return string
-local function diffToString(t, d, i)
+local function diffToString(t, d, i, isColor)
 	i = i or 0
-	local out = { tab(i), "{\n" }
+	local out = { tab(i), "{" .. EOL }
 	i = i + 1
 
 	local patched = patch(t, d)
@@ -162,63 +173,74 @@ local function diffToString(t, d, i)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out[#out + 1] =
-				printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i)
+			out[#out + 1] = printValue(
+				t[k],
+				k,
+				Labels.AddedSymbol,
+				Status.Failed,
+				i,
+				isColor
+			)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
-			out[#out + 1] =
-				printValue(d.mod[k], k, Labels.RemovedSymbol, Status.Passed, i)
+			out[#out + 1] = printValue(
+				d.mod[k],
+				k,
+				Labels.RemovedSymbol,
+				Status.Passed,
+				i,
+				isColor
+			)
 
 			if t[k] ~= nil then
-				out[#out + 1] =
-					printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i)
+				out[#out + 1] = printValue(
+					t[k],
+					k,
+					Labels.AddedSymbol,
+					Status.Failed,
+					i,
+					isColor
+				)
 			end
 			isKeyChanged = true
 		end
 
 		-- Sub-tables
 		if d.sub ~= nil and d.sub[k] ~= nil then
-			out[#out + 1] = string.format("%s[%q] = \n", tab(i), k)
+			out[#out + 1] = string.format("%s[%q] = %s", tab(i), k, EOL)
 			out[#out + 1] = diffToString(t[k], d.sub[k], i)
 			isKeyChanged = true
 		end
 
 		-- Not changed
 		if not isKeyChanged then
-			out[#out + 1] =
-				printValue(t[k], k, Labels.UnchangedSymbol, Status.Unchanged, i)
+			out[#out + 1] = printValue(
+				t[k],
+				k,
+				Labels.UnchangedSymbol,
+				Status.Unchanged,
+				i,
+				isColor
+			)
 		end
 	end
 	i = i - 1
 	out[#out + 1] = tab(i)
-	out[#out + 1] = "}\n"
+	out[#out + 1] = "}" .. EOL
 	return table.concat(out)
 end
 
----@param t table
----@oaram function(v: any, index?: number): boolean
----@return table
-local function filter(t, predicate)
-	local newt = {}
-	local i = 0
-	for _, v in pairs(t) do
-		i = i + 1
-		if predicate(v, i) then
-			newt[#newt + 1] = v
-		end
-	end
-	return newt
-end
-
+---Prints table values, and keys if second parameters is true,
+---inline as string.
 ---@param t table
 ---@param keys? boolean
 ---@return string
 local function inline(t, keys)
 	local out = {}
-	for i = 1, #t do
+	for i in spairs(t) do
 		local fmt = "%s%s"
 		if type(t[i]) == "string" then
 			fmt = '%s"%s"'
@@ -231,33 +253,10 @@ local function inline(t, keys)
 	return "{ " .. table.concat(out, ", ") .. " }"
 end
 
----Very simple table dump
----@param t table | string
----@return string
-local function dumbDump(t)
-	if type(t) == "table" then
-		local s = "{\n"
-		for k, v in pairs(t) do
-			if type(k) == "string" then
-				k = '"' .. k .. '"'
-			end
-			if type(v) == "string" then
-				v = string.format("%q", v)
-			end
-			s = s .. "[" .. k .. "] = " .. dumbDump(v) .. ","
-		end
-		return s .. "}\n"
-	else
-		return tostring(t)
-	end
-end
-
 return {
 	diff = diff,
 	diffToString = diffToString,
-	dump = dumbDump,
 	equal = equal,
-	filter = filter,
 	inline = inline,
 	patch = patch,
 }

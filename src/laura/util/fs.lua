@@ -4,8 +4,9 @@ local osx = require("laura.ext.osx")
 local stringx = require("laura.ext.stringx")
 
 local ctx = Context.global()
-
 local isWindows = osx.isWindows
+local PathSep = isWindows() and "\\" or "/"
+local EOL = isWindows() and "\r\n" or "\n"
 
 ---@param directory string
 ---@return {[number]: string}
@@ -18,7 +19,7 @@ local scandir = function(directory)
 	end
 	local t = {}
 	local fd =
-		assert(io.popen((cmd):format(directory, ctx.config.FilePattern), "r"))
+		assert(io.popen((cmd):format(directory, ctx.config.TestPattern), "r"))
 	local list = fd:read("*a")
 	fd:close()
 
@@ -43,9 +44,9 @@ local function getFiles(pattern)
 	return files, i
 end
 
----Checks that file or exists.
+---Checks that file or directory exists.
 ---@param file string
----@return boolean, string?
+---@return boolean, (string|nil)?
 local function exists(file)
 	local ok, err, code = os.rename(file, file)
 	if not ok then
@@ -53,22 +54,27 @@ local function exists(file)
 			return true, nil
 		end
 	end
-	return ok, err
+	return not not ok, err
 end
 
 ---Check if a directory exists in this path
 ---@Param path string
 ---@return boolean
 local function isdir(path)
-	return exists(path .. "/")
+	return exists(path .. PathSep)
 end
 
 ---Read config from the path.
 ---@param path string
+---@return boolean
 local function mergeFromConfigFile(path)
 	local chunk, err = loadfile(path, "t")
+	if not exists(path) then
+		return false
+	end
 	if chunk ~= nil then
-		for k, v in pairs(chunk()) do
+		local res = chunk() or {}
+		for k, v in pairs(res) do
 			if ctx.config[k] ~= nil then
 				ctx.config[k] = v
 			end
@@ -76,6 +82,7 @@ local function mergeFromConfigFile(path)
 	else
 		error(Labels.ErrorConfigRead .. "\n" .. err)
 	end
+	return true
 end
 
 ---@param path string
@@ -101,19 +108,7 @@ end
 -- return os.execute(cmd)
 -- end
 
-local PathSep = isWindows() and "\\" or "/"
-
-local EOL = isWindows() and "\r\n" or "\n"
-
----@param path string
----@return string
-local function basename(path)
-	local t = stringx.split(path, PathSep)
-	return t[#t]
-end
-
 return {
-	basename = basename,
 	EOL = EOL,
 	exists = exists,
 	getFiles = getFiles,

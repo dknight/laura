@@ -16,7 +16,7 @@ function Suite:prepare()
 			actual = type(self.func),
 			expected = "function",
 		})
-		errorx.print(self.error)
+		errorx.print(self.error, self._ctx.config.Color)
 		return
 	end
 
@@ -41,7 +41,7 @@ function Suite:prepare()
 			actual = type(self.func),
 			expected = "function",
 		})
-		errorx.print(self.error)
+		errorx.print(self.error, self._ctx.config.Color)
 		return
 	end
 	self._ctx.level = self._ctx.level - 1

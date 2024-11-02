@@ -1,11 +1,29 @@
 local laura = require("laura")
 local describe = laura.describe
 local expect = laura.expect
-local it = laura.it
+local Hook = laura.Hook
 local hooks = laura.hooks
+local it = laura.it
 local Spy = laura.Spy
+local Stub = laura.Stub
 
-describe("before", function()
+describe("Hook", function()
+	it("should import Hook as standalone module", function()
+		expect(function()
+			require(table.concat({ "src", "laura", "Hook" }, "."))
+		end).notToFail()
+	end)
+
+	it("should fail if not current context", function()
+		local stub = Stub:new(Hook, "ctx", {
+			current = nil,
+		})
+		expect(Hook:new("beforeAll", "atype")).toFail()
+		stub:restore()
+	end)
+end)
+
+describe("before hooks", function()
 	local beforeAllSpy = Spy:new()
 	local beforeEachSpy = Spy:new()
 

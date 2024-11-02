@@ -34,11 +34,6 @@ describe("strings", function()
 		it("should have length 11", function()
 			expect("hello world").toHaveLength(11)
 		end)
-
-		--- FIXME mock utf8
-		-- it("should have length 6 (utf8)", function()
-		-- expect("Привет").toHaveLength(6)
-		-- end)
 	end)
 
 	describe("toContain", function()

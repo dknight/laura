@@ -1,4 +1,4 @@
-local laura = require("laura")
+local laura = require("src.laura")
 local describe = laura.describe
 local expect = laura.expect
 local it = laura.it

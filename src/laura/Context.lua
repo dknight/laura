@@ -10,7 +10,7 @@
 local Context = {}
 
 ---@return Context
-function Context.new()
+Context.new = function()
 	return {
 		children = {},
 		config = {},
@@ -26,9 +26,8 @@ end
 ---Returns the app contenxt. If context non-exists in global scope _G, then
 ---creates a new context in _G.
 ---@return Context
-function Context.global()
+Context.global = function()
 	local key = "__LAURA_CONTEXT__"
-
 	_G[key] = _G[key] or Context.new()
 	return _G[key]
 end

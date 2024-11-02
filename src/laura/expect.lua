@@ -35,14 +35,14 @@ end
 local function expect(actual)
 	local ms = {}
 	for key, matcher in pairs(matchers) do
-		local t2 = createResult(actual)
-		t2.isNot = key:sub(1, 3) == ctx.config._negationPrefix
-		t2.error = errorx.new({
+		local t = createResult(actual)
+		t.isNot = key:sub(1, 3) == ctx.config._negationPrefix
+		t.error = errorx.new({
 			actual = actual,
 			expected = actual,
 			expectedOperator = ctx.config._negationPrefix .. " ",
 		})
-		ms[key] = bind(matcher, t2)
+		ms[key] = bind(matcher, t)
 	end
 
 	local t = createResult(actual)

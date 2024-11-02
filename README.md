@@ -199,11 +199,7 @@ Read the complete documentation on the [external website](https://www.whoop.ee/p
 
 ## Known issues
 
-**Code coverage** is yet to be finalized. It might have a minor inaccuracies.
-
-## Compatibility Notes
-
-No UTF-8 support in Lua before 5.3; to add support for UTF8, please install [an extra UTF-8 module](https://github.com/starwing/luautf8), if you are going to compare UTF-8 strings.
+**Code coverage** is yet to be finalized. It might have the inaccuracies.
 
 ## Credits
 

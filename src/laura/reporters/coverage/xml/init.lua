@@ -14,16 +14,13 @@ local EOL = fs.EOL
 
 ---@class CoverageXMLReporter : CoverageReporter
 ---@field private coverage Coverage
----@field private threshold number
 local CoverageXMLReporter = {}
 
 ---@param coverage CoverageData
----@param threshold number
 ---@return CoverageTerminalReporter
-function CoverageXMLReporter:new(coverage, threshold)
+function CoverageXMLReporter:new(coverage)
 	local t = {
 		coverage = coverage,
-		threshold = threshold,
 	}
 	setmetatable(t, { __index = self })
 	setmetatable(self, { __index = CoverageReporter })

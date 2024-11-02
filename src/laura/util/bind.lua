@@ -1,4 +1,5 @@
----Binds a value to the function, analogue function in JS .bind().
+---This is no actual bind funcion, maybe not the best wau to do,
+---but I am lazy to refactor.
 ---@param func function
 ---@param ... any
 ---@return function

@@ -8,16 +8,13 @@ local spairs = helpers.spairs
 
 ---@class CoverageTerminalReporter : CoverageReporter
 ---@field private coverage Coverage
----@field private threshold number
 local CoverageTerminalReporter = {}
 
 ---@param coverage CoverageData
----@param threshold number
 ---@return CoverageTerminalReporter
-function CoverageTerminalReporter:new(coverage, threshold)
+function CoverageTerminalReporter:new(coverage)
 	local t = {
 		coverage = coverage,
-		threshold = threshold,
 	}
 	setmetatable(t, { __index = self })
 	setmetatable(self, { __index = CoverageReporter })
@@ -35,9 +32,12 @@ function CoverageTerminalReporter:report()
 	for src in spairs(data) do
 		local pct = self.coverage:getCoveredPercent(src)
 		local color = Terminal.setColor(Status.Failed)
-		if pct >= 90 then
+		if pct >= self.coverage.points.High then
 			color = Terminal.setColor(Status.Passed)
-		elseif pct >= 75 and pct < 90 then
+		elseif
+			pct >= self.coverage.points.Average
+			and pct < self.coverage.points.High
+		then
 			color = Terminal.setColor(Status.Warning)
 		end
 		if Terminal.isColorSupported() then

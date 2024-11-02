@@ -1,7 +1,6 @@
 local CoverageReporter = require("laura.reporters.coverage.CoverageReporter")
 local Context = require("laura.Context")
 local fs = require("laura.util.fs")
-local helpers = require("laura.util.helpers")
 local Labels = require("laura.Labels")
 local tablex = require("laura.ext.tablex")
 
@@ -9,22 +8,17 @@ local ctx = Context.global()
 local config = ctx.config
 
 local concat = table.concat
-local spairs = helpers.spairs
 local PathSep = fs.PathSep
-local EOL = fs.EOL
 
 ---@class CoverageLuaReporter : CoverageReporter
 ---@field private coverage Coverage
----@field private threshold number
 local CoverageLuaReporter = {}
 
 ---@param coverage CoverageData
----@param threshold number
----@return CoverageTerminalReporter
-function CoverageLuaReporter:new(coverage, threshold)
+---@return CoverageLuaReporter
+function CoverageLuaReporter:new(coverage)
 	local t = {
 		coverage = coverage,
-		threshold = threshold,
 	}
 	setmetatable(t, { __index = self })
 	setmetatable(self, { __index = CoverageReporter })

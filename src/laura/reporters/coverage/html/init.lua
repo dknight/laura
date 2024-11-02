@@ -14,32 +14,33 @@ local EOL = fs.EOL
 
 ---@class CoverageHTMLReporter : CoverageReporter
 ---@field private coverage Coverage
----@field private threshold number
-local CoverageHTMLReporter = {
-	---@param pct number
-	---@return string
-	resolveCSSClass = function(pct)
-		local c = "not-covered"
-		if pct >= 90 then
-			c = "covered"
-		elseif pct >= 75 and pct < 90 then
-			c = "partially-covered"
-		end
-		return c
-	end,
-}
+local CoverageHTMLReporter = {}
 
 ---@param coverage CoverageData
----@param threshold number
----@return CoverageTerminalReporter
-function CoverageHTMLReporter:new(coverage, threshold)
+---@return CoverageHTMLReporter
+function CoverageHTMLReporter:new(coverage)
 	local t = {
 		coverage = coverage,
-		threshold = threshold,
 	}
 	setmetatable(t, { __index = self })
 	setmetatable(self, { __index = CoverageReporter })
 	return t
+end
+
+---@private
+---@param pct number
+---@return string
+function CoverageHTMLReporter:resolveCSSClass(pct)
+	local c = "not-covered"
+	if pct >= self.coverage.points.High then
+		c = "covered"
+	elseif
+		pct >= self.coverage.points.Average
+		and pct < self.coverage.points.High
+	then
+		c = "partially-covered"
+	end
+	return c
 end
 
 ---Reports coverage in the html file.
@@ -70,15 +71,15 @@ function CoverageHTMLReporter:report()
 	local rows = {}
 	for src in spairs(data) do
 		local pct = self.coverage:getCoveredPercent(src)
-		rows[#rows + 1] = self:buildRow(src, pct, self.resolveCSSClass(pct))
+		rows[#rows + 1] = self:buildRow(src, pct, self:resolveCSSClass(pct))
 	end
 
 	local avgPct = self.coverage:calculateTotalAveragePercent()
 	contents = string.gsub(contents, "%$(%u+)%$", {
 		CONTENT = concat(rows, EOL),
-		DATE = os.date(config.Coverage.DateFormat),
+		DATE = os.date(config.DateFormat),
 		AVG = string.format("%.1f&#37;", avgPct),
-		AVGSTATUS = self.resolveCSSClass(avgPct),
+		AVGSTATUS = self:resolveCSSClass(avgPct),
 	})
 	fp:write(contents)
 	fp:close()
@@ -116,12 +117,11 @@ function CoverageHTMLReporter:buildRow(source, percent, status)
 			[">"] = "&gt;",
 		})
 		html[#html + 1] = string.format(
-			'<li class="%s">\z
-				<code>\z
-					<span>%s</span>\z
-					<span class="hits">&times;%d</span>\z
-				</code>\z
-			</li>',
+			[[<li class="%s"><code>
+					<span>%s</span>
+					<span class="hits">&times;%d</span>
+				</code>
+			</li>]],
 			cssClass,
 			record.code,
 			record.hits

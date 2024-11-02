@@ -20,6 +20,7 @@
         --color-error: 238, 47, 74;
         --color-warning: 219, 165, 22;
         --color-alpha: 0.025;
+        scroll-behavior: smooth;
       }
 
 
@@ -114,10 +115,12 @@
         color: rgb(var(--color-accent));
       }
 
+      a:hover {
+        filter: brightness(1.5);
+      }
+
       .listing {
         font-family: 'Courier New', Courier, monospace;
-        white-space: pre;
-        tab-size: 2;
 
         li {
           code {
@@ -125,6 +128,8 @@
             justify-content: space-between;
             font-size: 1rem;
             margin: 0.125rem 0;
+            white-space: pre;
+            tab-size: 4;
 
             span:empty::before {
               content: ' ';
@@ -148,11 +153,63 @@
         }
       }
 
+      .toggle-all {
+        color: rgb(var(--color-accent));
+        display: flex;
+        justify-content: flex-end;
+        margin: 1rem 0;
+        cursor: pointer;
+
+        span {
+          display: inline-block;
+          text-decoration: underline dashed;
+
+          &:hover {
+            filter: brightness(1.5);
+          }
+        }
+
+        input {
+          border: 0;
+          clip: rect(0 0 0 0);
+          height: auto;
+          margin: 0;
+          overflow: hidden;
+          padding: 0;
+          position: absolute;
+          white-space: nowrap;
+          width: 1px;
+        }
+      }
+
       footer {
         margin: 1rem;
         text-align: center;
       }
     </style>
+    <script type="module">
+      const toggler = document.getElementById('toggle-button');
+      const label = document.getElementById('toggle-label');
+      const details = document.querySelectorAll("details");
+      const summaries = document.querySelectorAll("summary");
+      toggler.addEventListener('change', (e) => {
+        details.forEach((elem) => (elem.open = (toggler.checked)));
+        label.textContent = toggler.checked
+          ? 'Collapse all'
+          : 'Expand all';
+      });
+      // summaries.forEach((elem) => {
+      //   elem.addEventListener('click', (e) => {
+      //     window.location.hash = elem.parentElement.id;
+      //     e.preventDefault()
+      //   });
+      // });
+
+      const initialElem = document.querySelector(window.location.hash);
+      if (initialElem) {
+        initialElem.open = true;
+      }
+    </script>
   </head>
   <body>
     <header>
@@ -166,6 +223,10 @@
       </div>
     </header>
     <main>
+      <label class="toggle-all">
+        <input type="checkbox" id="toggle-button">
+        <span id="toggle-label">Expand all</span>
+      </label>
       $CONTENT$
     </main>
     <footer>

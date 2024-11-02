@@ -65,7 +65,7 @@ function Reporter:reportPerformance(dt)
 			"\n" .. Labels.Performance .. "\n",
 			formatedTime,
 			formattedMemory,
-			os.date()
+			os.date(ctx.config.DateFormat)
 		)
 	)
 end
@@ -83,7 +83,7 @@ function Reporter:reportErrors()
 
 	for i in ipairs(self.failing) do
 		io.write(string.format("%d. ", i))
-		errorx.print(self.failing[i].error)
+		errorx.printError(self.failing[i].error, ctx.config.Color)
 	end
 end
 

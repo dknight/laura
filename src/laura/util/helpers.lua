@@ -23,9 +23,7 @@ local function spairs(t, sortFunc)
 	end
 
 	if type(sortFunc) == "function" then
-		table.sort(keys, function(a, b)
-			return sortFunc(t, a, b)
-		end)
+		table.sort(keys, sortFunc)
 	else
 		table.sort(keys)
 	end
@@ -61,6 +59,7 @@ local function usage()
 		"\t"
 			.. "--color\tForce to use colors, if system supports colored terminal.",
 		"\t" .. "--no-color\tForce to disable colors.",
+		"\t" .. "-s,--summary\tForce to print report summary.",
 		"\t" .. "-S,--no-summary\tDo not report summary.",
 		"\t" .. "--coverage\tForce to enable code coverage report.",
 		"\t" .. "--no-coverage\tForce to disable code coverage report.",
@@ -82,23 +81,27 @@ local function hasFlag(...)
 	return false
 end
 
-local function processFlags()
+---@retrn number exit code, if exit code is negative, do not quit programm.
+local function processFlags(flags)
 	-- Very dirty and primitive arguments parsing.
-	for i in ipairs(arg) do
-		if hasFlag("-h", "-?", "--help") then
+	for i in ipairs(flags) do
+		if hasFlag(flags, "-h", "-?", "--help") then
 			usage()
-			os.exit(ctx.config._Exit.OK)
+			return ctx.config._Exit.OK
 		end
 
 		if hasFlag("-v", "--version") then
 			print(string.format("%s v%s", ctx.config._appKey, version()))
-			os.exit(ctx.config._Exit.OK)
+			return ctx.config._Exit.OK
 		end
 
 		if hasFlag("-c", "--config") then
-			local path = arg[i + 1]
+			local path = flags[i + 1]
 			if path == nil then
-				error(Labels.ErrorConfigFilePath)
+				if type(warn) == "function" then
+					warn(Labels.ErrorConfigFilePath)
+				end
+				return ctx.config._Exit.Failed
 			end
 			fs.mergeFromConfigFile(path)
 		end
@@ -111,9 +114,11 @@ local function processFlags()
 		end
 
 		if hasFlag("-r", "--reporters") then
-			local reportersStr = arg[i + 1]
+			local reportersStr = flags[i + 1]
 			if reportersStr == nil then
-				warn(Labels.WarningNoReporters)
+				if type(warn) == "function" then
+					warn(Labels.WarningNoReporters)
+				end
 				ctx.config.Reporters = {}
 			else
 				local rs = stringx.split(reportersStr, ",;")
@@ -126,6 +131,9 @@ local function processFlags()
 		if hasFlag("-S", "--no-summary") then
 			ctx.config.ReportSummary = false
 		end
+		if hasFlag("-s", "--summary") then
+			ctx.config.ReportSummary = true
+		end
 		if hasFlag("--coverage") then
 			ctx.config.Coverage.Enabled = true
 		end
@@ -133,6 +141,7 @@ local function processFlags()
 			ctx.config.Coverage.Enabled = false
 		end
 	end
+	return -1
 end
 
 ---Reads and merges configuration from .laurarc file.
@@ -142,7 +151,9 @@ local function mergeFromRCFile()
 	if chunk ~= nil then
 		chunk()
 	else
-		error(err)
+		if type(warn) == "function" then
+			warn(tostring(err) .. "; using defaults")
+		end
 	end
 end
 

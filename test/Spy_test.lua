@@ -5,7 +5,7 @@ local it = laura.it
 local hooks = laura.hooks
 local Spy = laura.Spy
 
-describe("spies", function()
+describe("Spy", function()
 	local spy
 	local retSpy
 	hooks.beforeEach(function()

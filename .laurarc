@@ -9,7 +9,7 @@
 -- Dir = "."
 
 -- Pattern for tests files.
--- FilePattern = "*_test.lua"
+-- TestPattern = "*_test.lua"
 
 -- Tabulation string, "\t" by default.
 -- Tab = "\t"
@@ -29,29 +29,30 @@
 -- Print tests summary if reporter support it. true by default.
 -- ReportSummary = true
 
--- Use UTF-8 for strings comparison.
--- Compatibility note: Before lua 5.3 there is no UTF8 support.
--- Install extra module for UTF8 support https://github.com/starwing/luautf8
--- UTF8 = true
+-- Date/time format for the reports.
+-- DateFormat = "%Y-%m-%d %H:%M:%S",
 
 -- Collect code coverage.
--- Not yet ready.
 -- Coverage = {
--- Enabled = true,
--- Threshold = 50,
--- ReportName = "covreport",
--- DateFormat = "%Y-%m-%d %H:%M:%S",
--- Dir = "coverage",
--- IncludePattern = ".*%.lua",
+--  Enabled = true,
+--  Threshold = 50,
+--  ThresholdPoints = {
+--    Low = 50,
+--    Average = 66.7,
+--    High = 90,
+--  },
+--  ReportName = "covreport",
+--  Dir = "coverage",
+--  IncludePattern = ".*%.lua",
 --
--- Coverage reporters.
--- Reporters = {
--- "blank",
--- "csv",
--- "html",
--- "json",
--- "lua",
--- "terminal",
--- "xml",
--- },
+--  Coverage reporters.
+--  Reporters = {
+--    "blank",
+--    "csv",
+--    "html",
+--    "json",
+--    "lua",
+--    "terminal",
+--    "xml",
+--  },
 -- }

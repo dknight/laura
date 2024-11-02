@@ -1,3 +1,4 @@
+-- coverage: disable
 local Context = require("laura.Context")
 local Coverage = require("laura.Coverage")
 local helpers = require("laura.util.helpers")
@@ -51,6 +52,7 @@ setup({})
 return {
 	Config = require("laura.Config"),
 	Context = require("laura.Context"),
+	Coverage = require("laura.Coverage"),
 	describe = require("laura.Suite"),
 	expect = require("laura.expect"),
 	Hook = require("laura.Hook"),
@@ -70,3 +72,4 @@ return {
 	test = require("laura.Test"), -- alias
 	Version = require("laura.Version"),
 }
+-- coverage: enable

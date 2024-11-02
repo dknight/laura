@@ -111,12 +111,12 @@ end
 -- ---------------------------------------------------------------------------
 
 ---Checks length of a table or string. It uses # operator, so beware if table
----is not a sequence. For UTF-8 comparison sring, check for config UTF8 flag.
+---is not a sequence.
 ---@type Assertion
 local function toHaveLength(t, expected)
 	return compare(t, expected, function(a, b)
 		local isString = type(a) == "string"
-		local len = isString and stringx.len(a, ctx.config.UTF8) or #a
+		local len = isString and stringx.len(a) or #a
 		return len == expected,
 			errorx.new({
 				actual = len,

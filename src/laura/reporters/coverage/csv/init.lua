@@ -13,16 +13,13 @@ local PathSep = fs.PathSep
 
 ---@class CoverageCSVReporter : CoverageReporter
 ---@field private coverage Coverage
----@field private threshold number
 local CoverageCSVReporter = {}
 
 ---@param coverage CoverageData
----@param threshold number
----@return CoverageTerminalReporter
-function CoverageCSVReporter:new(coverage, threshold)
+---@return CoverageCSVReporter
+function CoverageCSVReporter:new(coverage)
 	local t = {
 		coverage = coverage,
-		threshold = threshold,
 	}
 	setmetatable(t, { __index = self })
 	setmetatable(self, { __index = CoverageReporter })
