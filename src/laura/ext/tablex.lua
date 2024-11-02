@@ -253,10 +253,32 @@ local function inline(t, keys)
 	return "{ " .. table.concat(out, ", ") .. " }"
 end
 
+---Very simple table dump
+---@param t table | string
+---@return string
+local function dump(t)
+	if type(t) == "table" then
+		local s = "{\n"
+		for k, v in pairs(t) do
+			if type(k) == "string" then
+				k = '"' .. k .. '"'
+			end
+			if type(v) == "string" then
+				v = string.format("%q", v)
+			end
+			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+		end
+		return s .. "}\n"
+	else
+		return tostring(t)
+	end
+end
+
 return {
 	diff = diff,
 	diffToString = diffToString,
 	equal = equal,
 	inline = inline,
 	patch = patch,
+	dump = dump,
 }

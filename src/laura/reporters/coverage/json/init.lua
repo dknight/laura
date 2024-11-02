@@ -81,6 +81,7 @@ function CoverageJSONReporter:buildRow(source, percent)
 	json[#json + 1] = "\t\t{"
 	json[#json + 1] = '\t\t\t"source": "' .. source .. '",'
 	json[#json + 1] = '\t\t\t"coverage": ' .. percent .. ","
+	json[#json + 1] = '\t\t\t"version": ' .. _VERSION .. ","
 	json[#json + 1] = '\t\t\t"lines": ['
 
 	local lines = {}

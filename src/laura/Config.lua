@@ -49,12 +49,12 @@ local Config = {
 
 		-- Coverage reporters.
 		Reporters = {
-			-- "blank",
-			-- "csv",
+			"blank",
+			"csv",
 			"html",
-			-- "json",
-			-- "lua",
-			-- "xml",
+			"json",
+			"lua",
+			"xml",
 			"terminal",
 		},
 

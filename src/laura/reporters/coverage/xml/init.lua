@@ -53,6 +53,7 @@ function CoverageXMLReporter:report()
 		.. "</date>"
 	xml[#xml + 1] = "\t\t<average>" .. avgPct .. "</average>"
 	xml[#xml + 1] = "\t\t<software>Laura</software>"
+	xml[#xml + 1] = "\t\t<version>" .. _VERSION .. "</version>"
 	xml[#xml + 1] = "\t</info>"
 	xml[#xml + 1] = "\t<files>"
 	for src in spairs(data) do

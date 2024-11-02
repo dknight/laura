@@ -81,6 +81,7 @@ function CoverageHTMLReporter:report()
 		DATE = os.date(config.DateFormat),
 		AVG = string.format("%.1f&#37;", avgPct),
 		AVGSTATUS = self:resolveCSSClass(avgPct),
+		VERSION = _VERSION,
 	})
 	fp:write(contents)
 	fp:close()
