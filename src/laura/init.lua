@@ -59,6 +59,7 @@ return {
 	hooks = require("laura.hooks"),
 	it = require("laura.Test"),
 	Labels = require("laura.Labels"),
+	Reporter = require("laura.Reporter"),
 	Runnable = require("laura.Runnable"),
 	Runner = require("laura.Runner"),
 	setup = setup,

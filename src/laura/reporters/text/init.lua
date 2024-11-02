@@ -1,5 +1,5 @@
 local helpers = require("laura.util.helpers")
-local Reporter = require("laura.reporters.Reporter")
+local Reporter = require("laura.Reporter")
 local Terminal = require("laura.Terminal")
 local time = require("laura.util.time")
 

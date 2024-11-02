@@ -18,7 +18,7 @@ end
 
 local fs = require("laura.util.fs")
 local helpers = require("laura.util.helpers")
-local Reporter = require("laura.reporters.Reporter")
+local Reporter = require("laura.Reporter")
 
 local ctx = Context.global()
 local coverage = ctx.coverage

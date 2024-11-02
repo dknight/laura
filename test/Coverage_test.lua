@@ -40,16 +40,10 @@ describe("Coverage", function()
 
 	describe("createHookFunction", function()
 		it("should create a hook function", function()
-			local stub = Stub:new(debug, "getinfo", function()
-				return {
-					source = "@./src/laura/Coverage.lua",
-					src_short = "/src/laura/Coverage.lua",
-				}
-			end)
 			local cov = Coverage:new()
 			local hook = cov:createHookFunction(2)
+			hook("line", 1, 1)
 			expect(hook).toHaveTypeOf("function")
-			stub:restore()
 		end)
 	end)
 

@@ -1,4 +1,4 @@
-local Reporter = require("laura.reporters.Reporter")
+local Reporter = require("laura.Reporter")
 
 ---@class BlankReporter : Reporter
 local BlankReporter = {}

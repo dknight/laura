@@ -1,5 +1,5 @@
 local Labels = require("laura.Labels")
-local Reporter = require("laura.reporters.Reporter")
+local Reporter = require("laura.Reporter")
 local Status = require("laura.Status")
 local Terminal = require("laura.Terminal")
 

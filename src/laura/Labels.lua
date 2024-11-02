@@ -18,6 +18,7 @@ local Labels = {
 	ErrorCannotRemoveDir = "cannot remove directory %s",
 	ErrorCannotReadFile = "cannot read file %s",
 	ErrorCannotWriteFile = "cannot write to file %s",
+	ErrorUnknown = "unknown error",
 	FailedTests = "FAILED TESTS",
 	NoTests = "no tests found",
 	NumberOfCalls = "number of calls: ",

@@ -1,4 +1,4 @@
-local Reporter = require("laura.reporters.Reporter")
+local Reporter = require("laura.Reporter")
 local Terminal = require("laura.Terminal")
 local Status = require("laura.Status")
 
