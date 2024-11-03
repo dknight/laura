@@ -3,9 +3,18 @@ local Stub = laura.Stub
 local describe = laura.describe
 local expect = laura.expect
 local it = laura.it
+local hooks = laura.hooks
 local helpers = require("laura.util.helpers")
 
 describe("helpers module", function()
+	local ioStub
+	hooks.beforeEach(function()
+		ioStub = Stub:new(io, "write", function() end)
+	end)
+	hooks.afterEach(function()
+		ioStub:restore()
+	end)
+
 	it("should import memory as standalone module", function()
 		expect(function()
 			require(table.concat({ "src", "laura", "util", "helpers" }, "."))

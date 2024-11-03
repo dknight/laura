@@ -46,25 +46,24 @@ end
 
 ---Prints usage in terminal.
 local function usage()
-	print(table.concat({
+	io.write(table.concat({
 		string.format("Laura %s", version()),
 		"Usage: laura [-chvrS?] <directory-with-tests>",
-		"\t" .. "-c,--config\tPath to config file.",
-		"\t" .. "-r,--reporters\tComma-separated reporters:",
-		"\t\t" .. "- text : Reports as text in the terminal (default).",
-		"\t\t" .. "- dots : Prints a dot for every test (very compact)",
-		"\t\t" .. "- blank : Do not report any test information.",
-		"\t\t" .. "- count : Prints tests counters.",
+		"\t-c,--config\tPath to config file.",
+		"\t-r,--reporters\tComma-separated reporters:",
+		"\t\t- text: Reports as text in the terminal (default).",
+		"\t\t- dots: Prints a dot for every test (very compact)",
+		"\t\t- blank: Do not report any test information.",
+		"\t\t- count: Prints tests counters.",
+		"\t--color\tForce to use colors, if system supports colored terminal.",
+		"\t--no-color\tForce to disable colors.",
+		"\t-s,--summary\tForce to print report summary.",
+		"\t-S,--no-summary\tDo not report summary.",
+		"\t--coverage\tForce to enable code coverage report.",
+		"\t--no-coverage\tForce to disable code coverage report.",
+		"\t--version\tPrint program name and it's version.",
+		"\t-h,-?,--help\tPrint this help message.",
 		"",
-		"\t"
-			.. "--color\tForce to use colors, if system supports colored terminal.",
-		"\t" .. "--no-color\tForce to disable colors.",
-		"\t" .. "-s,--summary\tForce to print report summary.",
-		"\t" .. "-S,--no-summary\tDo not report summary.",
-		"\t" .. "--coverage\tForce to enable code coverage report.",
-		"\t" .. "--no-coverage\tForce to disable code coverage report.",
-		"\t" .. "-v,--version\tPrint program name and it's version.",
-		"\t" .. "-h,-?,--help\tPrint this help message.",
 	}, EOL))
 end
 
