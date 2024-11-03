@@ -36,4 +36,4 @@ jobs:
         run: luarocks install luacheck
 
       - name: lint
-        run: make lint
+        run: luacheck .
