@@ -8,6 +8,10 @@ FOUND_EXECS := $(foreach exec,$(SUPPORTED_VERSIONS),\
 # Get first found exec and use it.
 LUA := $(firstword $(FOUND_EXECS))
 LUA := $(if $(LUA),$(LUA),$(error 'No Lua executable found. Please install any of the following Lua versions: $(SUPPORTED_VERSIONS)'))
+# LUA := "lua-5.1"
+# LUA := "lua-5.2"
+# LUA := "lua-5.3"
+# LUA := "luajit"
 
 # Get lua version.
 LUA_VERSION != $(LUA) -e 'io.write(_VERSION:match("%d+%.%d+"))'
