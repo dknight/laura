@@ -17,6 +17,7 @@ sed -i -e "s/\"main\"/\"$VERSION\"/g" "$specfile"
 sed -i -e "s/\"dev-0\"/\"$VERSION\"/g" "$specfile"
 
 printf "return \"%s\"" "$VERSION" > "$VERSION_FILE"
+cp "$specfile" rockspec
 git add "$VERSION_FILE" "rockspec/$specfile"
 git ci -m "release: $VERSION_FILE"
 
@@ -32,7 +33,6 @@ luarocks pack "$specfile"
 echo "Uploading rock..."
 luarocks upload "$specfile" --api-key="$API_KEY"
 
-rm -f "$rockfile"
-mv "$specfile" rockspec
+rm -f "$rockfile" "$specfile"
 
 echo "Deployed $VERSION"
