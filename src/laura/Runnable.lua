@@ -224,7 +224,14 @@ end
 
 ---@param typ HookType
 function Runnable:runHooks(typ)
-	for _, hook in ipairs(self.hooks[typ]) do
+	-- Maybe use grandparents, etc, go up to tree.
+	local hooks = {}
+	if #self.hooks[typ] > 0 then
+		hooks = self.hooks[typ]
+	elseif self.parent ~= nil and #self.parent.hooks[typ] > 0 then
+		hooks = self.parent.hooks[typ]
+	end
+	for _, hook in ipairs(hooks) do
 		local ok, err = pcall(hook.func)
 		if not ok then
 			self.error = {

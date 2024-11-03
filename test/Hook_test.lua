@@ -41,6 +41,16 @@ describe("before hooks", function()
 	it("before each should be called trice", function()
 		expect(beforeEachSpy).toHaveBeenCalledTimes(3)
 	end)
+
+	describe("inner suite", function()
+		it("should run hooks inner", function()
+			expect(beforeEachSpy).toHaveBeenCalledTimes(4)
+		end)
+
+		it("should run hooks inner 2", function()
+			expect(beforeEachSpy).toHaveBeenCalledTimes(5)
+		end)
+	end)
 end)
 
 describe("after hooks", function()
