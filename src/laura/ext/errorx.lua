@@ -79,7 +79,6 @@ local function toString(err, isColor)
 	if not err then
 		return Labels.ErrorUnknown
 	end
-	isColor = isColor == nil
 	local act = string.format(
 		"%s%s",
 		err.actualLabel or Labels.ErrorActual,
