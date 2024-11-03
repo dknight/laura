@@ -40,7 +40,7 @@ end
 
 -- Sorting files in alphabetical order to keep consistency.
 for fname in helpers.spairs(files) do
-	-- TODO do not use _G?
+	-- FIXME do not use _G?
 	local chunk, err = loadfile(fname, "t", _G)
 	if chunk ~= nil then
 		chunk()
