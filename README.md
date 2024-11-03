@@ -1,7 +1,7 @@
 # Laura &ndash; unit-testing framework for Lua
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/dknight/laura/refs/heads/main/misc/laura-256.png" alt="Laura Testing Framework">
+<img src="https://raw.githubusercontent.com/dknight/laura/refs/heads/main/misc/laura-256.png" alt="Laura Testing Framework" style="image-rendering: pixelated;">
 </p>
 
 <p align="center">
