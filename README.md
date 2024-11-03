@@ -1,21 +1,8 @@
 # Laura &ndash; unit-testing framework for Lua
 
-<svg fill="none" viewBox="0 0 256 256" width="256" height="256" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject width="100%" height="100%">
-		<div xmlns="http://www.w3.org/1999/xhtml">
-			<style>
-				.container {
-					text-align: center;
-				}
-				.piximage {
-					image-rendering: pixelated;
-				}
-			<div class="container">
-<img src="https://raw.githubusercontent.com/dknight/laura/refs/heads/main/misc/laura-256.png" alt="Laura Testing Framework" class="piximage>
-</p>
-    	</div>
-    </foreignObject>
-</svg>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/dknight/laura/refs/heads/main/misc/pix.svg?raw=true" width="256" height="256" alt="Laura Testing Framework">
+</div>
 
 <p align="center">
 <a href="https://github.com/dknight/laura/actions/workflows/tests.yml"><img src="https://github.com/dknight/laura/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
