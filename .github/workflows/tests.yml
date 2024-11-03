@@ -6,7 +6,7 @@ jobs:
       matrix:
         # TODO check merge for https://github.com/leafo/gh-actions-lua/pull/44
         # and use luajit-2.1
-        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1.0-beta3']
+        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1']
     runs-on: ubuntu-latest
     env:
       TERM: xterm
