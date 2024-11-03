@@ -68,8 +68,6 @@ local function resolveQualifier(v)
 		else
 			q = '"%s"'
 		end
-	else
-		q = "%s"
 	end
 	return q
 end

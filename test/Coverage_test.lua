@@ -4,7 +4,6 @@ local describe = laura.describe
 local expect = laura.expect
 local Coverage = laura.Coverage
 local Stub = laura.Stub
-local hooks = laura.hooks
 
 describe("Coverage", function()
 	it("should import Coverage as standalone module", function()

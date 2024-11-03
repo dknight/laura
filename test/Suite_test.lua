@@ -22,7 +22,8 @@ describe("Suite", function()
 	end)
 
 	it(
-		"should prepare a suite, if second argument is not a function and have an error",
+		"should prepare a suite, if second argument is not a\z
+		function and have an error",
 		function()
 			local suite = Suite:new("test suite", nil)
 			suite:prepare()
