@@ -39,7 +39,7 @@ local Config = {
 	-- Collect code coverage.
 	Coverage = {
 		Enabled = false,
-		Threshold = 50,
+		Threshold = 80,
 		ThresholdPoints = {
 			Low = 50,
 			Average = 66.7,
@@ -51,7 +51,7 @@ local Config = {
 		Reporters = {
 			--"blank",
 			--"csv",
-			--"html",
+			"html",
 			--"json",
 			--"lua",
 			--"xml",
@@ -109,8 +109,8 @@ local Config = {
 	-- lines marked as execluded in coverage reporters
 	_coverageExcludeLineIndex = -1,
 
-	-- confing filename
-	_configFile = ".laurarc",
+	-- confing rc filename
+	_rcFile = ".laurarc",
 }
 
 return setmetatable(Config, {

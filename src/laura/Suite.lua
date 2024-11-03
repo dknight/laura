@@ -16,20 +16,20 @@ function Suite:prepare()
 			actual = type(self.func),
 			expected = "function",
 		})
-		errorx.print(self.error, self._ctx.config.Color)
+		errorx.print(self.error, self.ctx.config.Color)
 		return
 	end
 
-	self.level = self._ctx.level
+	self.level = self.ctx.level
 	self._suite = true
 
-	self._ctx.suites[self._ctx.level] = self
-	self._ctx.current = self
+	self.ctx.suites[self.ctx.level] = self
+	self.ctx.current = self
 
-	self.parent = self._ctx.suites[self._ctx.level - 1]
+	self.parent = self.ctx.suites[self.ctx.level - 1]
 	table.insert(self.parent.children, self)
 
-	self._ctx.level = self._ctx.level + 1
+	self.ctx.level = self.ctx.level + 1
 	local ok, err = pcall(self.func)
 	if not ok then
 		local errMsg = err
@@ -41,10 +41,10 @@ function Suite:prepare()
 			actual = type(self.func),
 			expected = "function",
 		})
-		errorx.print(self.error, self._ctx.config.Color)
+		errorx.print(self.error, self.ctx.config.Color)
 		return
 	end
-	self._ctx.level = self._ctx.level - 1
+	self.ctx.level = self.ctx.level - 1
 end
 
 return Suite.new(Suite)

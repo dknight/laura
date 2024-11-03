@@ -1,7 +1,7 @@
 API_KEY=$(cat luarocks_apikey)
 VERSION="$1"
 GIT_BRANCH="$VERSION"
-VERSION_FILE="./src/laura/v.lua"
+VERSION_FILE="./src/laura/ver.lua"
 
 if [[ -z "$VERSION" ]]; then
   VERSION="dev-0"

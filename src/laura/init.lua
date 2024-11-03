@@ -2,6 +2,7 @@
 local Context = require("laura.Context")
 local Coverage = require("laura.Coverage")
 local helpers = require("laura.util.helpers")
+local tablex = require("laura.ext.tablex")
 
 local ctx = Context.global()
 
@@ -15,25 +16,27 @@ local function collectCoverage()
 	end
 end
 
----Merges config from defaults to context.
----@param config Config | table
-local function mergeConfig(config)
-	ctx = ctx or Context.global()
-	ctx.config = require("laura.Config")
-	for k, v in
-		pairs(config --[[@as table]])
-	do
-		if ctx.config[k] ~= nil then
-			ctx.config[k] = v
-		end
-	end
-end
-
 ---Setup the project. All initiazliation stuff goes here.
----@param config? Config | table
-local function setup(config)
-	config = config or {}
-	mergeConfig(config)
+---@param defaults? Config | table
+local function setup(defaults)
+	defaults = defaults or {}
+
+	-- Merge from Config.lua file
+	ctx.config =
+		tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
+
+	-- Read config from .rc file
+	local conf, err = helpers.readFromRCFile()
+	if conf == nil then
+		print(err)
+		os.exit(ctx.config._Exit.SysErr)
+	end
+	ctx.config = tablex.merge(ctx.config, conf)
+
+	local code = helpers.processFlags(arg)
+	if code ~= -1 then
+		os.exit(code)
+	end
 
 	if helpers.hasFlag("--nocoverage") then
 		ctx.config.Coverage.Enabled = false
@@ -47,7 +50,8 @@ local function setup(config)
 end
 
 -- initial setup, not sure should it be here
-setup({})
+local defaults = require("laura.Config")
+setup(defaults)
 
 return {
 	Config = require("laura.Config"),

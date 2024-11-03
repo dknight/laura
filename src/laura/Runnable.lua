@@ -18,14 +18,14 @@ local errorx = require("laura.ext.errorx")
 ---@field public status? Status
 ---@field private _suite boolean
 ---@field private _only boolean
----@field protected _ctx Context
+---@field protected ctx Context
 local Runnable = {
-	_ctx = Context.global(),
+	ctx = Context.global(),
 }
 
 ---@oaram suite Runnable
 Runnable.filterOnly = function(suite)
-	suite = suite or Runnable._ctx.root
+	suite = suite or Runnable.ctx.root
 	for i = #suite.children, 1, -1 do
 		local test = suite.children[i]
 		if suite:hasOnly() and not test:isOnly() or test:isSkipped() then
@@ -46,12 +46,12 @@ end
 
 ---Creates root context if not yet exists.
 Runnable.createRootSuiteMaybe = function()
-	if not Runnable._ctx.root then
-		local root = Runnable:new(Runnable._ctx.config._rootKey, function() end)
-		Runnable._ctx.root = root
-		Runnable._ctx.suites[0] = root
-		Runnable._ctx.level = Runnable._ctx.level + 1
-		Runnable._ctx.current = root
+	if not Runnable.ctx.root then
+		local root = Runnable:new(Runnable.ctx.config._rootKey, function() end)
+		Runnable.ctx.root = root
+		Runnable.ctx.suites[0] = root
+		Runnable.ctx.level = Runnable.ctx.level + 1
+		Runnable.ctx.current = root
 	end
 end
 
@@ -71,10 +71,10 @@ function Runnable:new(description, func)
 		parent = nil,
 		status = nil,
 		hooks = {
-			[Runnable._ctx.config._afterAllName] = {},
-			[Runnable._ctx.config._afterEachName] = {},
-			[Runnable._ctx.config._beforeAllName] = {},
-			[Runnable._ctx.config._beforeEachName] = {},
+			[Runnable.ctx.config._afterAllName] = {},
+			[Runnable.ctx.config._afterEachName] = {},
+			[Runnable.ctx.config._beforeAllName] = {},
+			[Runnable.ctx.config._beforeEachName] = {},
 		},
 	}
 	return setmetatable(t, {
@@ -88,8 +88,8 @@ end
 ---Prepares the tests before running.
 function Runnable:prepare()
 	Runnable.createRootSuiteMaybe()
-	self.level = self._ctx.level
-	self.parent = self._ctx.suites[self.level - 1]
+	self.level = self.ctx.level
+	self.parent = self.ctx.suites[self.level - 1]
 	table.insert(self.parent.children, self)
 end
 
@@ -102,7 +102,7 @@ function Runnable:run()
 			parentIsSkipped = true
 		end
 	end, function(parent)
-		return parent ~= self._ctx.root
+		return parent ~= self.ctx.root
 	end)
 
 	if parentIsSkipped or self:isSkipped() then
@@ -124,14 +124,14 @@ function Runnable:run()
 		return
 	end
 
-	self._ctx.current = self
+	self.ctx.current = self
 
 	local isFirst = self.parent.children[1] == self
 	local isLast = self.parent.children[#self.parent.children] == self
 	if isFirst then
-		self.parent:runHooks(self._ctx.config._beforeAllName)
+		self.parent:runHooks(self.ctx.config._beforeAllName)
 	end
-	self.parent:runHooks(self._ctx.config._beforeEachName)
+	self.parent:runHooks(self.ctx.config._beforeEachName)
 
 	local ok, err = pcall(self.func)
 	if not ok then
@@ -153,9 +153,9 @@ function Runnable:run()
 		self.status = Status.Passed
 	end
 
-	self.parent:runHooks(self._ctx.config._afterEachName)
+	self.parent:runHooks(self.ctx.config._afterEachName)
 	if isLast then
-		self.parent:runHooks(self._ctx.config._afterAllName)
+		self.parent:runHooks(self.ctx.config._afterAllName)
 	end
 
 	self.execTime = os.clock() - tstart

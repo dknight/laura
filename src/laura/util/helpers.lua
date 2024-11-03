@@ -2,7 +2,6 @@ local Context = require("laura.Context")
 local fs = require("laura.util.fs")
 local Labels = require("laura.Labels")
 local stringx = require("laura.ext.stringx")
-local ver = require("laura.v")
 
 local EOL = fs.EOL
 local ctx = Context.global()
@@ -10,7 +9,7 @@ local ctx = Context.global()
 ---Get the version.
 ---@return string
 local function version()
-	return ver
+	return (require("laura.ver"))
 end
 
 ---Sort table by keys in alphabetical order.
@@ -146,22 +145,23 @@ local function processFlags(flags)
 end
 
 ---Reads and merges configuration from .laurarc file.
-local function mergeFromRCFile()
-	local path = ctx.config._configFile
-	local chunk, err = loadfile(path, "t", ctx.config)
+---@return (table|nil), (Error|string|nil)?
+local function readFromRCFile()
+	local path = ctx.config._rcFile
+	local env = {}
+	local chunk, err = loadfile(path, "t", env)
 	if chunk ~= nil then
 		chunk()
+		return env, nil
 	else
-		if type(warn) == "function" then
-			warn(tostring(err) .. "; using defaults")
-		end
+		return nil, err
 	end
 end
 
 return {
 	hasFlag = hasFlag,
 	processFlags = processFlags,
-	mergeFromRCFile = mergeFromRCFile,
+	readFromRCFile = readFromRCFile,
 	spairs = spairs,
 	tab = tab,
 	usage = usage,

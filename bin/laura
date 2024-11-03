@@ -21,14 +21,6 @@ local helpers = require("laura.util.helpers")
 local Reporter = require("laura.Reporter")
 
 local ctx = Context.global()
-local coverage = ctx.coverage
-
--- read configs before runner init
-helpers.mergeFromRCFile()
-local code = helpers.processFlags(arg)
-if code ~= -1 then
-	os.exit(code)
-end
 
 -- last argument should be directory with tests
 local dir = arg[#arg]
@@ -67,19 +59,19 @@ genericReporter:reportErrors()
 local covStart = 0
 local covFinish = 0
 
-if ctx.config.Coverage.Enabled and coverage ~= nil then
+if ctx.config.Coverage.Enabled and ctx.coverage ~= nil then
 	covStart = os.clock()
 	local CoverageReporter =
 		require("laura.reporters.coverage.CoverageReporter")
 
 	CoverageReporter.printTitle()
 
-	for _, coverageReporter in ipairs(coverage.reporters) do
+	for _, coverageReporter in ipairs(ctx.coverage.reporters) do
 		coverageReporter:report()
 	end
 
 	local commonCovReporter =
-		CoverageReporter:new(coverage, ctx.config.Coverage.Threshold)
+		CoverageReporter:new(ctx.coverage, ctx.config.Coverage.Threshold)
 	commonCovReporter:results()
 	covFinish = os.clock()
 end
