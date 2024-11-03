@@ -210,16 +210,12 @@ html = [==[
           ? 'Collapse all'
           : 'Expand all';
       });
-      // summaries.forEach((elem) => {
-      //   elem.addEventListener('click', (e) => {
-      //     window.location.hash = elem.parentElement.id;
-      //     e.preventDefault()
-      //   });
-      // });
 
-      const initialElem = document.querySelector(window.location.hash);
-      if (initialElem) {
-        initialElem.open = true;
+      if (window.location.hash) {
+        const initialElem = document.querySelector(window.location.hash);
+        if (initialElem) {
+          initialElem.open = true;
+        }
       }
     </script>
   </head>
