@@ -50,15 +50,17 @@ function CoverageHTMLReporter:report()
 	self:prepare()
 	local data = self.coverage.data
 	local path = config.Coverage.Dir
+	local tpl = {}
 
 	local tplPath = debug.getinfo(1, "S").source:sub(2):match("(.*/)")
-		.. "template.html"
-	local tfp = io.open(tplPath, "r")
-	if tfp == nil then
+		.. "template.lua"
+	local chunk = loadfile(tplPath, "t", tpl)
+	if chunk ~= nil then
+		chunk()
+	else
 		error(string.format(Labels.ErrorCannotReadFile, tplPath))
 	end
-	local contents = tfp:read("*a")
-	tfp:close()
+	local contents = tpl.html
 	local reportFileName = string.format(
 		"%s%s%s-%s.html",
 		path,

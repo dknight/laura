@@ -51,7 +51,7 @@ local Config = {
 		Reporters = {
 			--"blank",
 			--"csv",
-			"html",
+			-- "html",
 			--"json",
 			--"lua",
 			--"xml",
