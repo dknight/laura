@@ -13,8 +13,6 @@ if [[ $result -ne 0 ]]; then
   exit $result
 fi
 
-exit 0
-
 API_KEY=$(cat luarocks_apikey)
 VERSION="$1"
 GIT_BRANCH="$VERSION"
