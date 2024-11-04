@@ -34,7 +34,7 @@ sed -i -e "s/\"dev-0\"/\"$VERSION\"/g" "$specfile"
 printf "return \"%s\"" "$VERSION" > "$VERSION_FILE"
 cp "$specfile" rockspec
 git add "$VERSION_FILE" "rockspec/$specfile"
-git ci -m "release: $VERSION_FILE"
+git ci -m "release: $VERSION"
 
 echo "Pushing to git..."
 if [ "$VERSION" != "dev-0" ]; then
