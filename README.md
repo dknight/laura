@@ -20,7 +20,8 @@ The framework has no dependencies and is compatible with Lua versions 5.1&mdash;
 - **Lightweight and minimalist**
 - **Easy to install and use**
 - **No Dependencies**
-- **Understandable, human-readable feedback**
+- **Understandable, human-readable reports**
+- **Includes: stubs, spies and hooks**
 - **Compatible with any Lua 5.1+ version and LuaJIT**
 
 📚 [Complete documentation](https://www.whoop.ee/post/laura-unit-testing-framework-for-lua.html)
