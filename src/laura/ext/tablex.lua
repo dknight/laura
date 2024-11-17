@@ -5,7 +5,7 @@ local helpers = require("laura.util.helpers")
 local Labels = require("laura.Labels")
 local Status = require("laura.Status")
 local Terminal = require("laura.Terminal")
-local Version = require("laura.Version")
+local LuaVersion = require("src.laura.LuaVersion")
 local fs = require("laura.util.fs")
 
 local EOL = fs.EOL
@@ -137,7 +137,7 @@ local function printValue(val, key, sign, status, i, isColor)
 		out[#out + 1] = tab(i) .. sign .. "}"
 	else
 		-- COMPAT why in Lua 5.1 so?
-		local q = Version[_VERSION] <= Version["Lua 5.2"] and "%s" or "%q"
+		local q = LuaVersion[_VERSION] <= LuaVersion["Lua 5.2"] and "%s" or "%q"
 		out[#out + 1] = string.format(q, val)
 	end
 
@@ -245,7 +245,7 @@ local function inline(t, keys)
 		if type(t[i]) == "string" then
 			fmt = '%s"%s"'
 		end
-		if Version[_VERSION] == Version["Lua 5.1"] then
+		if LuaVersion[_VERSION] == LuaVersion["Lua 5.1"] then
 			t[i] = tostring(t[i])
 		end
 		out[#out + 1] = string.format(fmt, keys and (i .. " = ") or "", t[i])

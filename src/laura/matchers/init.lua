@@ -17,7 +17,7 @@ local Status = require("laura.Status")
 local tablex = require("laura.ext.tablex")
 local Terminal = require("laura.Terminal")
 local stringx = require("laura.ext.stringx")
-local Version = require("laura.Version")
+local LuaVersion = require("src.laura.LuaVersion")
 local fs = require("laura.util.fs")
 
 local ctx = Context.global()
@@ -332,7 +332,7 @@ local function toFail(t, expected)
 		local actual = a
 		--COMPAT %s in string.format() requires tostring(v)
 		-- coverage: disable
-		if Version[_VERSION] <= Version["Lua 5.2"] then
+		if LuaVersion[_VERSION] <= LuaVersion["Lua 5.2"] then
 			actual = tostring(actual)
 		end
 		-- coverage: enable

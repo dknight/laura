@@ -5,7 +5,7 @@ local Status = require("laura.Status")
 local tablex = require("laura.ext.tablex")
 local Terminal = require("laura.Terminal")
 local fs = require("laura.util.fs")
-local Version = require("laura.Version")
+local LuaVersion = require("src.laura.LuaVersion")
 
 local EOL = fs.EOL
 
@@ -102,7 +102,7 @@ local function toString(err, isColor)
 
 	-- COMPAT
 	-- coverage: disable
-	if Version[_VERSION] <= Version["Lua 5.1"] then
+	if LuaVersion[_VERSION] <= LuaVersion["Lua 5.1"] then
 		if type(expectedValue) ~= "string" then
 			expectedValue = tostring(expectedValue)
 		end
