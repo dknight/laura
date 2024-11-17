@@ -22,8 +22,7 @@ local function setup(defaults)
 	defaults = defaults or {}
 
 	-- Merge from Config.lua file
-	ctx.config =
-		tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
+	ctx.config = tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
 
 	-- Read config from .rc file
 	local conf, _ = helpers.readFromRCFile()
@@ -73,6 +72,6 @@ return {
 	Terminal = require("laura.Terminal"),
 	Test = require("laura.Test"),
 	test = require("laura.Test"), -- alias
-	LuaVersion = require("src.laura.LuaVersion"),
+	LuaVersion = require("laura.LuaVersion"),
 }
 -- coverage: enable

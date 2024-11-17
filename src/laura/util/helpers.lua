@@ -9,7 +9,7 @@ local ctx = Context.global()
 ---Get the version.
 ---@return string
 local function version()
-	return (require("src.laura.version"))
+	return (require("laura.version"))
 end
 
 ---Sort table by keys in alphabetical order.
