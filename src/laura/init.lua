@@ -26,12 +26,10 @@ local function setup(defaults)
 		tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
 
 	-- Read config from .rc file
-	local conf, err = helpers.readFromRCFile()
-	if conf == nil then
-		print(err)
-		os.exit(ctx.config._Exit.SysErr)
+	local conf, _ = helpers.readFromRCFile()
+	if conf ~= nil then
+		ctx.config = tablex.merge(ctx.config, conf)
 	end
-	ctx.config = tablex.merge(ctx.config, conf)
 
 	local code = helpers.processFlags(arg)
 	if code ~= -1 then
