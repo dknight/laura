@@ -3,7 +3,7 @@
 package.path = package.path .. ";./src/?.lua;./src/?/?.lua;./src/?/init.lua"
 
 local laura = require("laura")
-local Version = laura.Version
+local LuaVersion = laura.LuaVersion
 local Context = laura.Context
 local Labels = laura.Labels
 local Runner = laura.Runner
@@ -11,7 +11,7 @@ local Terminal = laura.Terminal
 
 --COMPAT include path fix for lua 5.1 and lua 5.2
 -- coverage: disable
-if Version[_VERSION] <= Version["Lua 5.2"] then
+if LuaVersion[_VERSION] <= LuaVersion["Lua 5.2"] then
 	package.path = package.path .. ";./?/init.lua"
 end
 -- coverage: enable

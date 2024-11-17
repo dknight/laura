@@ -73,6 +73,6 @@ return {
 	Terminal = require("laura.Terminal"),
 	Test = require("laura.Test"),
 	test = require("laura.Test"), -- alias
-	Version = require("laura.Version"),
+	LuaVersion = require("src.laura.LuaVersion"),
 }
 -- coverage: enable
