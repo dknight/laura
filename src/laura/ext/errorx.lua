@@ -79,8 +79,16 @@ local function toString(err, isColor)
 	if not err then
 		return Labels.ErrorUnknown
 	end
-	local act = string.format("%s%s", err.actualLabel or Labels.ErrorActual, err.actualOperator)
-	local exp = string.format("%s%s", err.expectedLabel or Labels.ErrorExpected, err.expectedOperator)
+	local act = string.format(
+		"%s%s",
+		err.actualLabel or Labels.ErrorActual,
+		err.actualOperator
+	)
+	local exp = string.format(
+		"%s%s",
+		err.expectedLabel or Labels.ErrorExpected,
+		err.expectedOperator
+	)
 	local space = math.max(#act, #exp)
 	local fmt = "%-" .. space .. "s"
 	act = string.format(fmt, act)
@@ -149,14 +157,25 @@ local function toString(err, isColor)
 		local lineno = 0
 		for line in io.lines(err.debuginfo.short_src) do
 			lineno = lineno + 1
-			if lineno >= err.debuginfo.linedefined and lineno <= err.debuginfo.lastlinedefined then
+			if
+				lineno >= err.debuginfo.linedefined
+				and lineno <= err.debuginfo.lastlinedefined
+			then
 				local decs = math.log(err.debuginfo.lastlinedefined, 10) + 1
 				local l = line
 				local f = "%" .. math.ceil(decs) .. "d. %s" .. EOL
 				if activeLines[lineno] then
 					local match = l:gsub(
 						"%((.*)%)(.*)%((.*)%)",
-						"(" .. failedColor .. "%1" .. resetSeq .. ")%2(" .. passedColor .. "%3" .. resetSeq .. ")"
+						"("
+							.. failedColor
+							.. "%1"
+							.. resetSeq
+							.. ")%2("
+							.. passedColor
+							.. "%3"
+							.. resetSeq
+							.. ")"
 					)
 					l = Terminal.setStyle(match, Terminal.Style.Normal)
 				else

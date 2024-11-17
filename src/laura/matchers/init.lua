@@ -35,7 +35,9 @@ local function compare(t, expected, cmp)
 
 	-- create negation
 	if t.isNot then
-		t.error.expectedOperator = ctx.config._negationPrefix .. " " .. t.error.expectedOperator
+		t.error.expectedOperator = ctx.config._negationPrefix
+			.. " "
+			.. t.error.expectedOperator
 	end
 	return t(expected)
 end
@@ -52,7 +54,8 @@ local function toDeepEqual(t, expected)
 	return compare(t, expected, function(a, b)
 		local areBothTables = type(a) == "table" and type(b) == "table"
 		local err
-		local ok = (areBothTables and tablex.equal(a, b) or a == b) and type(a) == type(b)
+		local ok = (areBothTables and tablex.equal(a, b) or a == b)
+			and type(a) == type(b)
 
 		if not ok then
 			if areBothTables then
@@ -198,8 +201,18 @@ local function toBeCloseTo(t, expected)
 				message = table.concat({
 					helpers.tab(1),
 					string.format(Labels.Expected.Precision, decs),
-					string.format(Labels.Expected.Difference, Terminal.setColor(Status.Passed), d, Terminal.reset()),
-					string.format(Labels.Actual.Difference, Terminal.setColor(Status.Failed), x, Terminal.reset()),
+					string.format(
+						Labels.Expected.Difference,
+						Terminal.setColor(Status.Passed),
+						d,
+						Terminal.reset()
+					),
+					string.format(
+						Labels.Actual.Difference,
+						Terminal.setColor(Status.Failed),
+						x,
+						Terminal.reset()
+					),
 					"",
 				}, EOL),
 			})
@@ -209,44 +222,48 @@ end
 ---@type Assertion
 local function toBeGreaterThan(t, expected)
 	return compare(t, expected, function(a, b)
-		return a > b, errorx.new({
-			actual = a,
-			expected = b,
-			expectedOperator = "> ",
-		})
+		return a > b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "> ",
+			})
 	end)
 end
 
 ---@type Assertion
 local function toBeGreaterThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
-		return a >= b, errorx.new({
-			actual = a,
-			expected = b,
-			expectedOperator = ">= ",
-		})
+		return a >= b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = ">= ",
+			})
 	end)
 end
 
 ---@type Assertion
 local function toBeLessThan(t, expected)
 	return compare(t, expected, function(a, b)
-		return a < b, errorx.new({
-			actual = a,
-			expected = b,
-			expectedOperator = "< ",
-		})
+		return a < b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "< ",
+			})
 	end)
 end
 
 ---@type Assertion
 local function toBeLessThanOrEqual(t, expected)
 	return compare(t, expected, function(a, b)
-		return a <= b, errorx.new({
-			actual = a,
-			expected = b,
-			expectedOperator = "=< ",
-		})
+		return a <= b,
+			errorx.new({
+				actual = a,
+				expected = b,
+				expectedOperator = "=< ",
+			})
 	end)
 end
 
@@ -292,8 +309,10 @@ local function toContain(t, expected)
 			errorx.new({
 				actual = a,
 				expected = b,
-				actualLabel = isString and Labels.Actual.Pattern or Labels.ErrorActual,
-				expectedLabel = isString and Labels.Expected.Pattern or Labels.ErrorExpected,
+				actualLabel = isString and Labels.Actual.Pattern
+					or Labels.ErrorActual,
+				expectedLabel = isString and Labels.Expected.Pattern
+					or Labels.ErrorExpected,
 			})
 	end)
 end
@@ -416,7 +435,14 @@ local function toHaveBeenCalledWith(t, expected)
 			errorx.new({
 				actual = tmp,
 				expected = b,
-				message = string.format("%s%s%s%d%s", EOL, helpers.tab(1), Labels.NumberOfCalls, #calls, EOL),
+				message = string.format(
+					"%s%s%s%d%s",
+					EOL,
+					helpers.tab(1),
+					Labels.NumberOfCalls,
+					#calls,
+					EOL
+				),
 			})
 	end)
 end
@@ -553,7 +579,14 @@ local function toHaveReturnedTimes(t, expected)
 				expected = b,
 				actualLabel = Labels.Actual.Returns,
 				expectedLabel = Labels.Expected.Returns,
-				message = string.format("%s%s%s%d%s", EOL, helpers.tab(1), Labels.NumberOfReturns, count, EOL),
+				message = string.format(
+					"%s%s%s%d%s",
+					EOL,
+					helpers.tab(1),
+					Labels.NumberOfReturns,
+					count,
+					EOL
+				),
 			})
 	end)
 end

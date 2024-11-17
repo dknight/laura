@@ -41,7 +41,11 @@ local function diff(a, b, count)
 	for k, v in pairs(b) do
 		if df.sub[k] ~= nil then
 			count.removed = count.removed + 1
-		elseif a[k] ~= nil and type(a[k]) == "table" and type(b[k]) == "table" then
+		elseif
+			a[k] ~= nil
+			and type(a[k]) == "table"
+			and type(b[k]) == "table"
+		then
 			df.sub[k] = diff(b[k], a[k], count)
 			if next(df.sub[k]) == nil then
 				df.sub[k] = nil
@@ -119,7 +123,15 @@ local function printValue(val, key, sign, status, i, isColor)
 		out[#out + 1] = EOL .. tab(i) .. sign .. "{" .. EOL
 		i = i + 1
 		for k, v in pairs(val) do
-			out[#out + 1] = string.format("%s%s%s[%q] = %q,%s", tab(i - 1), sign, tab(1), k, v, EOL)
+			out[#out + 1] = string.format(
+				"%s%s%s[%q] = %q,%s",
+				tab(i - 1),
+				sign,
+				tab(1),
+				k,
+				v,
+				EOL
+			)
 		end
 		i = i - 1
 		out[#out + 1] = tab(i) .. sign .. "}"
@@ -129,7 +141,14 @@ local function printValue(val, key, sign, status, i, isColor)
 		out[#out + 1] = string.format(q, val)
 	end
 
-	local result = string.format("%s%s[%q] = %s%s", tab(i), sign, key, table.concat(out), EOL)
+	local result = string.format(
+		"%s%s[%q] = %s%s",
+		tab(i),
+		sign,
+		key,
+		table.concat(out),
+		EOL
+	)
 	if isColor then
 		return Terminal.setColor(status) .. result .. Terminal.reset()
 	else
@@ -154,16 +173,37 @@ local function diffToString(t, d, i, isColor)
 
 		-- Deletions
 		if d.del ~= nil and d.del[k] ~= nil then
-			out[#out + 1] = printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i, isColor)
+			out[#out + 1] = printValue(
+				t[k],
+				k,
+				Labels.AddedSymbol,
+				Status.Failed,
+				i,
+				isColor
+			)
 			isKeyChanged = true
 		end
 
 		-- Modifications
 		if d.mod ~= nil and d.mod[k] ~= nil then
-			out[#out + 1] = printValue(d.mod[k], k, Labels.RemovedSymbol, Status.Passed, i, isColor)
+			out[#out + 1] = printValue(
+				d.mod[k],
+				k,
+				Labels.RemovedSymbol,
+				Status.Passed,
+				i,
+				isColor
+			)
 
 			if t[k] ~= nil then
-				out[#out + 1] = printValue(t[k], k, Labels.AddedSymbol, Status.Failed, i, isColor)
+				out[#out + 1] = printValue(
+					t[k],
+					k,
+					Labels.AddedSymbol,
+					Status.Failed,
+					i,
+					isColor
+				)
 			end
 			isKeyChanged = true
 		end
@@ -177,7 +217,14 @@ local function diffToString(t, d, i, isColor)
 
 		-- Not changed
 		if not isKeyChanged then
-			out[#out + 1] = printValue(t[k], k, Labels.UnchangedSymbol, Status.Unchanged, i, isColor)
+			out[#out + 1] = printValue(
+				t[k],
+				k,
+				Labels.UnchangedSymbol,
+				Status.Unchanged,
+				i,
+				isColor
+			)
 		end
 	end
 	i = i - 1

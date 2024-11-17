@@ -1,5 +1,5 @@
 -- TODO make onlys also testable
-local laura = require("src.laura")
+local laura = require("laura")
 local describe = laura.describe
 local expect = laura.expect
 local it = laura.it
