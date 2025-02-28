@@ -5,7 +5,7 @@ jobs:
     strategy:
       matrix:
         # and use luajit-2.1
-        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-openresty']
+        luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1', 'luajit-openresty']
     runs-on: ubuntu-latest
     env:
       TERM: xterm
