@@ -4,7 +4,6 @@ jobs:
   test:
     strategy:
       matrix:
-        # and use luajit-2.1
         luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1', 'luajit-openresty']
     runs-on: ubuntu-latest
     env:
@@ -25,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: leafo/gh-actions-lua@v11
+      - uses: leafo/gh-actions-lua@v9
       - uses: leafo/gh-actions-luarocks@v4
 
       - name: dependencies
