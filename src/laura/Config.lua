@@ -13,7 +13,9 @@ local Config = {
 	Dir = ".",
 
 	-- Pattern for tests files.
-	TestPattern = "*_test.lua",
+	-- Be careful with with MS Windows, unix command fid and DIR are
+	-- completely incompatible.
+	TestPattern = "*test.lua",
 
 	-- Tabulation string, "\t" by default.
 	Tab = "\t",
