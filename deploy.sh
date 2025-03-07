@@ -43,9 +43,8 @@ echo "Pushing to git..."
 if [ "$VERSION" != "dev-0" ]; then
   git tag "$VERSION"
 fi
-#git push origin "$GIT_BRANCH"
-echo "$GIT_BRANCH"
-exit
+git push origin "$GIT_BRANCH"
+
 echo "Packing rock..."
 luarocks pack "$specfile"
 
