@@ -13,7 +13,7 @@ local EOL = isWindows() and "\r\n" or "\n"
 local scandir = function(directory)
 	local cmd
 	if isWindows() then
-		cmd = "DIR /S/B/O:n %s\\%s"
+		cmd = "DIR /S /B /O:n %s\\%s"
 	else
 		cmd = "find '%s' -type f -name '%s' -print | sort"
 	end
