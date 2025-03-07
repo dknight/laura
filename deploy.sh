@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# example
+# VERSION=1.0.3-0 ./deploy.sh
+
 result=0
 make test
 result=$?
