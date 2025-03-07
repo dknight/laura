@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # example
-# VERSION=1.0.3-0 ./deploy.sh
+# VERSION="1.0.3-0" ./deploy.sh
 
 result=0
 make test
@@ -17,7 +17,6 @@ if [[ $result -ne 0 ]]; then
 fi
 
 API_KEY=$(cat luarocks_apikey)
-VERSION="$1"
 GIT_BRANCH="$VERSION"
 VERSION_FILE="./src/laura/version.lua"
 
