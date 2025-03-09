@@ -15,7 +15,7 @@ local scandir = function(directory)
 	if isWindows() then
 		cmd = "DIR /S /B /O:n %s\\%s"
 	else
-		cmd = "find '%s' -type f -name '%s' -print | sort"
+		cmd = "find '%s' -type f -name '%s' -print | sort &>/dev/null"
 	end
 	local t = {}
 	local fd =
