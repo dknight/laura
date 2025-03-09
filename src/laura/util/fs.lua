@@ -68,7 +68,7 @@ end
 ---@param path string
 ---@return boolean
 local function mergeFromConfigFile(path)
-	if not exists(path) or isdir(path) then
+	if not exists(path) then
 		return false
 	end
 	local chunk, err = loadfile(path, "t")
