@@ -171,6 +171,20 @@ reporter:report()
 runner:done()
 ```
 
+### Running in Docker container
+
+Building an image:
+
+```shell
+docker build -t <your-image-name> .
+```
+
+Run the container; notice that by default `/app` is the working directory; change it `Dockerfile` if you want to place your code in another directory.
+
+```shell
+docker run -v $(pwd):/app --rm -it <your-image-name>
+```
+
 ## Configuration
 
 There are the [options](https://github.com/dknight/laura/blob/main/src/Config.lua) that can be customized.
@@ -188,7 +202,7 @@ as in the configuration file.
 
 Also, there are ["private" configuration fields](https://github.com/dknight/laura/blob/main/src/laura/Config.lua), which are not recommended to change, unless you know that you know what you are doing.
 
-# Code coverage
+## Code coverage
 
 Code coverage can be enabled in `.laurarc` configuration file. Or if you are
 using CLI flag `--coverage`. There are extra coverage reporters can be used,
