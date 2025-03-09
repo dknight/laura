@@ -1,20 +1,12 @@
 # TODOs and FIXMEs
+    TODOs and FIXMEs are inside a code
+# Tasks
+    Write better coverage tests
 
-TODOs and FIXMEs are inside a code
-Make docker container
+# Nice to have
+    Better type check in matchers maybe.
 
-## Tasks
-
-1. Write better coverage tests
-
-## Nice to have
-
-1. Better type check in matchers maybe.
-
-## CI/CD
-
-## Docs
-
-## Testing
-
-1. Test better with Windows and MacOS
+# CI/CD
+# Docs
+# Testing
+    Test better with Windows and MacOS
