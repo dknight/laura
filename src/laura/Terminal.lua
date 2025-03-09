@@ -56,6 +56,9 @@ local function testTputColors()
 		colorsNum = fd:read("*n")
 		fd:close()
 	end
+	if colorsNum == nil then
+		return false
+	end
 	return colorsNum > 1
 end
 
@@ -73,7 +76,11 @@ local function isColorSupported()
 	end
 
 	local term = os.getenv("TERM") or ""
-	return not not (term:match("color") or term:match("xterm") or hasTermColors)
+	return not not (
+		term:match("color")
+		or term:match("xterm")
+		or hasTermColors
+	)
 end
 
 ---@return string
