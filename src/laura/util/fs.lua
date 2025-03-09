@@ -68,10 +68,10 @@ end
 ---@param path string
 ---@return boolean
 local function mergeFromConfigFile(path)
-	local chunk, err = loadfile(path, "t")
 	if not exists(path) then
 		return false
 	end
+	local chunk, err = loadfile(path, "t")
 	if chunk ~= nil then
 		local res = chunk() or {}
 		for k, v in pairs(res) do
