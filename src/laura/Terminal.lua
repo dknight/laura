@@ -50,7 +50,13 @@ local function testTputColors()
 	end
 	-- vt100 should return 8 for colors as the last fallback.
 	local term = os.getenv("TERM") or "vt100"
-	local fd = io.popen(string.format("tput -T %s colors", term), "r")
+	local fd, err = io.popen(string.format("tput -T %s colors", term), "r")
+	if fd == nil then
+		if type(warn) == "function" then
+			warn(tostring(err))
+		end
+		return false
+	end
 	local colorsNum = -1
 	if fd ~= nil then
 		colorsNum = fd:read("*n")
