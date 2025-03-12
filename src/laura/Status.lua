@@ -1,4 +1,6 @@
----@enum Status
+---@alias Status {[key: string]: number}
+---
+---@enum (key) Status
 local Status = {
 	Common = 0,
 	Failed = 1,

@@ -8,6 +8,7 @@ local fs = require("laura.util.fs")
 local ctx = Context.global()
 local EOL = fs.EOL
 
+---@alias Style {[key: string]: number}
 ---@enum Style
 local Style = {
 	Normal = 0,
