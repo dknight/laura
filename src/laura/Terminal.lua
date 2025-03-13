@@ -83,11 +83,7 @@ local function isColorSupported()
 	end
 
 	local term = os.getenv("TERM") or ""
-	return not not (
-		term:match("color")
-		or term:match("xterm")
-		or hasTermColors
-	)
+	return not not (term:match("color") or term:match("xterm") or hasTermColors)
 end
 
 ---@return string

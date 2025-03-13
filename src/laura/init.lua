@@ -22,7 +22,8 @@ local function setup(defaults)
 	defaults = defaults or {}
 
 	-- Merge from Config.lua file
-	ctx.config = tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
+	ctx.config =
+		tablex.merge(defaults --[[@as table]], defaults --[[@as table]])
 
 	-- Read config from .rc file
 	local conf, _ = helpers.readFromRCFile()

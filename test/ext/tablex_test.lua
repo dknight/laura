@@ -39,6 +39,19 @@ describe("tablex module", function()
 			expect(res.del).toBeNil()
 			expect(res.sub).toHaveLength(0)
 		end)
+
+		it("should create a polygon", function()
+			local poly = {
+				{ x = 0, y = 100 },
+				{ x = 100, y = 100 },
+				{ x = 0, y = 200 },
+			}
+			expect(poly).toBe({
+				{ x = 0, y = 100 },
+				{ x = 100, y = 100 },
+				{ x = 0, y = 200 }
+			})
+		end)
 	end)
 
 	describe("equal", function()
