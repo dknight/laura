@@ -12,7 +12,7 @@
 
 <p align="center">
 Laura 👧🏻 is a lightweight unit-testing framework for Lua with simplicity in mind.
-The framework has no dependencies and is compatible with Lua versions 5.1&mdash;5.4 and LuaJIT.
+The framework has no dependencies and is compatible with Lua versions 5.1&mdash;5.4, luau, LuaJIT and LuaJIT-OpenResty.
 </p>
 
 ## Features
