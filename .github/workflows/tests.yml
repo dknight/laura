@@ -4,6 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
+        # Put here Lua versions to be tested
         luaVersion: ['5.1', '5.2', '5.3', '5.4', 'luajit-2.1', 'luajit-openresty', 'luau']
     runs-on: ubuntu-latest
     env:
@@ -12,23 +13,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Lua and LuaRocks installation
       - uses: leafo/gh-actions-lua@v11
+      - uses: leafo/gh-actions-luarocks@v4
         with:
           luaVersion: ${{ matrix.luaVersion }}
 
-      - name: test
-        run: make test
-  lint:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: leafo/gh-actions-lua@v11
-      - uses: leafo/gh-actions-luarocks@v4
-
-      - name: dependencies
+      - name: "install luacheck"
         run: luarocks install luacheck
 
-      - name: lint
-        run: luacheck .
+      - name: "install laura"
+        run: luarocks install laura
+
+      # Here you change test directory, if is different.
+      - name: test
+        run: make lint test
